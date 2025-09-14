@@ -13,6 +13,20 @@ class Pokemon:
             pokedex_num: int,
             type: str
         ) -> None:
+        """
+        Creates a basic pokemon
+
+        Args:
+            name (int): Pokemon's name in lowercase
+            pokedex_num (int): Number in the national pokedex
+            type (str): Main type of the pokemon
+        Returns:
+            
+
+        Raises:
+
+
+        """
 
         self.name = name
         self.pokedex_num = pokedex_num
