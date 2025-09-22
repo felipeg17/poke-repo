@@ -27,12 +27,66 @@ Creaturas ficticias que viven en un mundo alternativo junto a humanos. La palabr
 
 ## Descripción de la solución
 
-Se agregó la lógica de los 18 tipos de Pokémon mediante herencia en el archivo `pokemon.py`.
+Este proyecto implementa un modelo básico de Pokémon y sus tipos utilizando composición en lugar de herencia.
+La corrección se hace porque en un inicio los tipos (Fire, Grass, etc.) se modelaban como clases hijas de Pokemon, lo cual no es correcto en el diseño orientado a objetos.
 
-- Se creó la clase base `PokemonType` que hereda de `Pokemon`.
-- Se implementaron las resistencias, debilidades e inmunidades de cada tipo.
-- Se añadieron 18 clases (una por tipo de Pokémon).
-- Se agregó el método `receive_attack` para la efectividad de los ataques.
+Un Pokémon no es un Tipo, sino que tiene uno o más Tipos.
+Por eso, ahora cada objeto Pokemon contiene una lista de objetos Type, donde cada Type define sus debilidades, resistencias e inmunidades.
+
+-Cambios realizados
+Se eliminó la herencia entre Pokemon y Type.
+Se creó la clase Type, que encapsula la información de: Debilidades, resistencias, inmunidades
+La clase Pokemon ahora recibe una lista de tipos (composición).
+Métodos en Pokemon permiten consultar sus debilidades, resistencias e inmunidades a partir de sus tipos.
+Se agregó un diagrama UML actualizado para reflejar la relación de composición.
+
+```text
+
+classDiagram
+    class Type {
+        +String name
+        +List weaknesses
+        +List resistances
+        +List immunities
+    }
+
+    class Pokemon {
+        +String name
+        +int pokedex_num
+        +List types
+        +String color
+        +String sex
+        +int level
+        +attack()
+        +level_up()
+        +show_info()
+        +get_weaknesses()
+        +get_resistances()
+        +get_immunities()
+    }
+
+    %% Tipos de Pokémon (subclases conceptuales de Type)
+    Type <|-- Normal
+    Type <|-- Fire
+    Type <|-- Water
+    Type <|-- Grass
+    Type <|-- Electric
+    Type <|-- Ice
+    Type <|-- Fighting
+    Type <|-- Poison
+    Type <|-- Ground
+    Type <|-- Flying
+    Type <|-- Psychic
+    Type <|-- Bug
+    Type <|-- Rock
+    Type <|-- Ghost
+    Type <|-- Dragon
+    Type <|-- Dark
+    Type <|-- Steel
+    Type <|-- Fairy
+
+    %% Relación de composición: un Pokémon tiene uno o varios tipos
+    Pokemon --> Type : types
 
 
 
