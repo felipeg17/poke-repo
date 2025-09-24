@@ -52,6 +52,7 @@ Se ha agregado 18 subclases que heredan de la clase Pokemon, además de agregar 
 
 ## Diagram
 
+```mermaid
 classDiagram
     class Pokemon {
         - name: str
@@ -87,6 +88,3 @@ classDiagram
     Pokemon <|-- Dark
     Pokemon <|-- Steel
     Pokemon <|-- Fairy
-
-
-
