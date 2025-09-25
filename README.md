@@ -25,7 +25,41 @@ Creaturas ficticias que viven en un mundo alternativo junto a humanos. La palabr
 - Atacar
 - Evolucionar
 
+## Diagram
 
+```mermaid
+classDiagram
+    class Pokemon {
+        - name: str
+        - pokedex_num: int
+        - type: str
+        - color: str
+        - sex: str
+        - level: int
+        - weaknesses: list
+        - resistances: list
+        - immunities: list
+        + attack()
+        + level_up()
+        + __str__()
+        + receive_attack(attack_type)
+    }
 
-
-
+    Pokemon <|-- Normal
+    Pokemon <|-- Fire
+    Pokemon <|-- Water
+    Pokemon <|-- Grass
+    Pokemon <|-- Electric
+    Pokemon <|-- Ice
+    Pokemon <|-- Fighting
+    Pokemon <|-- Poison
+    Pokemon <|-- Ground
+    Pokemon <|-- Flying
+    Pokemon <|-- Psychic
+    Pokemon <|-- Bug
+    Pokemon <|-- Rock
+    Pokemon <|-- Ghost
+    Pokemon <|-- Dragon
+    Pokemon <|-- Dark
+    Pokemon <|-- Steel
+    Pokemon <|-- Fairy
