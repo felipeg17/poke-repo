@@ -36,9 +36,9 @@ classDiagram
         - color: str
         - sex: str
         - level: int
-        - weaknesses: list
-        - resistances: list
-        - immunities: list
+        - _weaknesses: list
+        - _resistances: list
+        - _immunities: list
         + attack()
         + level_up()
         + __str__()
@@ -63,3 +63,29 @@ classDiagram
     Pokemon <|-- Dark
     Pokemon <|-- Steel
     Pokemon <|-- Fairy
+```
+
+## Running 
+
+### Linux
+
+Create a `venv` 
+```sh
+python -m venv v_pokemon 
+source v_pokemon/bin/activate
+pip install -r requirements.txt
+```
+
+### Windows
+
+
+
+## Testing
+
+En el directorio raíz ejecutar
+
+```sh
+python -m test.test_types
+```
+
+
