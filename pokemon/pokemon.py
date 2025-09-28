@@ -5,8 +5,7 @@ import pandas as pd
 from pprint import pprint
 
 class Pokemon:
-    csv_path = 'https://raw.githubusercontent.com/seburiticav/poke-repo/refs/heads/feat/poke-type-inheritance/pokemon/First30Pokemons.csv'
-    definition ="""
+    csv_path = "utils/First30Pokemons.csv"
     Pocket Monster
     """
     def __init__(
