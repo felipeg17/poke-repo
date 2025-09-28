@@ -85,7 +85,8 @@ pip install -r requirements.txt
 En el directorio raíz ejecutar
 
 ```sh
-python -m test.test_types
+pytest tests/test_types.py -v
 ```
 
+<img src="resources/tests-results.png" alt="testing" width=800 height=auto>
 

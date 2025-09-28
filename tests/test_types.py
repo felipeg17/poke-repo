@@ -40,7 +40,7 @@ def test_pokemon_resistances():
     assert charmander.receive_attack("Water") == "It's super effective!"
     assert charmander.receive_attack("Grass") == "It's not very effective..."
 
-if __name__ == "__main__":
-    test_create_pokemon()
-    test_pokemon_resistances()
+# if __name__ == "__main__":
+#     test_create_pokemon()
+#     test_pokemon_resistances()
 
