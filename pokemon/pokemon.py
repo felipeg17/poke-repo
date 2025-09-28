@@ -1,15 +1,19 @@
 import os
 import pdb
+import pandas as pd
 
+from pathlib import Path
 from pprint import pprint
 
 class Pokemon:
-    definition ="""
+    current_dir = Path(__file__).parent
+    csv_path = current_dir / "utils/First30Pokemons.csv"
+    definition = """
     Pocket Monster
     """
     def __init__(
             self,
-            name: str,
+            pokemon_name: str,
             pokedex_num: int,
             type: str, 
             color: str,
@@ -28,28 +32,40 @@ class Pokemon:
 
         Raises:
             ...
-
         """
-        self.name = name
-        self.pokedex_num = pokedex_num
-        self.main_type = type
-        self.color = color
-        self.sex = sex
-        self.level = level
+        self.__name = pokemon_name
+        self.__pokedex_num = pokedex_num
+        self.__main_type = type
+        self.__color = color
+        self.__sex = sex
+        self.__level = level
+        self.__stats = Stats(Pokemon.csv_path, pokedex_num)
         #* Changed to protected
         self._weaknesses = []
         self._resistances = []
         self._immunities = []
 
+    
+
     def attack(self) -> str:
-        return f"{self.name} is attacking!"
+        return f"{self.__name} is attacking!"
 
     def level_up(self):
-        self.level += 1
-        print(f"{self.name} leveled up to level {self.level}!")
+        if self.__level < 100:
+            self.__level += 1
+            self.__stats.hp = round(self.__stats.hp * 1.020)
+            self.__stats.attack = round(self.__stats.attack * 1.017)
+            self.__stats.defense = round(self.__stats.defense * 1.016)
+            self.__stats.sp_attack = round(self.__stats.sp_attack * 1.017)
+            self.__stats.sp_defense = round(self.__stats.sp_defense * 1.016)
+            self.__stats.speed = round(self.__stats.speed * 1.015)
+            
+            print(f"{self.__name} leveled up to level {self.__level}!")
+        else:
+            print(f"{self.__name} is already max level!")
 
     def __str__(self):
-        return f"{self.name} (#{self.pokedex_num}) - Type: {self.main_type}, Level: {self.level}"
+        return f"{self.__name} (#{self.__pokedex_num}) - Type: {self.__main_type}, Level: {self.__level}"
         
     def receive_attack(self, attack_type):
         if attack_type in self._immunities:
@@ -60,6 +76,57 @@ class Pokemon:
             return "It's not very effective..."
         else:
             return "It's effective."
+            
+    def stats(self):
+        return self.__stats
+    
+    def get_attribute(self, attribute_name: str):
+        # Dictionary mapping public names to private attributes
+        attribute_map = {
+            'pokemon_name': self.__name,  
+            'pokedex_num': self.__pokedex_num,
+            'main_type': self.__main_type,
+            'type': self.__main_type, 
+            'color': self.__color,
+            'sex': self.__sex,
+            'level': self.__level,
+            'stats': self.__stats,
+            'weaknesses': self._weaknesses,
+            'resistances': self._resistances,
+            'immunities': self._immunities
+        }
+        
+        if attribute_name in attribute_map:
+            return attribute_map.get(attribute_name)
+        else:
+            raise AttributeError(f"Pokemon has no attribute '{attribute_name}'")
+        
+class Stats():
+    def __init__(self, csv_path, pokedex_num):
+        df = pd.read_csv(csv_path)
+        row = df.loc[df['pokedex_number'] == pokedex_num]
+        self.base_hp = int(row['hp'].values[0])
+        self.base_attack = int(row['attack'].values[0])
+        self.base_defense = int(row['defense'].values[0])
+        self.base_sp_attack = int(row['sp_atk'].values[0])
+        self.base_sp_defense = int(row['sp_def'].values[0])
+        self.base_speed = int(row['speed'].values[0])
+        self.hp = self.base_hp
+        self.attack = self.base_attack
+        self.defense = self.base_defense
+        self.sp_attack = self.base_sp_attack
+        self.sp_defense = self.base_sp_defense
+        self.speed = self.base_speed
+
+    def combat_stats(self, accuracy = "100%", evasion = "100%"):
+        self.accuracy = accuracy
+        self.evasion = evasion
+
+    def __str__(self):
+        return (
+            f"HP: {self.hp}, Attack: {self.attack}, Defense: {self.defense}, "
+            f"Sp. Attack: {self.sp_attack}, Sp. Defense: {self.sp_defense}, Speed: {self.speed}"
+        )
 
 class Normal(Pokemon):
     def __init__(self, name, pokedex_num, color, sex, level=1):
@@ -200,3 +267,13 @@ if __name__ == "__main__":
     )
     print(bulbasaur)
     bulbasaur.attack()
+    print(bulbasaur.stats())
+    charmander = Pokemon(
+        "charmander",
+        4,
+        "fire",
+        "orange",
+        "male"
+    )
+    charmander.attack()
+    print(charmander.stats())
