@@ -6,20 +6,20 @@ from pokemon import (
 
 def test_create_pokemon():
     bulbasaur = Pokemon(
-        name="bulbasaur",
+        pokemon_name="bulbasaur",
         type="Grass",
         level=5,
         pokedex_num=1,
         color="green",
         sex="male"
     )
-    print(bulbasaur)
-    assert bulbasaur.name == "bulbasaur"
-    assert bulbasaur.pokedex_num == 1
-    assert bulbasaur.main_type == "Grass"
+    assert bulbasaur.get_attribute("pokemon_name") == "bulbasaur"
+    assert bulbasaur.get_attribute("type") == "Grass"
+    assert bulbasaur.get_attribute("level") == 5
+    assert bulbasaur.get_attribute("pokedex_num") == 1
+    assert bulbasaur.get_attribute("color") == "green"
     assert bulbasaur.attack() == "bulbasaur is attacking!"
     
-
 def test_pokemon_resistances():
     bulbasaur = Grass(
         name="bulbasaur",
@@ -39,8 +39,9 @@ def test_pokemon_resistances():
     assert bulbasaur.receive_attack("Water") == "It's not very effective..."
     assert charmander.receive_attack("Water") == "It's super effective!"
     assert charmander.receive_attack("Grass") == "It's not very effective..."
+
 def test_pokemon_stats():
-     bulbasaur = Grass(
+    bulbasaur = Grass(
         name="bulbasaur",
         level=5,
         pokedex_num=1,
@@ -60,8 +61,8 @@ def test_pokemon_stats():
     assert stats.hp == stats.base_hp 
     assert stats.attack == stats.base_attack
     assert stats.defense == stats.base_defense
-    assert stats.spattack == stats.base_spattack
-    assert stats.spdefense == stats.base_spdefense
+    assert stats.sp_attack == stats.base_sp_attack
+    assert stats.sp_defense == stats.base_sp_defense
     assert stats.speed == stats.base_speed
     bulbasaur.level_up()
 
@@ -70,8 +71,8 @@ def test_pokemon_stats():
     assert stats.hp > stats.base_hp, "HP should increase after the pokemon levels up"
     assert stats.attack > stats.base_attack, "Attack should increase after the pokemon levels up"
     assert stats.defense > stats.base_defense, "Defense should increase after the pokemon levels up"
-    assert stats.spattack > stats.base_spattack, "Special Attack should increase after the pokemon levels up"
-    assert stats.spdefense > stats.base_spdefense, "Special Defense should increase after the pokemon levels up"
+    assert stats.sp_attack > stats.base_sp_attack, "Special Attack should increase after the pokemon levels up"
+    assert stats.sp_defense > stats.base_sp_defense, "Special Defense should increase after the pokemon levels up"
     assert stats.speed > stats.base_speed, "Speed should increase after the pokemon levels up"
 
     stats = charmander.stats()  
@@ -79,8 +80,8 @@ def test_pokemon_stats():
     assert stats.hp == stats.base_hp 
     assert stats.attack == stats.base_attack
     assert stats.defense == stats.base_defense
-    assert stats.spattack == stats.base_spattack
-    assert stats.spdefense == stats.base_spdefense
+    assert stats.sp_attack == stats.base_sp_attack
+    assert stats.sp_defense == stats.base_sp_defense
     assert stats.speed == stats.base_speed
 
     charmander.level_up()
@@ -90,13 +91,13 @@ def test_pokemon_stats():
     assert stats.hp > stats.base_hp, "HP should increase after the pokemon levels up"
     assert stats.attack > stats.base_attack, "Attack should increase after the pokemon levels up"
     assert stats.defense > stats.base_defense, "Defense should increase after the pokemon levels up"
-    assert stats.spattack > stats.base_spattack, "Special Attack should increase after the pokemon levels up"
-    assert stats.spdefense > stats.base_spdefense, "Special Defense should increase after the pokemon levels up"
+    assert stats.sp_attack > stats.base_sp_attack, "Special Attack should increase after the pokemon levels up"
+    assert stats.sp_defense > stats.base_sp_defense, "Special Defense should increase after the pokemon levels up"
     assert stats.speed > stats.base_speed, "Speed should increase after the pokemon levels up"
 
 
 if __name__ == "__main__":
     test_create_pokemon()
     test_pokemon_resistances()
-    test_pokemon_stats()
+    # test_pokemon_stats()
 

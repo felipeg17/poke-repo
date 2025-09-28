@@ -78,7 +78,7 @@ direction TB
 	    - _resistances: list
 	    - _immunities: list
 	    + attack()
-	    + level_up(hp, attack, defense, spattack, spdefense, speed))
+	    + level_up(hp, attack, defense, spattack, spdefense, speed)
 	    + __str__()
 	    + receive_attack(attack_type)
 	    +stats()
