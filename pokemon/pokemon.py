@@ -38,7 +38,7 @@ class Pokemon:
         self.__color = color
         self.__sex = sex
         self.__level = level
-        self.__stats = Stats(csv_path, pokedex_num)
+        self.__stats = Stats(Pokemon.csv_path, pokedex_num)
         #* Changed to protected
         self._weaknesses = []
         self._resistances = []
@@ -55,7 +55,7 @@ class Pokemon:
             self.__stats.defense = round(self.__stats.defense * 1.016)
             self.__stats.spattack = round(self.__stats.spattack * 1.017)
             self.__stats.spdefense = round(self.__stats.spdefense * 1.016)
-            self.__stats.defense = round(self.__stats.defense * 1.015)
+            self.__stats.speed = round(self.__stats.speed * 1.015)
             
             print(f"{self.__name} leveled up to level {self.__level}!")
         else:
@@ -93,6 +93,9 @@ class Stats():
         self.spattack = self.base_spattack
         self.spdefense = self.base_spdefense
         self.speed = self.base_speed
+    def combatstats(self, accuracy = "100%", evasion = "100%"):
+        self.accuracy = accuracy
+        self.evasion = evasion
     def __str__(self):
         return (
             f"HP: {self.hp}, Attack: {self.attack}, Defense: {self.defense}, "
@@ -237,7 +240,7 @@ if __name__ == "__main__":
     )
     print(bulbasaur)
     bulbasaur.attack()
-    bulbasaur.stats()
+    print(bulbasaur.stats())
     charmander = Pokemon(
         "charmander",
         4,
@@ -246,4 +249,4 @@ if __name__ == "__main__":
         "male"
     )
     charmander.attack()
-    charmander.stats()
+    print(charmander.stats())
