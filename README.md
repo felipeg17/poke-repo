@@ -118,7 +118,7 @@ direction TB
     Pokemon <|-- Dark
     Pokemon <|-- Steel
     Pokemon <|-- Fairy
-    Stats --|> Pokemon
+    Pokemon *-- Stats
 ```
 
 ## Running 
