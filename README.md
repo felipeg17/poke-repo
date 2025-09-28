@@ -29,20 +29,67 @@ Creaturas ficticias que viven en un mundo alternativo junto a humanos. La palabr
 
 ```mermaid
 classDiagram
+direction TB
+    class Normal {
+    }
+    class Fire {
+    }
+    class Water {
+    }
+    class Grass {
+    }
+    class Electric {
+    }
+    class Ice {
+    }
+    class Fighting {
+    }
+    class Poison {
+    }
+    class Ground {
+    }
+    class Flying {
+    }
+    class Psychic {
+    }
+    class Bug {
+    }
+    class Rock {
+    }
+    class Ghost {
+    }
+    class Dragon {
+    }
+    class Dark {
+    }
+    class Steel {
+    }
+    class Fairy {
+    }
+    class Stats {
+	    -HP: int
+	    -Attack: int
+	    -Defense: int
+	    -Sp. Atk: int
+	    -Sp. Def: int
+	    -Speed: int
+	    +str()
+    }
     class Pokemon {
-        - name: str
-        - pokedex_num: int
-        - type: str
-        - color: str
-        - sex: str
-        - level: int
-        - _weaknesses: list
-        - _resistances: list
-        - _immunities: list
-        + attack()
-        + level_up()
-        + __str__()
-        + receive_attack(attack_type)
+	    - __name: str
+	    - __pokedex_num: int
+	    - __type: str
+	    - __color: str
+	    - __sex: str
+	    - __level: int
+	    - _weaknesses: list
+	    - _resistances: list
+	    - _immunities: list
+	    + attack()
+	    + level_up(hp, attack, defense, spattack, spdefense, speed))
+	    + __str__()
+	    + receive_attack(attack_type)
+	    +stats()
     }
 
     Pokemon <|-- Normal
@@ -63,6 +110,8 @@ classDiagram
     Pokemon <|-- Dark
     Pokemon <|-- Steel
     Pokemon <|-- Fairy
+    Stats --|> Pokemon
+
 ```
 
 ## Running 
@@ -87,5 +136,6 @@ En el directorio raíz ejecutar
 ```sh
 python -m test.test_types
 ```
+
 
 
