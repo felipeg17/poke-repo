@@ -66,15 +66,6 @@ direction TB
     }
     class Fairy {
     }
-    class Stats {
-	    -HP: int
-	    -Attack: int
-	    -Defense: int
-	    -Sp. Atk: int
-	    -Sp. Def: int
-	    -Speed: int
-	    +str()
-    }
     class Pokemon {
 	    - __name: str
 	    - __pokedex_num: int
@@ -82,6 +73,7 @@ direction TB
 	    - __color: str
 	    - __sex: str
 	    - __level: int
+	    -__stats : Stats
 	    - _weaknesses: list
 	    - _resistances: list
 	    - _immunities: list
@@ -90,6 +82,22 @@ direction TB
 	    + __str__()
 	    + receive_attack(attack_type)
 	    +stats()
+    }
+    class Stats {
+	    -HP: int
+	    -Attack: int
+	    -Defense: int
+	    -Sp. Atk: int
+	    -Sp. Def: int
+	    -Speed: int
+	    -base_hp: int
+	    -base_attack: int
+	    -base_defense: int
+	    -base_spatk: int
+	    -base_spdef: int
+	    -base_speed: int
+	    +combatstats(evasion, accuracy)
+	    +str()
     }
 
     Pokemon <|-- Normal
@@ -111,7 +119,6 @@ direction TB
     Pokemon <|-- Steel
     Pokemon <|-- Fairy
     Stats --|> Pokemon
-
 ```
 
 ## Running 
