@@ -6,6 +6,7 @@ from pprint import pprint
 
 class Pokemon:
     csv_path = "utils/First30Pokemons.csv"
+    definition = """
     Pocket Monster
     """
     def __init__(
@@ -29,7 +30,6 @@ class Pokemon:
 
         Raises:
             ...
-
         """
         self.__name = pokemon_name
         self.__pokedex_num = pokedex_num
