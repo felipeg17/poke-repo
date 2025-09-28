@@ -11,7 +11,7 @@ class Pokemon:
     """
     def __init__(
             self,
-            pokemonname: str,
+            pokemon_name: str,
             pokedex_num: int,
             type: str, 
             color: str,
@@ -32,7 +32,7 @@ class Pokemon:
             ...
 
         """
-        self.__name = pokemonname
+        self.__name = pokemon_name
         self.__pokedex_num = pokedex_num
         self.__main_type = type
         self.__color = color
@@ -53,8 +53,8 @@ class Pokemon:
             self.__stats.hp = round(self.__stats.hp * 1.020)
             self.__stats.attack = round(self.__stats.attack * 1.017)
             self.__stats.defense = round(self.__stats.defense * 1.016)
-            self.__stats.spattack = round(self.__stats.spattack * 1.017)
-            self.__stats.spdefense = round(self.__stats.spdefense * 1.016)
+            self.__stats.sp_attack = round(self.__stats.sp_attack * 1.017)
+            self.__stats.sp_defense = round(self.__stats.sp_defense * 1.016)
             self.__stats.speed = round(self.__stats.speed * 1.015)
             
             print(f"{self.__name} leveled up to level {self.__level}!")
@@ -84,14 +84,14 @@ class Stats():
         self.base_hp = int(row['HP'].values[0])
         self.base_attack = int(row['Attack'].values[0])
         self.base_defense = int(row['Defense'].values[0])
-        self.base_spattack = int(row['Sp. Attack'].values[0])
-        self.base_spdefense = int(row['Sp. Defense'].values[0])
+        self.base_sp_attack = int(row['Sp. Attack'].values[0])
+        self.base_sp_defense = int(row['Sp. Defense'].values[0])
         self.base_speed = int(row['Speed'].values[0])
         self.hp = self.base_hp
         self.attack = self.base_attack
         self.defense = self.base_defense
-        self.spattack = self.base_spattack
-        self.spdefense = self.base_spdefense
+        self.sp_attack = self.base_sp_attack
+        self.sp_defense = self.base_sp_defense
         self.speed = self.base_speed
     def combatstats(self, accuracy = "100%", evasion = "100%"):
         self.accuracy = accuracy
@@ -99,7 +99,7 @@ class Stats():
     def __str__(self):
         return (
             f"HP: {self.hp}, Attack: {self.attack}, Defense: {self.defense}, "
-            f"Sp. Attack: {self.spattack}, Sp. Defense: {self.spdefense}, Speed: {self.speed}"
+            f"Sp. Attack: {self.sp_attack}, Sp. Defense: {self.sp_defense}, Speed: {self.speed}"
         )
 class Normal(Pokemon):
     def __init__(self, name, pokedex_num, color, sex, level=1):
