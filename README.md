@@ -67,13 +67,13 @@ direction TB
     class Fairy {
     }
     class Pokemon {
-	    - __name: str
-	    - __pokedex_num: int
-	    - __type: str
-	    - __color: str
-	    - __sex: str
-	    - __level: int
-	    -__stats : Stats
+	    - _name: str
+	    - _pokedex_num: int
+	    - _type: str
+	    - _color: str
+	    - _sex: str
+	    - _level: int
+	    - _stats: Stats
 	    - _weaknesses: list
 	    - _resistances: list
 	    - _immunities: list
@@ -81,23 +81,23 @@ direction TB
 	    + level_up(hp, attack, defense, spattack, spdefense, speed)
 	    + __str__()
 	    + receive_attack(attack_type)
-	    +stats()
+	    + get_stats()
     }
     class Stats {
-	    -HP: int
-	    -Attack: int
-	    -Defense: int
-	    -Sp. Atk: int
-	    -Sp. Def: int
-	    -Speed: int
-	    -base_hp: int
-	    -base_attack: int
-	    -base_defense: int
-	    -base_spatk: int
-	    -base_spdef: int
-	    -base_speed: int
-	    +combatstats(evasion, accuracy)
-	    +str()
+	    - HP: int
+	    - Attack: int
+	    - Defense: int
+	    - Sp. Atk: int
+	    - Sp. Def: int
+	    - Speed: int
+	    - base_hp: int
+	    - base_attack: int
+	    - base_defense: int
+	    - base_spatk: int
+	    - base_spdef: int
+	    - base_speed: int
+	    + combat_stats(evasion, accuracy)
+	    + __str__()
     }
 
     Pokemon <|-- Normal
@@ -123,9 +123,11 @@ direction TB
 
 ## Running 
 
+Crear un entorno virtual e instalar las dependencias.
+
 ### Linux
 
-Create a `venv` 
+Crear un `venv` 
 ```sh
 python -m venv v_pokemon 
 source v_pokemon/bin/activate
@@ -134,9 +136,24 @@ pip install -r requirements.txt
 
 ### Windows
 
+Crear un `venv` 
+```sh
+## Use cmd/powershell
+python -m venv v_pokemon
+v_pokemon\Scripts\activate
+pip install -r requirements.txt
+```
+
+**Note:** Si se obtiene un error de permisos en powershell, ejecutar como administrador y correr el siguiente comando:
+
+```powershell
+Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
+```
 
 
 ## Testing
+
+Requiere `pytest`
 
 En el directorio raíz ejecutar
 

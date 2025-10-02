@@ -56,7 +56,7 @@ def test_pokemon_stats():
         sex="male"
     )
 
-    stats = bulbasaur.stats() 
+    stats = bulbasaur.get_stats() 
 
     assert stats.hp == stats.base_hp 
     assert stats.attack == stats.base_attack
@@ -66,7 +66,7 @@ def test_pokemon_stats():
     assert stats.speed == stats.base_speed
     bulbasaur.level_up()
 
-    stats = bulbasaur.stats()
+    stats = bulbasaur.get_stats()
 
     assert stats.hp > stats.base_hp, "HP should increase after the pokemon levels up"
     assert stats.attack > stats.base_attack, "Attack should increase after the pokemon levels up"
@@ -75,7 +75,7 @@ def test_pokemon_stats():
     assert stats.sp_defense > stats.base_sp_defense, "Special Defense should increase after the pokemon levels up"
     assert stats.speed > stats.base_speed, "Speed should increase after the pokemon levels up"
 
-    stats = charmander.stats()  
+    stats = charmander.get_stats()  
 
     assert stats.hp == stats.base_hp 
     assert stats.attack == stats.base_attack
@@ -86,7 +86,7 @@ def test_pokemon_stats():
 
     charmander.level_up()
 
-    stats = charmander.stats()
+    stats = charmander.get_stats()
 
     assert stats.hp > stats.base_hp, "HP should increase after the pokemon levels up"
     assert stats.attack > stats.base_attack, "Attack should increase after the pokemon levels up"
@@ -99,8 +99,5 @@ def test_pokemon_stats():
 if __name__ == "__main__":
     test_create_pokemon()
     test_pokemon_resistances()
-    # test_pokemon_stats()
-# if __name__ == "__main__":
-#     test_create_pokemon()
-#     test_pokemon_resistances()
+    test_pokemon_stats()
 
