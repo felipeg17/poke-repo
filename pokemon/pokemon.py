@@ -7,6 +7,8 @@ from pprint import pprint
 
 class Pokemon:
     current_dir = Path(__file__).parent
+    ### TODO: Move to another module     
+    # If moved, uses import from that module
     csv_path = current_dir / "utils" / "First30Pokemons.csv"
     definition = """
     Pocket Monster
@@ -51,10 +53,19 @@ class Pokemon:
         self._weaknesses = []
         self._resistances = []
         self._immunities = []
-    
 
-    def attack(self) -> str:
-        return f"{self._name} is attacking!"
+        ### TODO: Moveset
+        # Shoudl be managed by another class -> composition
+        # Because a pokemon HAS a moveset
+        # This is a tricky one, moveset depends on level, type and pokemon
+        # One approach is having a table with all moves and their characteristics
+        # Then, based on level and type, assign a moveset to the pokemon
+        # It implies join tables
+        # Table: Moves | id | name | type | power | accuracy | pp |
+        # Table: Pokemon_Moves | pokemon_id | move_id | level_learned |
+        # So joining these tables and return all moves that the pokemon can learn
+        # Then, select up to 4 moves based on level
+        #! A pokemon can have up to 4 moves
 
     def level_up(self):
         #* Add docstring
@@ -72,11 +83,12 @@ class Pokemon:
         else:
             print(f"{self._name} is already max level!")
 
-    def __str__(self):
-        return (f"{self._name} (#{self._pokedex_num})"
-                f"Type: {self._main_type}, Level: {self._level}")
-
+    def attack(self) -> str:
+        ### TODO: Return necessary information to compute attack
+        return f"{self._name} is attacking!"
+    
     def receive_attack(self, attack_type):
+        ### TODO: Return necessary information to compute damage
         if attack_type in self._immunities:
             return "It's inmune!"
         elif attack_type in self._weaknesses:
@@ -85,7 +97,11 @@ class Pokemon:
             return "It's not very effective..."
         else:
             return "It's effective."
-            
+        
+    def update_stats_after_battle(self):
+        ### TODO: Update stats based on battle outcomes
+        pass
+
     def get_stats(self):
         return self._stats
     
@@ -110,6 +126,12 @@ class Pokemon:
         else:
             raise AttributeError(f"Pokemon has no attribute '{attribute_name}'")
         
+    def __str__(self):
+        return (f"{self._name} (#{self._pokedex_num})"
+                f"Type: {self._main_type}, Level: {self._level}")
+
+
+### TODO: Move to another module      
 class Stats():
     def __init__(self, csv_path: str, pokedex_num: int):
         df = pd.read_csv(csv_path)
@@ -276,7 +298,7 @@ if __name__ == "__main__":
     )
     print(bulbasaur)
     bulbasaur.attack()
-    print(bulbasaur.stats())
+    print(bulbasaur.get_stats())
     charmander = Pokemon(
         "charmander",
         4,
@@ -285,4 +307,4 @@ if __name__ == "__main__":
         "male"
     )
     charmander.attack()
-    print(charmander.stats())
+    print(charmander.get_stats())
