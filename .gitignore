@@ -1,0 +1,10 @@
+# venv/
+v_pokemon
+
+
+# Cache/
+__pycache__/
+
+
+# Files 
+GEMINI.md
