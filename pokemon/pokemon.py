@@ -125,14 +125,51 @@ class Pokemon:
             return attribute_map.get(attribute_name)
         else:
             raise AttributeError(f"Pokemon has no attribute '{attribute_name}'")
-        
+            
+        ## modulo para evolucionar 
     def __str__(self):
         return (f"{self._name} (#{self._pokedex_num})"
                 f"Type: {self._main_type}, Level: {self._level}")
+        
+            def _load_evolution_rules(self):
+        evolutions_path = Pokemon.current_dir / "utils" / "Evolutions"
+        df = pd.read_csv(evolutions_path)
+        evolutions = df[df["name_from"].str.lower() == self._name.lower()]
+        return evolutions
+
+    def can_evolve(self, item=None):
+        evolutions = self._load_evolution_rules()
+        for _, evo in evolutions.iterrows():
+            evo_type = evo["evolution_type"]
+            requirement = evo["requirement"]
+            if evo_type == "level" and self._level >= int(requirement):
+                return True
+            elif evo_type == "stone" and item and item.lower() == requirement.lower():
+                return True
+        return False
+
+    def evolve(self, item=None):
+        evolutions = self._load_evolution_rules()
+        for _, evo in evolutions.iterrows():
+            evo_type = evo["evolution_type"]
+            requirement = evo["requirement"]
+            if evo_type == "level" and self._level >= int(requirement):
+                new_form = evo["name_to"]
+            elif evo_type == "stone" and item and item.lower() == requirement.lower():
+                new_form = evo["name_to"]
+            else:
+                continue
+
+            print(f"{self._name.capitalize()} está evolucionando a {new_form.capitalize()}!")
+            self._name = new_form
+            return True
+        print(f"{self._name.capitalize()} no puede evolucionar aún.")
+        return False
 
 
 ### TODO: Move to another module      
 class Stats():
+    
     def __init__(self, csv_path: str, pokedex_num: int):
         df = pd.read_csv(csv_path)
         row = df.loc[df['pokedex_number'] == pokedex_num]
