@@ -131,7 +131,7 @@ class Pokemon:
         return (f"{self._name} (#{self._pokedex_num})"
                 f"Type: {self._main_type}, Level: {self._level}")
         
-            def _load_evolution_rules(self):
+    def _load_evolution_rules(self):
         evolutions_path = Pokemon.current_dir / "utils" / "Evolutions"
         df = pd.read_csv(evolutions_path)
         evolutions = df[df["name_from"].str.lower() == self._name.lower()]
