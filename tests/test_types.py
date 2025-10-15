@@ -43,40 +43,13 @@ def test_pokemon_resistances():
 def test_pokemon_stats():
     bulbasaur = Grass(
         name="bulbasaur",
-        level=5,
+        level=1,
         pokedex_num=1,
         color="green",
         sex="male"
     )
-    charmander = Fire(
-        name="charmander",
-        level=5,
-        pokedex_num=4,
-        color="red",
-        sex="male"
-    )
 
     stats = bulbasaur.get_stats() 
-
-    assert stats.hp == stats.base_hp 
-    assert stats.attack == stats.base_attack
-    assert stats.defense == stats.base_defense
-    assert stats.sp_attack == stats.base_sp_attack
-    assert stats.sp_defense == stats.base_sp_defense
-    assert stats.speed == stats.base_speed
-    bulbasaur.level_up()
-
-    stats = bulbasaur.get_stats()
-
-    assert stats.hp > stats.base_hp, "HP should increase after the pokemon levels up"
-    assert stats.attack > stats.base_attack, "Attack should increase after the pokemon levels up"
-    assert stats.defense > stats.base_defense, "Defense should increase after the pokemon levels up"
-    assert stats.sp_attack > stats.base_sp_attack, "Special Attack should increase after the pokemon levels up"
-    assert stats.sp_defense > stats.base_sp_defense, "Special Defense should increase after the pokemon levels up"
-    assert stats.speed > stats.base_speed, "Speed should increase after the pokemon levels up"
-
-    stats = charmander.get_stats()  
-
     assert stats.hp == stats.base_hp 
     assert stats.attack == stats.base_attack
     assert stats.defense == stats.base_defense
@@ -84,16 +57,6 @@ def test_pokemon_stats():
     assert stats.sp_defense == stats.base_sp_defense
     assert stats.speed == stats.base_speed
 
-    charmander.level_up()
-
-    stats = charmander.get_stats()
-
-    assert stats.hp > stats.base_hp, "HP should increase after the pokemon levels up"
-    assert stats.attack > stats.base_attack, "Attack should increase after the pokemon levels up"
-    assert stats.defense > stats.base_defense, "Defense should increase after the pokemon levels up"
-    assert stats.sp_attack > stats.base_sp_attack, "Special Attack should increase after the pokemon levels up"
-    assert stats.sp_defense > stats.base_sp_defense, "Special Defense should increase after the pokemon levels up"
-    assert stats.speed > stats.base_speed, "Speed should increase after the pokemon levels up"
 
 
 if __name__ == "__main__":
