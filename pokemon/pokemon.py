@@ -9,7 +9,7 @@ class Pokemon:
     current_dir = Path(__file__).parent
     ### TODO: Move to another module     
     # If moved, uses import from that module
-    csv_path = current_dir / "utils" / "First30Pokemons.csv"
+    csv_path = current_dir / "utils" / "First151Pokemons.csv"
     definition = """
     Pocket Monster
     """
@@ -125,46 +125,61 @@ class Pokemon:
             return attribute_map.get(attribute_name)
         else:
             raise AttributeError(f"Pokemon has no attribute '{attribute_name}'")
-            
-        ## modulo para evolucionar 
-    def __str__(self):
-        return (f"{self._name} (#{self._pokedex_num})"
-                f"Type: {self._main_type}, Level: {self._level}")
-        
-    def _load_evolution_rules(self):
-        evolutions_path = Pokemon.current_dir / "utils" / "Evolutions"
-        df = pd.read_csv(evolutions_path)
-        evolutions = df[df["name_from"].str.lower() == self._name.lower()]
-        return evolutions
 
-    def can_evolve(self, item=None):
-        evolutions = self._load_evolution_rules()
-        for _, evo in evolutions.iterrows():
-            evo_type = evo["evolution_type"]
-            requirement = evo["requirement"]
-            if evo_type == "level" and self._level >= int(requirement):
-                return True
-            elif evo_type == "stone" and item and item.lower() == requirement.lower():
-                return True
+        #modulo para evolucionar 
+
+             def __str__(self):
+        return (f"{self._name} (#{self._pokedex_num}) "
+                f"Type: {self._main_type}, Level: {self._level} "
+                f"- {self.evolution_hint()}")
+
+    def _get_row(self):
+        df = pd.read_csv(Pokemon.csv_path)
+        row = df.loc[df["pokedex_number"] == self._pokedex_num].iloc[0]
+        return row
+
+    def can_evolve(self, item=None, trade: bool = False) -> bool:
+        row = self._get_row()
+        evo_level = int(row.get("evolution_level", 0))
+        by_stone = int(row.get("evolves_by_stone", 0)) == 1
+        by_trade = int(row.get("evolves_by_trade", 0)) == 1
+        if by_trade and (trade or (isinstance(item, str) and item.lower() == "trade")):
+            return True
+        if by_stone and item:
+            return True
+        if evo_level > 0 and self._level >= evo_level:
+            return True
         return False
 
-    def evolve(self, item=None):
-        evolutions = self._load_evolution_rules()
-        for _, evo in evolutions.iterrows():
-            evo_type = evo["evolution_type"]
-            requirement = evo["requirement"]
-            if evo_type == "level" and self._level >= int(requirement):
-                new_form = evo["name_to"]
-            elif evo_type == "stone" and item and item.lower() == requirement.lower():
-                new_form = evo["name_to"]
-            else:
-                continue
-
-            print(f"{self._name.capitalize()} está evolucionando a {new_form.capitalize()}!")
-            self._name = new_form
+    def evolve(self, item=None, trade: bool = False) -> bool:
+        row = self._get_row()
+        evo_level = int(row.get("evolution_level", 0))
+        by_stone = int(row.get("evolves_by_stone", 0)) == 1
+        by_trade = int(row.get("evolves_by_trade", 0)) == 1
+        if by_trade and (trade or (isinstance(item, str) and item.lower() == "trade")):
+            print(f"{self._name.capitalize()} puede evolucionar por intercambio (nivel de referencia 45).")
+            return True
+        if by_stone and item:
+            print(f"{self._name.capitalize()} puede evolucionar usando una piedra.")
+            return True
+        if evo_level > 0 and self._level >= evo_level:
+            print(f"{self._name.capitalize()} puede evolucionar por nivel {evo_level}.")
             return True
         print(f"{self._name.capitalize()} no puede evolucionar aún.")
         return False
+
+    def evolution_hint(self) -> str:
+        row = self._get_row()
+        evo_level = int(row.get("evolution_level", 0))
+        by_stone = int(row.get("evolves_by_stone", 0)) == 1
+        by_trade = int(row.get("evolves_by_trade", 0)) == 1
+        if by_trade:
+            return "Evoluciona por intercambio (nivel de referencia 45)."
+        if by_stone:
+            return "Evoluciona por piedra."
+        if evo_level > 0:
+            return f"Evoluciona al nivel {evo_level}."
+        return "No evoluciona."
 
 
 ### TODO: Move to another module      
