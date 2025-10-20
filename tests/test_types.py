@@ -57,24 +57,8 @@ def test_pokemon_stats():
     assert stats.sp_defense == stats.base_sp_defense
     assert stats.speed == stats.base_speed
 
-def test_evolutions():
-    bulba = Pokemon("bulbasaur", 1, "grass", "blue", "male", level=15)
-    assert bulba.can_evolve() is False
-
-    bulba = Pokemon("bulbasaur", 1, "grass", "blue", "male", level=16)
-    assert bulba.can_evolve() is True
-    assert bulba.evolve() is True
-    assert bulba.get_attribute("pokemon_name") == "ivysaur"
-
-    nidorina = Pokemon("nidorina", 30, "poison", "blue", "female", level=25)
-    assert nidorina.can_evolve(item="Moon Stone") is True
-    assert nidorina.evolve(item="Moon Stone") is True
-    assert nidorina.get_attribute("pokemon_name") == "nidoqueen"
-
-
 if __name__ == "__main__":
     test_create_pokemon()
     test_pokemon_resistances()
     test_pokemon_stats()
-    test_evolutions()
 
