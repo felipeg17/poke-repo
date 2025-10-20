@@ -72,12 +72,14 @@ class Pokemon:
         if self._level < 100:
             self._level += 1
             #! refer to: https://m.bulbapedia.bulbagarden.net/wiki/Stat
-            self._stats.hp = round(self._stats.hp + (110 + self._stats.base_hp) / 100)
-            self._stats.attack = round(self._stats.attack + (5 + self._stats.base_attack) / 100)
-            self._stats.defense = round(self._stats.defense + (5 + self._stats.base_defense) / 100)
-            self._stats.sp_attack = round(self._stats.sp_attack + (5 + self._stats.base_sp_attack) / 100)
-            self._stats.sp_defense = round(self._stats.sp_defense + (5 + self._stats.base_sp_defense) / 100)
-            self._stats.speed = round(self._stats.speed + (5 + self._stats.base_speed) / 100)
+
+            self._stats.hp += self._stats.hp + (110 + self._stats.base_hp) / 100
+            self._stats.attack += self._stats.attack + (5 + self._stats.base_attack) / 100
+            self._stats.defense += self._stats.defense + (5 + self._stats.base_defense) / 100
+            self._stats.sp_attack += self._stats.sp_attack + (5 + self._stats.base_sp_attack) / 100
+            self._stats.sp_defense += self._stats.sp_defense + (5 + self._stats.base_sp_defense) / 100
+            self._stats.speed += self._stats.speed + (5 + self._stats.base_speed) / 100
+
             print(f"{self._name} leveled up to level {self._level}!")
         else:
             print(f"{self._name} is already max level!")
@@ -125,7 +127,14 @@ class Pokemon:
         else:
             raise AttributeError(f"Pokemon has no attribute '{attribute_name}'")
 
+        
     def __str__(self):
+        return (f"{self._name} (#{self._pokedex_num}) - "
+                f"Type: {self._main_type}, Level: {self._level}")
+    
+    #Modul to evolutions
+     def __str__(self):
+
         return (f"{self._name} (#{self._pokedex_num}) "
                 f"Type: {self._main_type}, Level: {self._level} "
                 f"- {self.evolution_hint()}")
@@ -180,7 +189,8 @@ class Pokemon:
 
 
 ### TODO: Move to another module      
-class Stats():
+class Stats:
+
     def __init__(self, csv_path: str, pokedex_num: int, initial_level: int = 1):
         df = pd.read_csv(csv_path)
         row = df.loc[df['pokedex_number'] == pokedex_num]
@@ -191,27 +201,30 @@ class Stats():
         self.base_sp_attack = int(row['sp_atk'].values[0])
         self.base_sp_defense = int(row['sp_def'].values[0])
         self.base_speed = int(row['speed'].values[0])
+
+        #Initialize statistics with base values
         self.hp = self.base_hp
         self.attack = self.base_attack
         self.defense = self.base_defense
         self.sp_attack = self.base_sp_attack
         self.sp_defense = self.base_sp_defense
         self.speed = self.base_speed
-        self.set_initial_stats()
 
-    def set_initial_stats(self):
-        for _ in range(1, self.initial_level):
-            print(f"Antes de subir de nivel: {self}")
-            self.hp = round(self.hp + (110 + self.base_hp) / 100)
-            self.attack = round(self.attack + (5 + self.base_attack) / 100)
-            self.defense = round(self.defense + (5 + self.base_defense) / 100)
-            self.sp_attack = round(self.sp_attack + (5 + self.base_sp_attack) / 100)
-            self.sp_defense = round(self.sp_defense + (5 + self.base_sp_defense) / 100)
-            self.speed = round(self.speed + (5 + self.base_speed) / 100)
-            print(f"Estadísticas después de subir de nivel: {self}")
+        #Adjusts according to initial level
+        if self.initial_level > 1:
+            self.adjust_for_level(self.initial_level)
 
+    def adjust_for_level(self, level: int):
+        """Adjusts base stats on th Pokemon's level"""
+        level_factor = level - 1  
+        self.hp += self.base_hp + ((110 + self.base_hp) / 100) * level_factor
+        self.attack += self.base_attack + ((5 + self.base_attack) / 100) * level_factor
+        self.defense += self.base_defense + ((5 + self.base_defense) / 100) * level_factor
+        self.sp_attack += self.base_sp_attack + ((5 + self.base_sp_attack) / 100) * level_factor
+        self.sp_defense += self.base_sp_defense + ((5 + self.base_sp_defense) / 100) * level_factor
+        self.speed += self.base_speed + ((5 + self.base_speed) / 100) * level_factor
 
-    def combat_stats(self, accuracy = "100%", evasion = "100%"):
+    def combat_stats(self, accuracy="100%", evasion="100%"):
         self.accuracy = accuracy
         self.evasion = evasion
 
