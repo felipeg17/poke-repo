@@ -55,6 +55,7 @@ class Pokemon {
     - _resolve_evolution_target(item=None, trade=False) int|None
 }
 
+%% 👇 el truco es dejar una línea vacía antes del note 👇
 note right of Pokemon
 Evolución (desde CSV):
 - evolves_once: int
@@ -84,41 +85,8 @@ class Stats {
 class Normal
 class Fire
 class Water
-class Grass
-class Electric
-class Ice
-class Fighting
-class Poison
-class Ground
-class Flying
-class Psychic
-class Bug
-class Rock
-class Ghost
-class Dragon
-class Dark
-class Steel
-class Fairy
+class Gras
 
-Pokemon <|-- Normal
-Pokemon <|-- Fire
-Pokemon <|-- Water
-Pokemon <|-- Grass
-Pokemon <|-- Electric
-Pokemon <|-- Ice
-Pokemon <|-- Fighting
-Pokemon <|-- Poison
-Pokemon <|-- Ground
-Pokemon <|-- Flying
-Pokemon <|-- Psychic
-Pokemon <|-- Bug
-Pokemon <|-- Rock
-Pokemon <|-- Ghost
-Pokemon <|-- Dragon
-Pokemon <|-- Dark
-Pokemon <|-- Steel
-Pokemon <|-- Fairy
-Pokemon *-- Stats
 
 ```
 
