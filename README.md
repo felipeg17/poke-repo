@@ -28,6 +28,26 @@ Creaturas ficticias que viven en un mundo alternativo junto a humanos. La palabr
 ## Diagram
 
 ```mermaid
+ .. Evolución (flags de la tabla) ..
+  <<from CSV>>
+  - evolves_once: int
+  - evolves_twice: int
+  - evolves_by_stone: int
+  - evolves_by_trade: int
+  - evolution_level: int | ""
+  %% --- API pública y helpers ---
+  + attack()
+  + level_up()
+  + receive_attack(attack_type)
+  + get_stats()
+  + get_attribute(attr)
+  + can_evolve(item=None, trade=False) bool
+  + evolve(item=None, trade=False) bool
+  + evolution_hint() str
+  - _get_row() DataRow
+  - _resolve_evolution_target(item=None, trade=False) int|None
+  + __str__()
+}
 classDiagram
 direction TB
     class Normal {
