@@ -30,95 +30,96 @@ Creaturas ficticias que viven en un mundo alternativo junto a humanos. La palabr
 ```mermaid
 classDiagram
 direction TB
-    class Normal {
-    }
-    class Fire {
-    }
-    class Water {
-    }
-    class Grass {
-    }
-    class Electric {
-    }
-    class Ice {
-    }
-    class Fighting {
-    }
-    class Poison {
-    }
-    class Ground {
-    }
-    class Flying {
-    }
-    class Psychic {
-    }
-    class Bug {
-    }
-    class Rock {
-    }
-    class Ghost {
-    }
-    class Dragon {
-    }
-    class Dark {
-    }
-    class Steel {
-    }
-    class Fairy {
-    }
-    class Pokemon {
-	    - _name: str
-	    - _pokedex_num: int
-	    - _type: str
-	    - _color: str
-	    - _sex: str
-	    - _level: int
-	    - _stats: Stats
-	    - _weaknesses: list
-	    - _resistances: list
-	    - _immunities: list
-	    + attack()
-	    + level_up(hp, attack, defense, spattack, spdefense, speed)
-	    + __str__()
-	    + receive_attack(attack_type)
-	    + get_stats()
-    }
-    class Stats {
-	    - HP: int
-	    - Attack: int
-	    - Defense: int
-	    - Sp. Atk: int
-	    - Sp. Def: int
-	    - Speed: int
-	    - base_hp: int
-	    - base_attack: int
-	    - base_defense: int
-	    - base_spatk: int
-	    - base_spdef: int
-	    - base_speed: int
-	    + combat_stats(evasion, accuracy)
-	    + __str__()
-    }
 
-    Pokemon <|-- Normal
-    Pokemon <|-- Fire
-    Pokemon <|-- Water
-    Pokemon <|-- Grass
-    Pokemon <|-- Electric
-    Pokemon <|-- Ice
-    Pokemon <|-- Fighting
-    Pokemon <|-- Poison
-    Pokemon <|-- Ground
-    Pokemon <|-- Flying
-    Pokemon <|-- Psychic
-    Pokemon <|-- Bug
-    Pokemon <|-- Rock
-    Pokemon <|-- Ghost
-    Pokemon <|-- Dragon
-    Pokemon <|-- Dark
-    Pokemon <|-- Steel
-    Pokemon <|-- Fairy
-    Pokemon *-- Stats
+class Pokemon {
+    - _name: str
+    - _pokedex_num: int
+    - _type: str
+    - _color: str
+    - _sex: str
+    - _level: int
+    - _stats: Stats
+    - _weaknesses: list
+    - _resistances: list
+    - _immunities: list
+    + attack()
+    + level_up(hp, attack, defense, spattack, spdefense, speed)
+    + receive_attack(attack_type)
+    + get_stats()
+    + get_attribute(attr)
+    + can_evolve(item=None, trade=False) bool
+    + evolve(item=None, trade=False) bool
+    + evolution_hint() str
+    + __str__()
+    - _get_row() DataRow
+    - _resolve_evolution_target(item=None, trade=False) int|None
+}
+
+note right of Pokemon
+Evolución (desde CSV):
+- evolves_once: int
+- evolves_twice: int
+- evolves_by_stone: int
+- evolves_by_trade: int
+- evolution_level: int | ""
+end note
+
+class Stats {
+    - HP: int
+    - Attack: int
+    - Defense: int
+    - Sp. Atk: int
+    - Sp. Def: int
+    - Speed: int
+    - base_hp: int
+    - base_attack: int
+    - base_defense: int
+    - base_spatk: int
+    - base_spdef: int
+    - base_speed: int
+    + combat_stats(evasion, accuracy)
+    + __str__()
+}
+
+class Normal
+class Fire
+class Water
+class Grass
+class Electric
+class Ice
+class Fighting
+class Poison
+class Ground
+class Flying
+class Psychic
+class Bug
+class Rock
+class Ghost
+class Dragon
+class Dark
+class Steel
+class Fairy
+
+Pokemon <|-- Normal
+Pokemon <|-- Fire
+Pokemon <|-- Water
+Pokemon <|-- Grass
+Pokemon <|-- Electric
+Pokemon <|-- Ice
+Pokemon <|-- Fighting
+Pokemon <|-- Poison
+Pokemon <|-- Ground
+Pokemon <|-- Flying
+Pokemon <|-- Psychic
+Pokemon <|-- Bug
+Pokemon <|-- Rock
+Pokemon <|-- Ghost
+Pokemon <|-- Dragon
+Pokemon <|-- Dark
+Pokemon <|-- Steel
+Pokemon <|-- Fairy
+Pokemon *-- Stats
+
 ```
 
 ## Running 
