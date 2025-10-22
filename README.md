@@ -43,34 +43,26 @@ class Pokemon {
     - _resistances: list
     - _immunities: list
     + attack()
-    + level_up(hp, attack, defense, spattack, spdefense, speed)
-    + receive_attack(attack_type)
+    + level_up()
+    + receive_attack()
     + get_stats()
-    + get_attribute(attr)
-    + can_evolve(item=None, trade=False) bool
-    + evolve(item=None, trade=False) bool
-    + evolution_hint() str
+    + get_attribute()
+    + can_evolve()
+    + evolve()
+    + evolution_hint()
     + __str__()
-    - _get_row() DataRow
-    - _resolve_evolution_target(item=None, trade=False) int|None
+    - _get_row()
+    - _resolve_evolution_target()
 }
 
-%% 👇 el truco es dejar una línea vacía antes del note 👇
-note right of Pokemon
-Evolución (desde CSV):
-- evolves_once: int
-- evolves_twice: int
-- evolves_by_stone: int
-- evolves_by_trade: int
-- evolution_level: int | ""
-end note
+note for Pokemon "Evolución (desde CSV):\n- evolves_once: int\n- evolves_twice: int\n- evolves_by_stone: int\n- evolves_by_trade: int\n- evolution_level: int"
 
 class Stats {
     - HP: int
     - Attack: int
     - Defense: int
-    - Sp. Atk: int
-    - Sp. Def: int
+    - Sp_Atk: int
+    - Sp_Def: int
     - Speed: int
     - base_hp: int
     - base_attack: int
@@ -78,14 +70,48 @@ class Stats {
     - base_spatk: int
     - base_spdef: int
     - base_speed: int
-    + combat_stats(evasion, accuracy)
+    + combat_stats()
     + __str__()
 }
 
 class Normal
 class Fire
 class Water
-class Gras
+class Grass
+class Electric
+class Ice
+class Fighting
+class Poison
+class Ground
+class Flying
+class Psychic
+class Bug
+class Rock
+class Ghost
+class Dragon
+class Dark
+class Steel
+class Fairy
+
+Pokemon <|-- Normal
+Pokemon <|-- Fire
+Pokemon <|-- Water
+Pokemon <|-- Grass
+Pokemon <|-- Electric
+Pokemon <|-- Ice
+Pokemon <|-- Fighting
+Pokemon <|-- Poison
+Pokemon <|-- Ground
+Pokemon <|-- Flying
+Pokemon <|-- Psychic
+Pokemon <|-- Bug
+Pokemon <|-- Rock
+Pokemon <|-- Ghost
+Pokemon <|-- Dragon
+Pokemon <|-- Dark
+Pokemon <|-- Steel
+Pokemon <|-- Fairy
+Pokemon *-- Stats
 
 
 ```
