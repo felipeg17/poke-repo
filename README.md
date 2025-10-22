@@ -66,23 +66,29 @@ direction TB
     }
     class Fairy {
     }
-    class Pokemon {
-	    - _name: str
-	    - _pokedex_num: int
-	    - _type: str
-	    - _color: str
-	    - _sex: str
-	    - _level: int
-	    - _stats: Stats
-	    - _weaknesses: list
-	    - _resistances: list
-	    - _immunities: list
-	    + attack()
-	    + level_up(hp, attack, defense, spattack, spdefense, speed)
-	    + __str__()
-	    + receive_attack(attack_type)
-	    + get_stats()
-    }
+   class Pokemon {
+    - _name: str
+    - _pokedex_num: int
+    - _type: str
+    - _color: str
+    - _sex: str
+    - _level: int
+    - _stats: Stats
+    - _weaknesses: list
+    - _resistances: list
+    - _immunities: list
+    + attack()
+    + level_up()
+    + receive_attack()
+    + get_stats()
+    + get_attribute()
+    + can_evolve()
+    + evolve()
+    + evolution_hint()
+    + __str__()
+    - _get_row()
+    - _resolve_evolution_target()
+}
     class Stats {
 	    - HP: int
 	    - Attack: int
