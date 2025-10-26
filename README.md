@@ -28,6 +28,10 @@ Creaturas ficticias que viven en un mundo alternativo junto a humanos. La palabr
 ## Diagram
 
 ```mermaid
+---
+config:
+  theme: dark
+---
 classDiagram
 direction TB
     class Normal {
@@ -67,39 +71,64 @@ direction TB
     class Fairy {
     }
     class Pokemon {
-	    - _name: str
-	    - _pokedex_num: int
-	    - _type: str
-	    - _color: str
-	    - _sex: str
-	    - _level: int
-	    - _stats: Stats
-	    - _weaknesses: list
-	    - _resistances: list
-	    - _immunities: list
-	    + attack()
-	    + level_up(hp, attack, defense, spattack, spdefense, speed)
-	    + __str__()
-	    + receive_attack(attack_type)
-	    + get_stats()
+        - _name: str
+        - _pokedex_num: int
+        - _type: str
+        - _color: str
+        - _sex: str
+        - _level: int
+        - _stats: Stats
+        - _moveset: Moveset
+        - _weaknesses: list
+        - _resistances: list
+        - _immunities: list
+        + attack()
+        + level_up(hp, attack, defense, spattack, spdefense, speed)
+        + receive_attack(attack_type)
+        + get_stats()
+        + show_moves()
+        + __str__()
     }
     class Stats {
-	    - HP: int
-	    - Attack: int
-	    - Defense: int
-	    - Sp. Atk: int
-	    - Sp. Def: int
-	    - Speed: int
-	    - base_hp: int
-	    - base_attack: int
-	    - base_defense: int
-	    - base_spatk: int
-	    - base_spdef: int
-	    - base_speed: int
-	    + combat_stats(evasion, accuracy)
-	    + __str__()
+        - HP: int
+        - Attack: int
+        - Defense: int
+        - Sp. Atk: int
+        - Sp. Def: int
+        - Speed: int
+        - base_hp: int
+        - base_attack: int
+        - base_defense: int
+        - base_spatk: int
+        - base_spdef: int
+        - base_speed: int
+        + combat_stats(evasion, accuracy)
+        + __str__()
     }
-
+    class Moveset {
+        - pokedex_num: int
+        - level: int
+        - moves_path: str
+        - pokemon_moves_path: str
+        - available_moves: list[Move]
+        - current_moves: list[Move]
+        + _load_available_moves() list[Move]
+        + _select_current_moves() list[Move]
+        + get_moves_names() list[str]
+        + show_moves()
+    }
+    class Move {
+        - id: int
+        - name: str
+        - type: str
+        - power: int
+        - accuracy: int
+        - pp: int
+        + __str__()
+    }
+    Pokemon *-- Stats
+    Pokemon *-- Moveset
+    Moveset *-- Move
     Pokemon <|-- Normal
     Pokemon <|-- Fire
     Pokemon <|-- Water
@@ -118,7 +147,6 @@ direction TB
     Pokemon <|-- Dark
     Pokemon <|-- Steel
     Pokemon <|-- Fairy
-    Pokemon *-- Stats
 ```
 
 ## Running 
