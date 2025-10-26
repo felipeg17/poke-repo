@@ -28,10 +28,6 @@ Creaturas ficticias que viven en un mundo alternativo junto a humanos. La palabr
 ## Diagram
 
 ```mermaid
----
-config:
-  theme: dark
----
 classDiagram
 direction TB
     class Normal {
