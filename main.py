@@ -13,3 +13,4 @@ if __name__ == "__main__":
     print(bulbasaur.get_attribute("stats"))
     bulbasaur.level_up()
     print(bulbasaur.get_attribute("stats"))
+    print(bulbasaur.show_moves())
