@@ -84,18 +84,21 @@ direction TB
 	    + get_stats()
     }
     class Stats {
-	    - HP: int
-	    - Attack: int
-	    - Defense: int
-	    - Sp. Atk: int
-	    - Sp. Def: int
-	    - Speed: int
-	    - base_hp: int
-	    - base_attack: int
-	    - base_defense: int
-	    - base_spatk: int
-	    - base_spdef: int
-	    - base_speed: int
+	    - initial_level: int
+        - base_hp: int
+        - base_attack: int
+        - base_defense: int
+        - base_sp_attack: int
+        - base_sp_defense: int
+        - base_speed: int
+	    - hp: int
+	    - attack: int
+	    - defense: int
+	    - sp_attack: int
+	    - sp_defense: int
+	    - speed: int
+        + __init__()
+        + adjust_for_level(level)
 	    + combat_stats(evasion, accuracy)
 	    + __str__()
     }
