@@ -106,7 +106,5 @@ def test_level_up_method_increases_stats():
     assert round(stats_after.speed) == 133
 
 if __name__ == "__main__":
-    test_create_pokemon()
-    test_pokemon_resistances()
-    test_pokemon_stats()
+    pass
 
