@@ -7,7 +7,7 @@ if __name__ == "__main__":
         type="grass",
         color="blue",
         sex="male",
-        level=15
+        level=15,
     )
     print(bulbasaur)
     print(bulbasaur.get_attribute("stats"))
