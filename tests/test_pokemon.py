@@ -46,7 +46,6 @@ def test_pokemon_stats_base():
     bulbasaur = Grass(
         name="bulbasaur",
         level=1,
-        level=1,
         pokedex_num=1,
         color="green",
         sex="male"
