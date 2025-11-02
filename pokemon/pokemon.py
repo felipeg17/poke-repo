@@ -45,6 +45,8 @@ class Pokemon:
             csv_path=str(Pokemon.csv_path), 
             pokedex_num=pokedex_num, 
             initial_level=self._level
+            pokedex_num=pokedex_num, 
+            initial_level=self._level
         )
 
         #* Changed to protected
@@ -69,6 +71,13 @@ class Pokemon:
         #* Add docstring
         if self._level < 100:
             self._level += 1
+            #! refer to: https://m.bulbapedia.bulbagarden.net/wiki/Stat
+            self._stats.hp = round(self._stats.hp + (110 + self._stats.base_hp) / 100)
+            self._stats.attack = round(self._stats.attack + (5 + self._stats.base_attack) / 100)
+            self._stats.defense = round(self._stats.defense + (5 + self._stats.base_defense) / 100)
+            self._stats.sp_attack = round(self._stats.sp_attack + (5 + self._stats.base_sp_attack) / 100)
+            self._stats.sp_defense = round(self._stats.sp_defense + (5 + self._stats.base_sp_defense) / 100)
+            self._stats.speed = round(self._stats.speed + (5 + self._stats.base_speed) / 100)
             #! refer to: https://m.bulbapedia.bulbagarden.net/wiki/Stat
             self._stats.hp = round(self._stats.hp + (110 + self._stats.base_hp) / 100)
             self._stats.attack = round(self._stats.attack + (5 + self._stats.base_attack) / 100)
@@ -245,6 +254,19 @@ class Stats():
         self.sp_attack = self.base_sp_attack
         self.sp_defense = self.base_sp_defense
         self.speed = self.base_speed
+        self.set_initial_stats()
+
+    def set_initial_stats(self):
+        for _ in range(1, self.initial_level):
+            print(f"Antes de subir de nivel: {self}")
+            self.hp = round(self.hp + (110 + self.base_hp) / 100)
+            self.attack = round(self.attack + (5 + self.base_attack) / 100)
+            self.defense = round(self.defense + (5 + self.base_defense) / 100)
+            self.sp_attack = round(self.sp_attack + (5 + self.base_sp_attack) / 100)
+            self.sp_defense = round(self.sp_defense + (5 + self.base_sp_defense) / 100)
+            self.speed = round(self.speed + (5 + self.base_speed) / 100)
+            print(f"Estadísticas después de subir de nivel: {self}")
+
         self.set_initial_stats()
 
     def set_initial_stats(self):
