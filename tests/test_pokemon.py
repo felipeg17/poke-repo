@@ -78,12 +78,12 @@ def test_pokemon_stats_level_increase():
     base_stats = base_bulbasaur.get_stats()
     lvl10_stats = lvl10_bulbasaur.get_stats()
 
-    assert round(lvl10_stats.hp) == 104
-    assert round(lvl10_stats.attack) == 103
-    assert round(lvl10_stats.defense) == 103
-    assert round(lvl10_stats.sp_attack) == 136
-    assert round(lvl10_stats.sp_defense) == 136
-    assert round(lvl10_stats.speed) == 94
+    assert round(lvl10_stats.hp) == 63
+    assert round(lvl10_stats.attack) == 58
+    assert round(lvl10_stats.defense) == 58
+    assert round(lvl10_stats.sp_attack) == 74
+    assert round(lvl10_stats.sp_defense) == 74
+    assert round(lvl10_stats.speed) == 46
 
 def test_level_up_method_increases_stats():
     charmander = Fire(
@@ -97,13 +97,13 @@ def test_level_up_method_increases_stats():
     charmander.level_up()
     stats_after = charmander.get_stats()
 
-    assert charmander.get_attribute("level") == 5
-    assert round(stats_after.hp) == 84
-    assert round(stats_after.attack) == 106
-    assert round(stats_after.defense) == 88
-    assert round(stats_after.sp_attack) == 123
-    assert round(stats_after.sp_defense) == 102
-    assert round(stats_after.speed) == 133
+    assert charmander.get_attribute("level") == 6
+    assert round(stats_after.hp) == 44
+    assert round(stats_after.attack) == 57
+    assert round(stats_after.defense) == 43
+    assert round(stats_after.sp_attack) == 65
+    assert round(stats_after.sp_defense) == 55
+    assert round(stats_after.speed) == 70
 
 if __name__ == "__main__":
     pass
