@@ -1,15 +1,13 @@
-import os
 import pdb
 import pandas as pd
 
 from pathlib import Path
-from pprint import pprint
 
 class Pokemon:
     current_dir = Path(__file__).parent
     ### TODO: Move to another module     
     # If moved, uses import from that module
-    csv_path = current_dir / "utils" / "First30Pokemons.csv"
+    csv_path = current_dir / "utils" / "First151Pokemons.csv"
     definition = """
     Pocket Monster
     """
@@ -124,10 +122,109 @@ class Pokemon:
             return attribute_map.get(attribute_name)
         else:
             raise AttributeError(f"Pokemon has no attribute '{attribute_name}'")
-        
+        # Module for evolutions
+    
     def __str__(self):
-        return (f"{self._name} (#{self._pokedex_num}) - "
-                f"Type: {self._main_type}, Level: {self._level}")
+        return (f"{self._name} (#{self._pokedex_num}) "
+                f"Type: {self._main_type}, Level: {self._level} "
+                f"- {self.evolution_hint()}")
+
+    def _get_row(self):
+        df = pd.read_csv(Pokemon.csv_path)
+        row = df.loc[df["pokedex_number"] == self._pokedex_num].iloc[0]
+        return row
+
+    def can_evolve(self, item=None, trade: bool = False) -> bool:
+        row = self._get_row()
+        evo_level = int(row.get("evolution_level", 0))
+        by_stone = int(row.get("evolves_by_stone", 0)) == 1
+        by_trade = int(row.get("evolves_by_trade", 0)) == 1
+        if by_trade and (trade or (isinstance(item, str) and item.lower() == "trade")):
+            return True
+        if by_stone and item:
+            return True
+        if evo_level > 0 and self._level >= evo_level:
+            return True
+        return False
+
+    def _get_evolved_form_pokedex_num(self) -> int:
+        """
+        Determines the Pokedex number of the evolved form.
+        For sequential evolutions (like Bulbasaur->Ivysaur), it's typically +1.
+        Returns 0 if Pokemon cannot evolve.
+        """
+        # Simple evolution mapping - in most cases, evolved form is next pokedex number
+        # For Pokemon in evolution chains, this works for Gen 1
+        row = self._get_row()
+        evolves_once = int(row.get("evolves_once", 0)) == 1
+        evolves_twice = int(row.get("evolves_twice", 0)) == 1
+        
+        if evolves_once or evolves_twice:
+            # For most Gen 1 Pokemon, evolution is just +1 Pokedex number
+            return self._pokedex_num + 1
+        return 0
+
+    def evolve(self, item=None, trade: bool = False) -> bool:
+        """
+        Evolves the Pokemon if conditions are met.
+        This transforms the Pokemon: updates name, pokedex_num, and recalculates stats for current level.
+        """
+        if not self.can_evolve(item=item, trade=trade):
+            print(f"{self._name.capitalize()} no puede evolucionar aún.")
+            return False
+            
+        row = self._get_row()
+        evo_level = int(row.get("evolution_level", 0))
+        by_stone = int(row.get("evolves_by_stone", 0)) == 1
+        by_trade = int(row.get("evolves_by_trade", 0)) == 1
+        
+        # Get the evolved form's pokedex number
+        evolved_pokedex_num = self._get_evolved_form_pokedex_num()
+        if evolved_pokedex_num == 0:
+            print(f"{self._name.capitalize()} no puede evolucionar aún.")
+            return False
+        
+        # Get evolved form data
+        df = pd.read_csv(Pokemon.csv_path)
+        evolved_row = df.loc[df["pokedex_number"] == evolved_pokedex_num].iloc[0]
+        evolved_name = evolved_row["pokemon_name"]
+        
+        old_name = self._name
+        
+        # Print evolution message
+        if by_trade and (trade or (isinstance(item, str) and item.lower() == "trade")):
+            print(f"¡{old_name.capitalize()} está evolucionando por intercambio!")
+        elif by_stone and item:
+            print(f"¡{old_name.capitalize()} está evolucionando con {item}!")
+        elif evo_level > 0 and self._level >= evo_level:
+            print(f"¡{old_name.capitalize()} está evolucionando al nivel {self._level}!")
+        
+        # Transform the Pokemon
+        self._name = evolved_name.lower()
+        self._pokedex_num = evolved_pokedex_num
+        
+        # Recalculate stats for the evolved form at current level
+        self._stats = Stats(
+            csv_path=str(Pokemon.csv_path), 
+            pokedex_num=self._pokedex_num, 
+            initial_level=self._level
+        )
+        
+        print(f"¡Felicidades! {old_name.capitalize()} evolucionó a {self._name.capitalize()}!")
+        return True
+
+    def evolution_hint(self) -> str:
+        row = self._get_row()
+        evo_level = int(row.get("evolution_level", 0))
+        by_stone = int(row.get("evolves_by_stone", 0)) == 1
+        by_trade = int(row.get("evolves_by_trade", 0)) == 1
+        if by_trade:
+            return "Evoluciona por intercambio (nivel de referencia 45)."
+        if by_stone:
+            return "Evoluciona por piedra."
+        if evo_level > 0:
+            return f"Evoluciona al nivel {evo_level}."
+        return "No evoluciona."
 
 
 ### TODO: Move to another module      
@@ -160,7 +257,6 @@ class Stats():
             self.sp_defense = round(self.sp_defense + (5 + self.base_sp_defense) / 100)
             self.speed = round(self.speed + (5 + self.base_speed) / 100)
             print(f"Estadísticas después de subir de nivel: {self}")
-
 
     def combat_stats(self, accuracy = "100%", evasion = "100%"):
         self.accuracy = accuracy
