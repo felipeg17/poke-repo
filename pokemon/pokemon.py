@@ -1,25 +1,26 @@
-import pdb
 import pandas as pd
 
 from pathlib import Path
 
+
 class Pokemon:
     current_dir = Path(__file__).parent
-    ### TODO: Move to another module     
+    ### TODO: Move to another module
     # If moved, uses import from that module
     csv_path = current_dir / "utils" / "First151Pokemons.csv"
     definition = """
     Pocket Monster
     """
+
     def __init__(
-            self,
-            pokemon_name: str,
-            pokedex_num: int,
-            type: str, 
-            color: str,
-            sex: str,
-            level: int = 1
-        ) -> None:
+        self,
+        pokemon_name: str,
+        pokedex_num: int,
+        type: str,
+        color: str,
+        sex: str,
+        level: int = 1,
+    ) -> None:
         """
         Creates a basic pokemon
 
@@ -33,7 +34,7 @@ class Pokemon:
         Raises:
             ...
         """
-        #* Changed to protected so that subclasses can access them
+        # * Changed to protected so that subclasses can access them
         self._name = pokemon_name
         self._pokedex_num = pokedex_num
         self._main_type = type
@@ -42,15 +43,15 @@ class Pokemon:
         self._level = level if level >= 1 and level <= 100 else 1
         # Always creating base stats
         self._stats = Stats(
-            csv_path=str(Pokemon.csv_path), 
-            pokedex_num=pokedex_num, 
-            initial_level=self._level
+            csv_path=str(Pokemon.csv_path),
+            pokedex_num=pokedex_num,
+            initial_level=self._level,
         )
 
-        #* Changed to protected
-        self._weaknesses = []
-        self._resistances = []
-        self._immunities = []
+        # * Changed to protected
+        self._weaknesses: list = []
+        self._resistances: list = []
+        self._immunities: list = []
 
         ### TODO: Moveset
         # Shoudl be managed by another class -> composition
@@ -66,16 +67,26 @@ class Pokemon:
         #! A pokemon can have up to 4 moves
 
     def level_up(self):
-        #* Add docstring
+        # * Add docstring
         if self._level < 100:
             self._level += 1
             #! refer to: https://m.bulbapedia.bulbagarden.net/wiki/Stat
             self._stats.hp = round(self._stats.hp + (110 + self._stats.base_hp) / 100)
-            self._stats.attack = round(self._stats.attack + (5 + self._stats.base_attack) / 100)
-            self._stats.defense = round(self._stats.defense + (5 + self._stats.base_defense) / 100)
-            self._stats.sp_attack = round(self._stats.sp_attack + (5 + self._stats.base_sp_attack) / 100)
-            self._stats.sp_defense = round(self._stats.sp_defense + (5 + self._stats.base_sp_defense) / 100)
-            self._stats.speed = round(self._stats.speed + (5 + self._stats.base_speed) / 100)
+            self._stats.attack = round(
+                self._stats.attack + (5 + self._stats.base_attack) / 100
+            )
+            self._stats.defense = round(
+                self._stats.defense + (5 + self._stats.base_defense) / 100
+            )
+            self._stats.sp_attack = round(
+                self._stats.sp_attack + (5 + self._stats.base_sp_attack) / 100
+            )
+            self._stats.sp_defense = round(
+                self._stats.sp_defense + (5 + self._stats.base_sp_defense) / 100
+            )
+            self._stats.speed = round(
+                self._stats.speed + (5 + self._stats.base_speed) / 100
+            )
             print(f"{self._name} leveled up to level {self._level}!")
         else:
             print(f"{self._name} is already max level!")
@@ -83,7 +94,7 @@ class Pokemon:
     def attack(self) -> str:
         ### TODO: Return necessary information to compute attack
         return f"{self._name} is attacking!"
-    
+
     def receive_attack(self, attack_type):
         ### TODO: Return necessary information to compute damage
         if attack_type in self._immunities:
@@ -94,40 +105,42 @@ class Pokemon:
             return "It's not very effective..."
         else:
             return "It's effective."
-        
+
     def update_stats_after_battle(self):
         ### TODO: Update stats based on battle outcomes
         pass
 
     def get_stats(self):
         return self._stats
-    
+
     def get_attribute(self, attribute_name: str):
         # Dictionary mapping public names to protected attributes
         attribute_map = {
-            'pokemon_name': self._name,  
-            'pokedex_num': self._pokedex_num,
-            'main_type': self._main_type,
-            'type': self._main_type, 
-            'color': self._color,
-            'sex': self._sex,
-            'level': self._level,
-            'stats': self._stats,
-            'weaknesses': self._weaknesses,
-            'resistances': self._resistances,
-            'immunities': self._immunities
+            "pokemon_name": self._name,
+            "pokedex_num": self._pokedex_num,
+            "main_type": self._main_type,
+            "type": self._main_type,
+            "color": self._color,
+            "sex": self._sex,
+            "level": self._level,
+            "stats": self._stats,
+            "weaknesses": self._weaknesses,
+            "resistances": self._resistances,
+            "immunities": self._immunities,
         }
-        
+
         if attribute_name in attribute_map:
             return attribute_map.get(attribute_name)
         else:
             raise AttributeError(f"Pokemon has no attribute '{attribute_name}'")
         # Module for evolutions
-    
+
     def __str__(self):
-        return (f"{self._name} (#{self._pokedex_num}) "
-                f"Type: {self._main_type}, Level: {self._level} "
-                f"- {self.evolution_hint()}")
+        return (
+            f"{self._name} (#{self._pokedex_num}) "
+            f"Type: {self._main_type}, Level: {self._level} "
+            f"- {self.evolution_hint()}"
+        )
 
     def _get_row(self):
         df = pd.read_csv(Pokemon.csv_path)
@@ -158,7 +171,7 @@ class Pokemon:
         row = self._get_row()
         evolves_once = int(row.get("evolves_once", 0)) == 1
         evolves_twice = int(row.get("evolves_twice", 0)) == 1
-        
+
         if evolves_once or evolves_twice:
             # For most Gen 1 Pokemon, evolution is just +1 Pokedex number
             return self._pokedex_num + 1
@@ -172,45 +185,49 @@ class Pokemon:
         if not self.can_evolve(item=item, trade=trade):
             print(f"{self._name.capitalize()} no puede evolucionar aún.")
             return False
-            
+
         row = self._get_row()
         evo_level = int(row.get("evolution_level", 0))
         by_stone = int(row.get("evolves_by_stone", 0)) == 1
         by_trade = int(row.get("evolves_by_trade", 0)) == 1
-        
+
         # Get the evolved form's pokedex number
         evolved_pokedex_num = self._get_evolved_form_pokedex_num()
         if evolved_pokedex_num == 0:
             print(f"{self._name.capitalize()} no puede evolucionar aún.")
             return False
-        
+
         # Get evolved form data
         df = pd.read_csv(Pokemon.csv_path)
         evolved_row = df.loc[df["pokedex_number"] == evolved_pokedex_num].iloc[0]
         evolved_name = evolved_row["pokemon_name"]
-        
+
         old_name = self._name
-        
+
         # Print evolution message
         if by_trade and (trade or (isinstance(item, str) and item.lower() == "trade")):
             print(f"¡{old_name.capitalize()} está evolucionando por intercambio!")
         elif by_stone and item:
             print(f"¡{old_name.capitalize()} está evolucionando con {item}!")
         elif evo_level > 0 and self._level >= evo_level:
-            print(f"¡{old_name.capitalize()} está evolucionando al nivel {self._level}!")
-        
+            print(
+                f"¡{old_name.capitalize()} está evolucionando al nivel {self._level}!"
+            )
+
         # Transform the Pokemon
         self._name = evolved_name.lower()
         self._pokedex_num = evolved_pokedex_num
-        
+
         # Recalculate stats for the evolved form at current level
         self._stats = Stats(
-            csv_path=str(Pokemon.csv_path), 
-            pokedex_num=self._pokedex_num, 
-            initial_level=self._level
+            csv_path=str(Pokemon.csv_path),
+            pokedex_num=self._pokedex_num,
+            initial_level=self._level,
         )
-        
-        print(f"¡Felicidades! {old_name.capitalize()} evolucionó a {self._name.capitalize()}!")
+
+        print(
+            f"¡Felicidades! {old_name.capitalize()} evolucionó a {self._name.capitalize()}!"
+        )
         return True
 
     def evolution_hint(self) -> str:
@@ -227,18 +244,18 @@ class Pokemon:
         return "No evoluciona."
 
 
-### TODO: Move to another module      
-class Stats():
+### TODO: Move to another module
+class Stats:
     def __init__(self, csv_path: str, pokedex_num: int, initial_level: int = 1):
         df = pd.read_csv(csv_path)
-        row = df.loc[df['pokedex_number'] == pokedex_num]
+        row = df.loc[df["pokedex_number"] == pokedex_num]
         self.initial_level = initial_level
-        self.base_hp = int(row['hp'].values[0])
-        self.base_attack = int(row['attack'].values[0])
-        self.base_defense = int(row['defense'].values[0])
-        self.base_sp_attack = int(row['sp_atk'].values[0])
-        self.base_sp_defense = int(row['sp_def'].values[0])
-        self.base_speed = int(row['speed'].values[0])
+        self.base_hp = int(row["hp"].values[0])
+        self.base_attack = int(row["attack"].values[0])
+        self.base_defense = int(row["defense"].values[0])
+        self.base_sp_attack = int(row["sp_atk"].values[0])
+        self.base_sp_defense = int(row["sp_def"].values[0])
+        self.base_speed = int(row["speed"].values[0])
         self.hp = self.base_hp
         self.attack = self.base_attack
         self.defense = self.base_defense
@@ -258,7 +275,7 @@ class Stats():
             self.speed = round(self.speed + (5 + self.base_speed) / 100)
             print(f"Estadísticas después de subir de nivel: {self}")
 
-    def combat_stats(self, accuracy = "100%", evasion = "100%"):
+    def combat_stats(self, accuracy="100%", evasion="100%"):
         self.accuracy = accuracy
         self.evasion = evasion
 
@@ -268,12 +285,14 @@ class Stats():
             f"Sp. Attack: {self.sp_attack}, Sp. Defense: {self.sp_defense}, Speed: {self.speed}"
         )
 
+
 class Normal(Pokemon):
     def __init__(self, name, pokedex_num, color, sex, level=1):
         super().__init__(name, pokedex_num, "Normal", color, sex, level)
         self._weaknesses = ["Fighting"]
         self._resistances = []
         self._immunities = ["Ghost"]
+
 
 class Fire(Pokemon):
     def __init__(self, name, pokedex_num, color, sex, level=1):
@@ -282,12 +301,14 @@ class Fire(Pokemon):
         self._resistances = ["Fire", "Grass", "Ice", "Bug", "Steel", "Fairy"]
         self._immunities = []
 
+
 class Water(Pokemon):
     def __init__(self, name, pokedex_num, color, sex, level=1):
         super().__init__(name, pokedex_num, "Water", color, sex, level)
         self._weaknesses = ["Electric", "Grass"]
         self._resistances = ["Fire", "Water", "Ice", "Steel"]
         self._immunities = []
+
 
 class Grass(Pokemon):
     def __init__(self, name, pokedex_num, color, sex, level=1):
@@ -296,12 +317,14 @@ class Grass(Pokemon):
         self._resistances = ["Water", "Grass", "Electric", "Ground"]
         self._immunities = []
 
+
 class Electric(Pokemon):
     def __init__(self, name, pokedex_num, color, sex, level=1):
         super().__init__(name, pokedex_num, "Electric", color, sex, level)
         self._weaknesses = ["Ground"]
         self._resistances = ["Electric", "Flying", "Steel"]
         self._immunities = []
+
 
 class Ice(Pokemon):
     def __init__(self, name, pokedex_num, color, sex, level=1):
@@ -310,12 +333,14 @@ class Ice(Pokemon):
         self._resistances = ["Ice"]
         self._immunities = []
 
+
 class Fighting(Pokemon):
     def __init__(self, name, pokedex_num, color, sex, level=1):
         super().__init__(name, pokedex_num, "Fighting", color, sex, level)
         self._weaknesses = ["Flying", "Psychic", "Fairy"]
         self._resistances = ["Bug", "Rock", "Dark"]
         self._immunities = []
+
 
 class Poison(Pokemon):
     def __init__(self, name, pokedex_num, color, sex, level=1):
@@ -324,12 +349,14 @@ class Poison(Pokemon):
         self._resistances = ["Grass", "Fighting", "Poison", "Bug", "Fairy"]
         self._immunities = []
 
+
 class Ground(Pokemon):
     def __init__(self, name, pokedex_num, color, sex, level=1):
         super().__init__(name, pokedex_num, "Ground", color, sex, level)
         self._weaknesses = ["Water", "Grass", "Ice"]
         self._resistances = ["Poison", "Rock"]
         self._immunities = ["Electric"]
+
 
 class Flying(Pokemon):
     def __init__(self, name, pokedex_num, color, sex, level=1):
@@ -338,12 +365,14 @@ class Flying(Pokemon):
         self._resistances = ["Grass", "Fighting", "Bug"]
         self._immunities = ["Ground"]
 
+
 class Psychic(Pokemon):
     def __init__(self, name, pokedex_num, color, sex, level=1):
         super().__init__(name, pokedex_num, "Psychic", color, sex, level)
         self._weaknesses = ["Bug", "Ghost", "Dark"]
         self._resistances = ["Fighting", "Psychic"]
         self._immunities = []
+
 
 class Bug(Pokemon):
     def __init__(self, name, pokedex_num, color, sex, level=1):
@@ -352,12 +381,14 @@ class Bug(Pokemon):
         self._resistances = ["Grass", "Fighting", "Ground"]
         self._immunities = []
 
+
 class Rock(Pokemon):
     def __init__(self, name, pokedex_num, color, sex, level=1):
         super().__init__(name, pokedex_num, "Rock", color, sex, level)
         self._weaknesses = ["Water", "Grass", "Fighting", "Ground", "Steel"]
         self._resistances = ["Normal", "Fire", "Poison", "Flying"]
         self._immunities = []
+
 
 class Ghost(Pokemon):
     def __init__(self, name, pokedex_num, color, sex, level=1):
@@ -366,12 +397,14 @@ class Ghost(Pokemon):
         self._resistances = ["Poison", "Bug"]
         self._immunities = ["Normal", "Fighting"]
 
+
 class Dragon(Pokemon):
     def __init__(self, name, pokedex_num, color, sex, level=1):
         super().__init__(name, pokedex_num, "Dragon", color, sex, level)
         self._weaknesses = ["Ice", "Dragon", "Fairy"]
         self._resistances = ["Fire", "Water", "Grass", "Electric"]
         self._immunities = []
+
 
 class Dark(Pokemon):
     def __init__(self, name, pokedex_num, color, sex, level=1):
@@ -380,15 +413,25 @@ class Dark(Pokemon):
         self._resistances = ["Ghost", "Dark"]
         self._immunities = ["Psychic"]
 
+
 class Steel(Pokemon):
     def __init__(self, name, pokedex_num, color, sex, level=1):
         super().__init__(name, pokedex_num, "Steel", color, sex, level)
         self._weaknesses = ["Fire", "Fighting", "Ground"]
         self._resistances = [
-            "Normal", "Grass", "Ice", "Flying", "Psychic", "Bug",
-            "Rock", "Dragon", "Steel", "Fairy"
+            "Normal",
+            "Grass",
+            "Ice",
+            "Flying",
+            "Psychic",
+            "Bug",
+            "Rock",
+            "Dragon",
+            "Steel",
+            "Fairy",
         ]
         self._immunities = ["Poison"]
+
 
 class Fairy(Pokemon):
     def __init__(self, name, pokedex_num, color, sex, level=1):
@@ -397,23 +440,12 @@ class Fairy(Pokemon):
         self._resistances = ["Fighting", "Bug", "Dark"]
         self._immunities = ["Dragon"]
 
+
 if __name__ == "__main__":
-    bulbasaur = Pokemon(
-        "bulbasaur",
-        1,
-        "grass",
-        "blue",
-        "male"
-    )
+    bulbasaur = Pokemon("bulbasaur", 1, "grass", "blue", "male")
     print(bulbasaur)
     bulbasaur.attack()
     print(bulbasaur.get_stats())
-    charmander = Pokemon(
-        "charmander",
-        4,
-        "fire",
-        "orange",
-        "male"
-    )
+    charmander = Pokemon("charmander", 4, "fire", "orange", "male")
     charmander.attack()
     print(charmander.get_stats())

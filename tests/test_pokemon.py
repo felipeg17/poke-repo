@@ -1,8 +1,5 @@
-import pytest
+from pokemon import Pokemon, Grass, Fire
 
-from pokemon import (
-    Pokemon, Grass, Fire
-    )
 
 def test_create_pokemon():
     bulbasaur = Pokemon(
@@ -11,7 +8,7 @@ def test_create_pokemon():
         level=5,
         pokedex_num=1,
         color="green",
-        sex="male"
+        sex="male",
     )
     assert bulbasaur.get_attribute("pokemon_name") == "bulbasaur"
     assert bulbasaur.get_attribute("type") == "Grass"
@@ -19,21 +16,14 @@ def test_create_pokemon():
     assert bulbasaur.get_attribute("pokedex_num") == 1
     assert bulbasaur.get_attribute("color") == "green"
     assert bulbasaur.attack() == "bulbasaur is attacking!"
-    
+
+
 def test_pokemon_resistances_and_weaknesses():
     bulbasaur = Grass(
-        name="bulbasaur",
-        level=5,
-        pokedex_num=1,
-        color="green",
-        sex="male"
+        name="bulbasaur", level=5, pokedex_num=1, color="green", sex="male"
     )
     charmander = Fire(
-        name="charmander",
-        level=5,
-        pokedex_num=4,
-        color="red",
-        sex="male"
+        name="charmander", level=5, pokedex_num=4, color="red", sex="male"
     )
     assert bulbasaur.receive_attack("Fire") == "It's super effective!"
     assert bulbasaur.receive_attack("Water") == "It's not very effective..."
@@ -42,40 +32,26 @@ def test_pokemon_resistances_and_weaknesses():
     assert bulbasaur.receive_attack("Electric") == "It's not very effective..."
     assert charmander.receive_attack("Normal") == "It's effective."
 
+
 def test_pokemon_stats_base():
     bulbasaur = Grass(
-        name="bulbasaur",
-        level=1,
-        pokedex_num=1,
-        color="green",
-        sex="male"
+        name="bulbasaur", level=1, pokedex_num=1, color="green", sex="male"
     )
 
-    stats = bulbasaur.get_stats() 
-    assert stats.hp == stats.base_hp 
+    stats = bulbasaur.get_stats()
+    assert stats.hp == stats.base_hp
     assert stats.attack == stats.base_attack
     assert stats.defense == stats.base_defense
     assert stats.sp_attack == stats.base_sp_attack
     assert stats.sp_defense == stats.base_sp_defense
     assert stats.speed == stats.base_speed
 
+
 def test_pokemon_stats_level_increase():
-    base_bulbasaur = Grass(
-        name="bulbasaur",
-        level=1,
-        pokedex_num=1,
-        color="green",
-        sex="male"
-    )
     lvl10_bulbasaur = Grass(
-        name="bulbasaur",
-        level=10,
-        pokedex_num=1,
-        color="green",
-        sex="male"
+        name="bulbasaur", level=10, pokedex_num=1, color="green", sex="male"
     )
 
-    base_stats = base_bulbasaur.get_stats()
     lvl10_stats = lvl10_bulbasaur.get_stats()
 
     assert round(lvl10_stats.hp) == 63
@@ -85,15 +61,11 @@ def test_pokemon_stats_level_increase():
     assert round(lvl10_stats.sp_defense) == 74
     assert round(lvl10_stats.speed) == 46
 
+
 def test_level_up_method_increases_stats():
     charmander = Fire(
-        name="charmander",
-        level=5,
-        pokedex_num=4,
-        color="red",
-        sex="male"
+        name="charmander", level=5, pokedex_num=4, color="red", sex="male"
     )
-    stats_before = charmander.get_stats()
     charmander.level_up()
     stats_after = charmander.get_stats()
 
@@ -105,6 +77,6 @@ def test_level_up_method_increases_stats():
     assert round(stats_after.sp_defense) == 55
     assert round(stats_after.speed) == 70
 
+
 if __name__ == "__main__":
     pass
-
