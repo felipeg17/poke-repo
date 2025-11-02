@@ -1,4 +1,5 @@
 iniconfig==2.1.0
+mypy==1.15.0
 numpy==2.3.3
 packaging==25.0
 pandas==2.2.3
@@ -8,6 +9,7 @@ Pygments==2.19.2
 pytest==8.4.2
 python-dateutil==2.9.0.post0
 pytz==2025.2
+ruff==0.9.7
 six==1.17.0
 types-pytz==2025.2.0.20250809
 tzdata==2025.2
