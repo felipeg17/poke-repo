@@ -139,7 +139,7 @@ class Pokemon:
 
     def __str__(self):
         return (
-            f"{self._name} (#{self._pokedex_num}) "
+            f"{self._name} (#{self._pokedex_num}) - "
             f"Type: {self._main_type}, Level: {self._level} "
             f"- {self.evolution_hint()}"
         )
