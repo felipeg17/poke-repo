@@ -6,5 +6,12 @@ v_pokemon
 __pycache__/
 
 
+# Folders
+.git
+.mypy_cache
+.pytest_cache
+.ruff_cache
+
+
 # Files 
 GEMINI.md

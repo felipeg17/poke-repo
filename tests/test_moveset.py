@@ -1,6 +1,6 @@
 import pytest
 from pokemon import Pokemon
-from pokemon.moveset import Moveset
+from pokemon.pokemon import Moveset
 
 def test_pokemon_moveset_initialization():
     # Checks that a Pokemon's moveset is initialized correctly (no more than 4 moves)

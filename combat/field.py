@@ -1,6 +1,6 @@
 ### TODO: Implement the battle field logic
-# Include: 
+# Include:
 # Pokemon definition
-# Turns management 
+# Turns management
 # Uses engine to compute damage and update stats
 # Defines win/loss conditions
