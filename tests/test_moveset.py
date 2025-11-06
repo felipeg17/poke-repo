@@ -1,4 +1,3 @@
-import pytest
 from pokemon import Pokemon
 from pokemon.pokemon import Moveset
 
