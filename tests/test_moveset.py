@@ -62,13 +62,13 @@ def test_show_moves_output(capsys):
     assert "-" in output, "The output should list moves with '-' prefix"
 
 
+def mock_load_available_moves(_):
+    # Mocked method returning no available moves.
+    return []
+
+
 def test_pokemon_without_moves(monkeypatch):
     # Tests behavior when a Pokemon has no learnable moves
-
-    def mock_load_available_moves(self):
-        return []  # No moves available
-
-    # Force the Moveset to use the mock method
     monkeypatch.setattr(Moveset, "_load_available_moves", mock_load_available_moves)
 
     pokemon = Pokemon(
