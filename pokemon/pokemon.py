@@ -382,10 +382,10 @@ class Moveset:
         return [m.name for m in self.current_moves]
 
     def __str__(self):
-        return (
-            f"HP: {self.hp}, Attack: {self.attack}, Defense: {self.defense}, "
-            f"Sp. Attack: {self.sp_attack}, Sp. Defense: {self.sp_defense}, Speed: {self.speed}"
-        )
+        # Returns a string representation of the current moveset
+        if not self.current_moves:
+            return "Moveset: (no moves)"
+        return "Moveset: " + ", ".join(move.name for move in self.current_moves)
 
 class Normal(Pokemon):
     def __init__(self, name, pokedex_num, color, sex, level=1):
