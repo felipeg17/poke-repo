@@ -30,43 +30,8 @@ Creaturas ficticias que viven en un mundo alternativo junto a humanos. La palabr
 ```mermaid
 classDiagram
 direction TB
-    class Normal {
-    }
-    class Fire {
-    }
-    class Water {
-    }
-    class Grass {
-    }
-    class Electric {
-    }
-    class Ice {
-    }
-    class Fighting {
-    }
-    class Poison {
-    }
-    class Ground {
-    }
-    class Flying {
-    }
-    class Psychic {
-    }
-    class Bug {
-    }
-    class Rock {
-    }
-    class Ghost {
-    }
-    class Dragon {
-    }
-    class Dark {
-    }
-    class Steel {
-    }
-    class Fairy {
-    }
-   class Pokemon {
+
+class Pokemon {
     - _name: str
     - _pokedex_num: int
     - _type: str
@@ -74,64 +39,91 @@ direction TB
     - _sex: str
     - _level: int
     - _stats: Stats
+    - _moveset: Moveset
     - _weaknesses: list
     - _resistances: list
     - _immunities: list
     + attack()
     + level_up()
-    + receive_attack()
+    + receive_attack(attack_type)
+    + show_moves()
     + get_stats()
-    + get_attribute()
-    + can_evolve()
-    + evolve()
-    + evolution_hint()
-    + __str__()
-    - _get_row()
-    - _resolve_evolution_target()
+    + get_moveset()
 }
-    class Stats {
-	    - initial_level: int
-        - base_hp: int
-        - base_attack: int
-        - base_defense: int
-        - base_sp_attack: int
-        - base_sp_defense: int
-        - base_speed: int
-	    - hp: int
-	    - attack: int
-	    - defense: int
-	    - sp_attack: int
-	    - sp_defense: int
-	    - speed: int
-        + __init__()
-        + adjust_for_level(level)
-	    + combat_stats(evasion, accuracy)
-	    + __str__()
-    }
 
-    Pokemon <|-- Normal
-    Pokemon <|-- Fire
-    Pokemon <|-- Water
-    Pokemon <|-- Grass
-    Pokemon <|-- Electric
-    Pokemon <|-- Ice
-    Pokemon <|-- Fighting
-    Pokemon <|-- Poison
-    Pokemon <|-- Ground
-    Pokemon <|-- Flying
-    Pokemon <|-- Psychic
-    Pokemon <|-- Bug
-    Pokemon <|-- Rock
-    Pokemon <|-- Ghost
-    Pokemon <|-- Dragon
-    Pokemon <|-- Dark
-    Pokemon <|-- Steel
-    Pokemon <|-- Fairy
-    Pokemon *-- Stats
+class Stats {
+    - base_hp: int
+    - base_attack: int
+    - base_defense: int
+    - base_sp_attack: int
+    - base_sp_defense: int
+    - base_speed: int
+    + __str__()
+}
 
+class Moveset {
+    - pokedex_num: int
+    - level: int
+    - available_moves: list
+    - current_moves: list
+    + _load_available_moves()
+    + _select_current_moves()
+    + show_moves()
+    + get_moves_names()
+}
 
+class Move {
+    - id: int
+    - name: str
+    - type: str
+    - power: int
+    - accuracy: int
+    - pp: int
+    + __str__()
+}
+
+class Normal {}
+class Fire {}
+class Water {}
+class Grass {}
+class Electric {}
+class Ice {}
+class Fighting {}
+class Poison {}
+class Ground {}
+class Flying {}
+class Psychic {}
+class Bug {}
+class Rock {}
+class Ghost {}
+class Dragon {}
+class Dark {}
+class Steel {}
+class Fairy {}
+
+Pokemon *-- Stats
+Pokemon *-- Moveset
+Moveset *-- Move
+
+Pokemon <|-- Normal
+Pokemon <|-- Fire
+Pokemon <|-- Water
+Pokemon <|-- Grass
+Pokemon <|-- Electric
+Pokemon <|-- Ice
+Pokemon <|-- Fighting
+Pokemon <|-- Poison
+Pokemon <|-- Ground
+Pokemon <|-- Flying
+Pokemon <|-- Psychic
+Pokemon <|-- Bug
+Pokemon <|-- Rock
+Pokemon <|-- Ghost
+Pokemon <|-- Dragon
+Pokemon <|-- Dark
+Pokemon <|-- Steel
+Pokemon <|-- Fairy
 ```
-
 ## Running 
 
 Crear un entorno virtual e instalar las dependencias.
