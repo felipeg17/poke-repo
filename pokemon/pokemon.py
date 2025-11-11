@@ -47,6 +47,8 @@ class Pokemon:
             pokedex_num=pokedex_num,
             initial_level=self._level,
         )
+        # Moveset managed by another class
+        self._moveset = Moveset(pokedex_num=self._pokedex_num, level=self._level)
 
         # * Changed to protected
         self._weaknesses: list = []
@@ -137,7 +139,7 @@ class Pokemon:
 
     def __str__(self):
         return (
-            f"{self._name} (#{self._pokedex_num}) "
+            f"{self._name} (#{self._pokedex_num}) - "
             f"Type: {self._main_type}, Level: {self._level} "
             f"- {self.evolution_hint()}"
         )
@@ -243,6 +245,15 @@ class Pokemon:
             return f"Evoluciona al nivel {evo_level}."
         return "No evoluciona."
 
+    def get_moveset(self):
+        return self._moveset
+
+    def set_moveset(self, new_moveset: "Moveset"):
+        self._moveset = new_moveset
+
+    def show_moves(self):
+        self._moveset.show_moves()
+
 
 ### TODO: Move to another module
 class Stats:
@@ -284,6 +295,108 @@ class Stats:
             f"HP: {self.hp}, Attack: {self.attack}, Defense: {self.defense}, "
             f"Sp. Attack: {self.sp_attack}, Sp. Defense: {self.sp_defense}, Speed: {self.speed}"
         )
+
+
+class Move:
+    # Represents a single Pokemon move
+    def __init__(self, move_id, name, type_, power, accuracy, pp):
+        self.id = move_id
+        self.name = name
+        self.type = type_
+        self.power = power
+        self.accuracy = accuracy
+        self.pp = pp
+
+    def __str__(self):
+        return f"{self.name} ({self.type}) | Power: {self.power}, Accuracy: {self.accuracy}, PP: {self.pp}"
+
+
+class Moveset:
+    # Manages the moveset of a Pokemon based on its Pokedex number and level
+    def __init__(self, pokedex_num: int, level: int):
+        self.current_dir = Path(__file__).parent  # Actual directory of pokemon.py
+        self.moves_path = self.current_dir / "utils" / "moves.csv"  # Path to moves.csv
+        self.pokemon_moves_path = (
+            self.current_dir / "utils" / "pokemon_moves.csv"
+        )  # Path to pokemon_moves.csv
+
+        self.pokedex_num = pokedex_num
+        self.level = level
+
+        # Load both CSVs once for efficiency
+        self._moves_df = pd.read_csv(self.moves_path)  # Load moves data once
+        self._pokemon_moves_df = pd.read_csv(
+            self.pokemon_moves_path
+        )  # Load pokemon_moves data once
+
+        # Now load and select moves using cached dataframes
+        self.available_moves = self._load_available_moves()
+        self.current_moves = self._select_current_moves()
+
+    def _load_available_moves(self):
+        # Uses the CSV files to load all moves the Pokemon can learn up to its current level
+        pm_df = self._pokemon_moves_df.copy()  # Work on a copy to avoid side effects
+        # Filter by this Pokemon's Pokedex number
+        pm_df = pm_df[pm_df["pokemon_id"] == self.pokedex_num]
+        # Filter by level learned
+        pm_df = pm_df[pm_df["level_learned"] <= self.level]
+
+        # Merge to get full move details
+        merged = pm_df.merge(self._moves_df, left_on="move_id", right_on="id")
+
+        # Collect Move objects (optimized with itertuples)
+        moves = [
+            Move(
+                move_id=row.id,
+                name=row.name,
+                type_=row.type,
+                power=row.power,
+                accuracy=row.accuracy,
+                pp=row.pp,
+            )
+            for row in merged.itertuples(index=False)
+        ]
+        return moves
+
+    def _select_current_moves(self):
+        # Selects up to 4 moves based on the highest level learned
+        if not self.available_moves:
+            return []
+
+        # Load pokemon_moves to filter by level learned
+        pm_df = self._pokemon_moves_df.copy()
+        pm_df = pm_df[pm_df["pokemon_id"] == self.pokedex_num]
+        pm_df = pm_df[pm_df["level_learned"] <= self.level]
+        pm_df = pm_df.sort_values(by="level_learned", ascending=False)
+        top_moves_ids = pm_df["move_id"].head(4).tolist()
+
+        # Select corresponding Move objects
+        selected = []
+
+        for m in self.available_moves:
+            # Check if the move's ID is in the top moves list
+            if m.id in top_moves_ids:
+                selected.append(m)
+
+        return selected
+
+    def show_moves(self):
+        # Displays the current moves of the Pokemon
+        if not self.current_moves:
+            print("This Pokemon has no moves.")
+            return
+        for move in self.current_moves:
+            print(f"- {move}")
+
+    def get_moves_names(self):
+        # Returns a list of the names of the current moves
+        return [m.name for m in self.current_moves]
+
+    def __str__(self):
+        """Return a string representation of the current moveset."""
+        if not self.current_moves:
+            return "Moveset: (no moves)"
+        return "Moveset: " + ", ".join(move.name for move in self.current_moves)
 
 
 class Normal(Pokemon):
