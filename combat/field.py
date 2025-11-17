@@ -115,7 +115,7 @@ class Field:
                 choice = int(input("Enter number: ")) - 1
                 if 0 <= choice < len(self.__team2):
                     self.__active2 = self.__team2[choice]
-                    print(f"{self.__active2.name} is now active!")
+                    print(f"{self.__active2._name} is now active!")
                     return self.__active2
                 else:
                     print("Invalid selection. Please try again.")
@@ -216,7 +216,7 @@ class Field:
                     print("Opción inválida.")
                     return self.player_turn(trainer, active_pokemon, enemy_pokemon)
             except ValueError:
-                print(" Ingresa u número válido.")
+                print(" Ingresa un número válido.")
                 
             return self.player_turn(trainer, active_pokemon, enemy_pokemon)
 
@@ -338,7 +338,7 @@ class Field:
         while len(self.__team1) > 0 and len(self.__team2) > 0:
             self.__number_turn += 1
             print("\n" + 60 * "=")
-            print(f"TURNO #{self.__turn_number}")
+            print(f"TURNO #{self.__number_turn}")
             print(60 * "=")
         
             action1 = self.player_turn(self.trainer1, self.__active1, self.__active2)
