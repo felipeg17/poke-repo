@@ -124,8 +124,10 @@ class CombatEngine: # Class in charge of calculating damage
     def Hit_Accuracy(self):
         # Determines if the move hits based on accuracy and evasion
         move_accuracy = self.move.accuracy
-        accuracy_multiplier = self.attacker.get_stats().accuracy
-        evasion_multiplier = self.defender.get_stats().evasion
+        if self.attacker.get_stats().accuracy == "100%"
+            accuracy_multiplier = 1
+        if self.defender.get_stats().evasion == "100%"
+            evasion_multiplier = 1
 
         # Calculate final hit chance
         Accuracy = move_accuracy * accuracy_multiplier * evasion_multiplier
