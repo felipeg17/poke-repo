@@ -3,9 +3,17 @@ import math
 from pokemon import Pokemon
 from pokemon import Move
 
-# Computes damage base on types and stats
-# Source: https://bulbapedia.bulbagarden.net/wiki/Damage (first generation - pokémon stadium )
-class CombatEngine: # Class in charge of calculating damage
+# Computes damage based on types and stats
+# Source: https://bulbapedia.bulbagarden.net/wiki/Damage (Generation I - Pokémon Stadium)
+class CombatEngine:
+    """Combat engine for Generation I damage calculations.
+
+    Initialized with attacker and defender Pokémon, the move used, and lists
+    of moves previously used by each side.
+
+    The primary public method is `calculate_damage()` which returns a tuple
+    `(damage: int, is_critical: bool)`.
+    """
     def __init__(self, attacker: Pokemon, defender: Pokemon, move: Move, attacker_moves: list, defender_moves: list):
         # Initialize CombatEngine with attacker, defender, move, and moves used by the attacker
         self.attacker = attacker
@@ -15,12 +23,17 @@ class CombatEngine: # Class in charge of calculating damage
         self.defender_moves = defender_moves
 
     def calculate_damage(self):
+        """Compute damage using helper methods.
+
+        Returns a tuple `(damage, is_critical)` where `damage` is an integer
+        and `is_critical` is a boolean indicating whether the hit was critical.
+        """
         # Determines if the move hits
         move_hit = self.Hit_Accuracy()
         if move_hit == False:
             return 0, False  # If the move misses, damage is 0
         
-        # Gets all the necessary attributes to calculate damage
+        # Get all necessary attributes for the damage calculation
         level = self.attacker.get_attribute("level")
         crit = self.critical_hit()
         power = self.move.power
@@ -30,7 +43,7 @@ class CombatEngine: # Class in charge of calculating damage
         stab = 1.5 if self.move.type in attacker_types else 1.0
         move_type = self.move.type
         
-        # Type effectiveness calculation
+        # Type-effectiveness calculation
         if move_type in defender_interactions["Immunities"]:
             type_effectiveness = 0
         elif move_type in defender_interactions["Resistances"]:
@@ -46,10 +59,10 @@ class CombatEngine: # Class in charge of calculating damage
         # Damage calculation
         if crit == True: # If it's a critical hit, level is multiplied by 2
             Damage = int(((((2*level*2/5)+2)*power*(A/D))/50+2)*stab*type_effectiveness)
-        else: # Normal damage calculation
+        else:  # Normal damage calculation
             Damage = int(((((2*level/5)+2)*power*(A/D))/50+2)*stab*type_effectiveness)
         
-        if Damage == 1: # If damage is 1, no random factor is applied
+        if Damage == 1:  # If damage equals 1, do not apply the random factor
             random_factor = 1
         
         if Damage < 1: # Ensures minimum damage of 1
@@ -57,35 +70,46 @@ class CombatEngine: # Class in charge of calculating damage
 
         Damage = math.floor(Damage*random_factor)
         Damage = int(Damage)
-        return Damage, crit # Returns the final damage value as an integer
+        return Damage, crit
 
-    def critical_hit(self) -> bool: # Determines if the move is a critical hit
-        velocidad = self.attacker.get_stats().speed # Get the speed stat of the attacker
+    def critical_hit(self) -> bool:
+        """Determine whether the current move is a critical hit.
+
+        A threshold is calculated from the attacker's speed and previous
+        moves (for example, if 'Focus Energy' has been used). Returns True
+        if a random roll is below the threshold.
+        """
+        speed = self.attacker.get_stats().speed  # Attacker's speed stat
+        # If Focus Energy was used, increase the chance of a critical hit
         if "Focus Energy" in self.attacker_moves:
-            # If Focus Energy has been used, increase critical hit chance
-            if self.move.name in ["Crabhammer", " Karate Chop", "Razor Leaf", "Slash"]:
-                # Almost guaranteed critical hit for high crit moves
+            if self.move.name in ["Crabhammer", "Karate Chop", "Razor Leaf", "Slash"]:
+                # Very high critical chance for high-crit moves
                 threshold = 255
             else:
-                # Increased critical hit chance for other moves
-                threshold = math.floor(((velocidad + 236)/4)*2)
+                # Increased critical chance for other moves
+                threshold = math.floor(((speed + 236) / 4) * 2)
         else:
-            if self.move.name in ["Crabhammer", " Karate Chop", "Razor Leaf", "Slash"]:
-                # High critical hit chance for high crit moves
-                threshold = math.floor(((velocidad + 76)/4)*8)
+            if self.move.name in ["Crabhammer", "Karate Chop", "Razor Leaf", "Slash"]:
+                # Higher critical chance for high-crit moves
+                threshold = math.floor(((speed + 76) / 4) * 8)
             else:
-                # Normal critical hit chance for other moves
-                threshold = math.floor((velocidad + 76)/4)
+                # Normal critical chance for other moves
+                threshold = math.floor((speed + 76) / 4)
         if threshold > 255:
             threshold = 255
-        # Generate a random value to determine if it's a critical hit
-        value = random.randint(0,255)
-        return value < threshold  # If value is less than threshold, it's a critical hit
+        # Roll a random value to determine critical outcome
+        value = random.randint(0, 255)
+        return value < threshold
 
-    #determines attack and defence on bases of first generation rules
+    # Determine attack and defense based on Generation I rules
     def attack_defense(self, critical: bool):
-        
-        # Gets the base attack and defense values using the category of the move
+        """Compute effective Attack and Defense values for the current move.
+
+        Adjustments include Reflect/Light Screen, Explosion/Selfdestruct effects,
+        and handling for stat values above 255. Returns a tuple `(A, D)`.
+        """
+
+        # For a future upgrade:
         # if self.move.category == "special":
         #   A = self.attacker.get_stats().sp_attack
         #   D = self.defender.get_stats().sp_defense
@@ -93,11 +117,11 @@ class CombatEngine: # Class in charge of calculating damage
         #   A = self.attacker.get_stats().attack 
         #   D = self.defender.get_stats().defense
 
-        # As it is not implemented yet, the physical values are used by default
+        # As categories are not implemented yet, use physical stats by default
         A = self.attacker.get_stats().attack 
         D = self.defender.get_stats().defense
        
-        # Finds if reflect or light screen are active
+        # Check whether Reflect or Light Screen are active
         if critical:
             reflect = False
             light_screen = False
@@ -105,7 +129,7 @@ class CombatEngine: # Class in charge of calculating damage
             reflect = "Reflect" in self.defender_moves
             light_screen = "Light Screen" in self.defender_moves
 
-        # Gets effective defense
+        # Compute effective defense
         if not critical:
             if self.move.type == "physical" and reflect:
                 D *= 2
@@ -115,7 +139,7 @@ class CombatEngine: # Class in charge of calculating damage
         if self.move.name in ["Explosion", "Selfdestruct"]:
             D = max(1, math.floor(D / 2))
 
-        # Special Case for stats over 255
+        # Special case for stats over 255
         if A > 255 or D > 255:
             A = math.floor(A / 4)
             D = math.floor(D / 4)
@@ -123,19 +147,26 @@ class CombatEngine: # Class in charge of calculating damage
         if D == 0:
             D = 1
 
-        return A, D # Returns the effective attack and defense values
+        return A, D
     
     def Hit_Accuracy(self):
-        # Determines if the move hits based on accuracy and evasion
+        """Determine whether the move hits its target. Returns True on hit.
+
+        This computes the final hit chance from move accuracy, attacker
+        accuracy, and defender evasion, then compares it against a random roll.
+        """
+        # Compute hit chance based on accuracy and evasion
         move_accuracy = self.move.accuracy
-        if self.attacker.get_stats().accuracy == "100%"
+        accuracy_multiplier = 1
+        evasion_multiplier = 1
+        if self.attacker.get_stats().accuracy == "100%":
             accuracy_multiplier = 1
-        if self.defender.get_stats().evasion == "100%"
+        if self.defender.get_stats().evasion == "100%":
             evasion_multiplier = 1
 
-        # Calculate final hit chance
+        # Final hit chance
         Accuracy = move_accuracy * accuracy_multiplier * evasion_multiplier
 
-        # Generate a random value to determine if the move hits
+        # Roll to decide if the move hits
         R = random.uniform(0, 255)
-        return R < Accuracy  # If value is less than the accuracy, the move hits
+        return R < Accuracy
