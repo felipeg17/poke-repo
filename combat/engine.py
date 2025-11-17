@@ -85,13 +85,17 @@ class CombatEngine: # Class in charge of calculating damage
     #determines attack and defence on bases of first generation rules
     def attack_defense(self, critical: bool):
         
-        # Base effective attack and defense values
-        if self.move.type == "special":
-            A = self.attacker.get_stats().sp_attack
-            D = self.defender.get_stats().sp_defense
-        elif self.move.type == "physical":
-            A = self.attacker.get_stats().attack 
-            D = self.defender.get_stats().defense
+        # Gets the base attack and defense values using the category of the move
+        # if self.move.category == "special":
+        #   A = self.attacker.get_stats().sp_attack
+        #   D = self.defender.get_stats().sp_defense
+        # elif self.move.category == "physical":
+        #   A = self.attacker.get_stats().attack 
+        #   D = self.defender.get_stats().defense
+
+        # As it is not implemented yet, the physical values are used by default
+        A = self.attacker.get_stats().attack 
+        D = self.defender.get_stats().defense
        
         # Finds if reflect or light screen are active
         if critical:
