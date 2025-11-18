@@ -82,6 +82,50 @@ class Move {
     + __str__()
 }
 
+class Field {
+    - trainer1: Trainer
+    - trainer2: Trainer
+    - __team1: list
+    - __team2: list
+    - __active1: Pokemon
+    - __active2: Pokemon
+    - __combat_hp: dict
+    - __number_turn: int
+    + get_team1()
+    + get_team2()
+    + get_active1()
+    + get_active2()
+    + set_active1()
+    + set_active2()
+    + health_bar()
+    + player_turn()
+    + get_combat_hp()
+    + set_combat_hp()
+    + reduce_hp()
+    + exe_at()
+    + resolve_turn()
+    + combat()
+}
+
+class CombatEngine {
+    - attacker: Pokemon
+    - defender: Pokemon
+    - move : Move
+    - attacker_moves: list
+    - defender_moves: list
+    + calculate_damage()
+    + critical_hit()
+    + attack_defense()
+    + Hit_Accuracy()
+}
+
+class Trainer {
+    - name: str
+    - pokemon : list
+    + pokemon_available()
+    + choose_pokemon()
+}
+
 class Normal {}
 class Fire {}
 class Water {}
@@ -104,6 +148,12 @@ class Fairy {}
 Pokemon *-- Stats
 Pokemon *-- Moveset
 Moveset *-- Move
+
+Field *-- Trainer
+Trainer *-- Pokemon
+Field --> CombatEngine: usa
+CombatEngine *-- Pokemon
+CombatEngine *-- Move
 
 Pokemon <|-- Normal
 Pokemon <|-- Fire
