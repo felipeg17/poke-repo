@@ -81,7 +81,7 @@ class CombatEngine:
         """
         speed = self.attacker.get_stats().speed  # Attacker's speed stat
         # If Focus Energy was used, increase the chance of a critical hit
-        if "Focus Energy" in self.attacker_moves:
+        if "Focus Energy" == [i.name for i in self.attacker_moves]:
             if self.move.name in ["Crabhammer", "Karate Chop", "Razor Leaf", "Slash"]:
                 # Very high critical chance for high-crit moves
                 threshold = 255
@@ -126,15 +126,20 @@ class CombatEngine:
             reflect = False
             light_screen = False
         else:
-            reflect = "Reflect" in self.defender_moves
-            light_screen = "Light Screen" in self.defender_moves
+            reflect = "Reflect" == [i.name for i in self.defender_moves]
+            light_screen = "Light Screen" == [i.name for i in self.defender_moves]
 
+        # For a future update: 
         # Compute effective defense
-        if not critical:
-            if self.move.type == "physical" and reflect:
-                D *= 2
-            elif self.move.type == "special" and light_screen:
-                D *= 2
+        # if not critical:
+        #    if self.move.category == "physical" and reflect:
+        #        D *= 2
+        #    elif self.move.category == "special" and light_screen:
+        #        D *= 2
+
+        # Current implementation: only physical moves
+        if  reflect:
+            D *= 2
 
         if self.move.name in ["Explosion", "Selfdestruct"]:
             D = max(1, math.floor(D / 2))
