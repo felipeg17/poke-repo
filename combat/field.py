@@ -38,7 +38,7 @@ class Trainer:
             df = df[~df["name"].isin(pokemon_used)]
 
         for _, row in df.iterrows():
-            print(f"{int(row['pokedex_number']):>3} | {row['name']} | {row['evolution_level']}")
+            print(f"{int(row['pokedex_number']):>3} | {row['pokemon_name']} | {row['evolution_level']}")
         return df
 
     def choose_pokemon(self):
