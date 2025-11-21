@@ -91,6 +91,8 @@ class Field {
     - __active2: Pokemon
     - __combat_hp: dict
     - __number_turn: int
+    - active1_moves: list
+    - active2_moves: list
     + get_team1()
     + get_team2()
     + get_active1()
