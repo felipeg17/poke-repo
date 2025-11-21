@@ -18,6 +18,7 @@ from .pokemon import (
     Dark,
     Steel,
     Fairy,
+    Move,
 )
 
 __all__ = [
@@ -40,4 +41,5 @@ __all__ = [
     "Dark",
     "Steel",
     "Fairy",
+    "Move",
 ]
