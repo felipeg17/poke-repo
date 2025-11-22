@@ -4,6 +4,9 @@ from pathlib import Path
 
 import csv
 
+
+"""Class about bring the information of types.csv
+and replace the classes of types of pokemon """
 class TypeRelations:
     def __init__(self, filename="types.csv"):
     
@@ -14,7 +17,7 @@ class TypeRelations:
     
         try:
             with open(filename, newline="", encoding="utf-8") as csvfile:
-                reader = csv.DictReader(csvfile)
+                reader = csv.DictReader(csvfile) #This converts each row of the CSV into a dictionary
                 for row in reader:
                  type_key = row["type"].strip().lower()
 
@@ -30,7 +33,7 @@ class TypeRelations:
             print(f"Error: No se pudo encontrar el archivo {filename}")
         except Exception as e:
             print(f"Error al cargar el archivo CSV: {e}")
-    
+    """This funtions help for getting especifics parts of structure"""
     def get_relations(self, pkm_type):
         return self._type_data.get(pkm_type.lower(), {"weak": [], "resist": [], "immune": []})
     
