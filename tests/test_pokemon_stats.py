@@ -1,9 +1,14 @@
-from pokemon import Grass, Fire
+from pokemon import Pokemon
 
 
 def test_pokemon_stats_base():
-    bulbasaur = Grass(
-        name="bulbasaur", level=1, pokedex_num=1, color="green", sex="male"
+    bulbasaur = Pokemon(
+        pokemon_name="bulbasaur",
+        type="grass",
+        level=1,
+        pokedex_num=1, 
+        color="green",
+        sex="male"
     )
 
     stats = bulbasaur.get_stats()
@@ -16,8 +21,13 @@ def test_pokemon_stats_base():
 
 
 def test_pokemon_stats_level_increase():
-    lvl10_bulbasaur = Grass(
-        name="bulbasaur", level=10, pokedex_num=1, color="green", sex="male"
+    lvl10_bulbasaur = Pokemon(
+        pokemon_name="bulbasaur",
+        type="grass",
+        level=10,
+        pokedex_num=1,
+        color="green",
+        sex="male"
     )
 
     lvl10_stats = lvl10_bulbasaur.get_stats()
@@ -31,8 +41,13 @@ def test_pokemon_stats_level_increase():
 
 
 def test_level_up_method_increases_stats():
-    charmander = Fire(
-        name="charmander", level=5, pokedex_num=4, color="red", sex="male"
+    charmander = Pokemon(
+        pokemon_name="charmander",
+        type="fire",
+        level=5,
+        pokedex_num=4,
+        color="red",
+        sex="male"
     )
     charmander.level_up()
     stats_after = charmander.get_stats()
