@@ -1,6 +1,15 @@
+import sys
+from pathlib import Path
 import pytest
-from field import Field, Trainer
-from pokemon import Pokemon, Move
+
+# Agregar la raíz del proyecto al path
+project_root = Path(__file__).parent.parent
+sys.path.insert(0, str(project_root))
+
+# Ahora puedes importar
+from combat.field import Field, Trainer
+from pokemon.pokemon import Pokemon, Move, Stats
+from combat.engine import CombatEngine
 
 class TestField:
     
@@ -18,7 +27,7 @@ class TestField:
         ]
         
         return trainer1, trainer2
-    
+
     def test_field_init(self, trainers):
         trainer1, trainer2 = trainers
         field = Field(trainer1, trainer2)
@@ -29,6 +38,7 @@ class TestField:
         assert len(field.get_team2()) == 2
         assert field.get_active1() is not None
         assert field.get_active2() is not None
+
         
     def test_combat_hp_init(self, trainers):
         trainer1, trainer2 = trainers
@@ -263,7 +273,7 @@ class TestField:
         trainer1, trainer2 = trainers
         field = Field(trainer1, trainer2)
         
-        assert field.get_turn_number() == 0
+        assert field.get_number_turn() == 0
         
         move = Move(150, "TestMove", "Normal", 40, 255, 10)
         field.resolve_turn(
@@ -271,4 +281,4 @@ class TestField:
             {"action": "attack", "move": move}
         )
         
-        assert field.get_turn_number() == 1
+        assert field.get_number_turn() == 1
