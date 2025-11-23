@@ -1,6 +1,12 @@
+import sys
+from pathlib import Path
+
+project_root = Path(__file__).parent.parent
+sys.path.insert(0, str(project_root))
+
 import random
 import math
-from pokemon import Pokemon, Move
+from pokemon.pokemon import Pokemon, Move, Stats
 
 
 # Computes damage based on types and stats
@@ -85,11 +91,10 @@ class CombatEngine:
         if Damage == 1:  # If damage equals 1, do not apply the random factor
             random_factor = 1
 
-        if Damage < 1:  # Ensures minimum damage of 1
-            Damage = 1
-
         Damage = math.floor(Damage * random_factor)
-        Damage = int(Damage)
+        Damage = max(1, Damage)  # Ensure at least 1 damage is dealt
+
+        Damage = Damage
         return Damage, crit
 
     def critical_hit(self) -> bool:
@@ -101,7 +106,7 @@ class CombatEngine:
         """
         speed = self.attacker.get_stats().speed  # Attacker's speed stat
         # If Focus Energy was used, increase the chance of a critical hit
-        if "Focus Energy" == [i.name for i in self.attacker_moves]:
+        if "Focus Energy" in [i.name for i in self.attacker_moves]:
             if self.move.name in ["Crabhammer", "Karate Chop", "Razor Leaf", "Slash"]:
                 # Very high critical chance for high-crit moves
                 threshold = 255
@@ -146,7 +151,7 @@ class CombatEngine:
             reflect = False
             # light_screen = False
         else:
-            reflect = "Reflect" == [i.name for i in self.defender_moves]
+            reflect = "Reflect" in [i.name for i in self.defender_moves]
             # light_screen = "Light Screen" == [i.name for i in self.defender_moves]
 
         # For a future update:

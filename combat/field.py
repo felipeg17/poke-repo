@@ -40,16 +40,16 @@ class Trainer:
         """
         df = pd.read_csv(Pokemon.csv_path)
         if pokemon_used:
-            df = df[~df["name"].isin(pokemon_used)]
+            df = df[~df["pokemon_name"].isin(pokemon_used)]
 
         for _, row in df.iterrows():
             print(
-                f"{int(row['pokedex_number']):>3} | {row['name']} | {row['evolution_level']}"
+                f"{int(row['pokedex_number']):>3} | {row['pokemon_name']} | {row['evolution_level']}"
             )
         return df
 
     def choose_pokemon(self):
-        """Interactively choose up to 6 Pokémon for this trainer.
+        """Interactively choose up to 3 Pokémon for this trainer.
         Prompts the user to enter a pokédex number and the Pokémon's type.
         Returns the list of chosen `Pokemon` objects.
         """
@@ -83,7 +83,7 @@ class Trainer:
             )
             print(f"\n✅ {self.name} chose {name} for the battle!")
 
-            if len(self.pokemon) == 6:
+            if len(self.pokemon) == 3:
                 break
 
         return self.pokemon
@@ -385,7 +385,7 @@ class Battle:
     def display_turn_header(self):
         """Display the turn header"""
         print("\n" + 60 * "=")
-        print(f"TURN #{self.field.get_turn_number() + 1}")
+        print(f"TURN #{self.field.get_number_turn() + 1}")
         print(60 * "=")
 
     def display_battle_status(
@@ -583,22 +583,51 @@ class Battle:
         if winner:
             print(f"\n🎉 {winner.name} is the winner!")
 
+    def main_menu():
+        """Main game loop with restart menu"""
+        print("=" * 60)
+        print("POKÉMON BATTLE SIMULATOR")
+        print("=" * 60)
 
-""" At main.py
-    Create Trainer instances:
-        trainer1 = Trainer("Ash")
-        trainer2 = Trainer("Gary")
-    
-    Have each trainer choose their team:
-        trainer1.choose_pokemon()  # Prompts for 6 Pokemon
-        trainer2.choose_pokemon()  # Prompts for 6 Pokemon
-    
-    Create the battle field:
-        field = Field(trainer1, trainer2)
-    
-    Create the battle:
-        battle = Battle(field)
-    
-    Start the battle:
-        battle.battle()
-"""
+        while True:
+            print("\n" + "=" * 60)
+
+            trainer1_name = input("Trainer 1 name: ")
+            trainer2_name = input("Trainer 2 name: ")
+
+            trainer1 = Trainer(trainer1_name)
+            trainer2 = Trainer(trainer2_name)
+
+            print("\n" + "=" * 60)
+            trainer1.choose_pokemon()
+
+            print("\n" + "=" * 60)
+            trainer2.choose_pokemon()
+
+            print("\n" + "=" * 60)
+            print("BATTLE START!")
+            print("=" * 60)
+
+            field = Field(trainer1, trainer2)
+            battle = Battle(field)
+            battle.battle()
+
+            print("\n" + "=" * 60)
+            print("BATTLE END")
+            print("=" * 60)
+
+            while True:
+                option = input(
+                    "\nWhat do you want to do?\n(1) Play again\n(2) Exit\n> "
+                ).strip()
+
+                if option == "1":
+                    print("\n" + "=" * 60)
+                    print("NEW BATTLE")
+                    print("=" * 60)
+                    break
+                elif option == "2":
+                    print("\nThanks for playing! See you later!")
+                    return
+                else:
+                    print("Invalid option. Choose 1 or 2.")
