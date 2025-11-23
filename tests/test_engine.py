@@ -2,6 +2,7 @@ import sys
 from pathlib import Path
 import pytest
 import random
+
 # Agregar la raíz del proyecto al path
 project_root = Path(__file__).parent.parent
 sys.path.insert(0, str(project_root))
@@ -120,7 +121,6 @@ class TestCombatEngine:
         assert A > 0
         assert D > 0
 
-    
     def test_hit_accuracy_returns_bool(self, pokemon_to_test, basic_move):
         attacker, defender = pokemon_to_test
 
