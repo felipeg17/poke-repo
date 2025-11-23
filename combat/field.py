@@ -15,6 +15,16 @@ import pandas as pd
 from combat.engine import CombatEngine
 from pokemon.pokemon import Move, Pokemon
 
+# TODOS:
+# Fix imports
+# Present a 1 vs 1 format to check functionalities
+# When select the pokemons wont print all the list
+# I could not select the attacks
+# SEVERITY HIGH: Why the user selects the pokemon type, that makes no sense
+# When 1 vs 1 is solved implement the 6 vs 6 format, changing pokemon and all that stuff
+# Not because the test passes the code is correct, review all the logic again
+# Check typing there are several variables without type hints
+
 
 class Trainer:
     """Represents a Pokémon trainer with a selectable team.
