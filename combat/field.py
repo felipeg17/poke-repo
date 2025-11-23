@@ -10,9 +10,10 @@ project_root = Path(__file__).parent.parent
 sys.path.insert(0, str(project_root))
 
 # Imports
-from pokemon.pokemon import Pokemon, Move
-from combat.engine import CombatEngine
 import pandas as pd
+
+from combat.engine import CombatEngine
+from pokemon.pokemon import Move, Pokemon
 
 
 class Trainer:
