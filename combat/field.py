@@ -75,13 +75,15 @@ class Trainer:
             row = row.iloc[0]
             name = row["pokemon_name"]
             pokedex_number = int(row["pokedex_number"])
+
             poke_type = (
                 input(f"Enter the primary type for {name}: ").strip().capitalize()
             )
+            level = int(input(f"Enter the level for {name} (1-100): "))
             self.pokemon.append(
-                Pokemon(name, pokedex_number, poke_type, "gray", "male")
+                Pokemon(name, pokedex_number, poke_type, "gray", "male", level)
             )
-            print(f"\n✅ {self.name} chose {name} for the battle!")
+            print(f"\n {self.name} chose {name} for the battle!")
 
             if len(self.pokemon) == 3:
                 break
