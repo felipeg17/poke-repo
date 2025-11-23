@@ -447,7 +447,11 @@ class Battle:
                 return self.action_py(trainer, active_pokemon, enemy_pokemon)
             elif 1 <= choice_move <= len(moves):
                 chosen_move = moves[choice_move - 1]
+                if chosen_move.pp == 0:
+                    print("No PP left for this move. Choose another one.")
+                    return self.choice_attack(trainer, active_pokemon, enemy_pokemon)
                 print(f"{active_pokemon._name} will use {chosen_move.name}!")
+                chosen_move.pp -= 1
                 return {"action": "attack", "move": chosen_move}
             else:
                 print("Invalid choice.")
@@ -633,3 +637,4 @@ class Battle:
                     return
                 else:
                     print("Invalid option. Choose 1 or 2.")
+
