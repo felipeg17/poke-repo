@@ -55,15 +55,17 @@ class CombatEngine:
         stab = 1.5 if self.move.type in attacker_types else 1.0
         move_type = self.move.type
 
+        type_effectiveness = 1
+
         # Type-effectiveness calculation
         if move_type in defender_interactions["Immunities"]:
-            type_effectiveness = 0
-        elif move_type in defender_interactions["Resistances"]:
-            type_effectiveness = 0.5
-        elif move_type in defender_interactions["Weaknesses"]:
-            type_effectiveness = 2.0
-        else:
-            type_effectiveness = 1.0
+            type_effectiveness *= 0.0
+
+        if type_effectiveness != 0.0:
+            if move_type in defender_interactions["Resistances"]:
+                type_effectiveness *= 0.5
+            if move_type in defender_interactions["Weaknesses"]:
+                type_effectiveness *= 2.0
 
         # Gets a random factor
         random_factor = random.randint(217, 255) / 255
