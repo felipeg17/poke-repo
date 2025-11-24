@@ -16,7 +16,8 @@ class Pokemon:
         self,
         pokemon_name: str,
         pokedex_num: int,
-        type: str,
+        type1: str,
+        type2: str,
         color: str,
         sex: str,
         level: int = 1,
@@ -37,7 +38,8 @@ class Pokemon:
         # * Changed to protected so that subclasses can access them
         self._name = pokemon_name
         self._pokedex_num = pokedex_num
-        self._main_type = type
+        self._main_type = type1
+        self._secondary_type = type2
         self._color = color
         self._sex = sex
         self._level = level if level >= 1 and level <= 100 else 1
@@ -121,7 +123,7 @@ class Pokemon:
             "pokemon_name": self._name,
             "pokedex_num": self._pokedex_num,
             "main_type": self._main_type,
-            "type": self._main_type,
+            "secondary_type": self._secondary_type,
             "color": self._color,
             "sex": self._sex,
             "level": self._level,
@@ -299,16 +301,17 @@ class Stats:
 
 class Move:
     # Represents a single Pokemon move
-    def __init__(self, move_id, name, type_, power, accuracy, pp):
+    def __init__(self, move_id, name, type_, power, accuracy, pp, category):
         self.id = move_id
         self.name = name
         self.type = type_
         self.power = power
         self.accuracy = accuracy
         self.pp = pp
+        self.category = category
 
     def __str__(self):
-        return f"{self.name} ({self.type}) | Power: {self.power}, Accuracy: {self.accuracy}, PP: {self.pp}"
+        return f"{self.name} ({self.type}) | Power: {self.power}, Accuracy: {self.accuracy}, PP: {self.pp}, Category: {self.category}"
 
 
 class Moveset:
@@ -353,6 +356,7 @@ class Moveset:
                 power=row.power,
                 accuracy=row.accuracy,
                 pp=row.pp,
+                category=row.category,
             )
             for row in merged.itertuples(index=False)
         ]
@@ -400,136 +404,142 @@ class Moveset:
 
 
 class Normal(Pokemon):
-    def __init__(self, name, pokedex_num, color, sex, level=1):
-        super().__init__(name, pokedex_num, "Normal", color, sex, level)
+    def __init__(self, name, pokedex_num, secondary_type, color, sex, level=1):
+        super().__init__(name, pokedex_num, "Normal", secondary_type, color, sex, level)
         self._weaknesses = ["Fighting"]
         self._resistances = []
         self._immunities = ["Ghost"]
 
 
 class Fire(Pokemon):
-    def __init__(self, name, pokedex_num, color, sex, level=1):
-        super().__init__(name, pokedex_num, "Fire", color, sex, level)
+    def __init__(self, name, pokedex_num, secondary_type, color, sex, level=1):
+        super().__init__(name, pokedex_num, "Fire", secondary_type, color, sex, level)
         self._weaknesses = ["Water", "Ground", "Rock"]
         self._resistances = ["Fire", "Grass", "Ice", "Bug", "Steel", "Fairy"]
         self._immunities = []
 
 
 class Water(Pokemon):
-    def __init__(self, name, pokedex_num, color, sex, level=1):
-        super().__init__(name, pokedex_num, "Water", color, sex, level)
+    def __init__(self, name, pokedex_num, secondary_type, color, sex, level=1):
+        super().__init__(name, pokedex_num, "Water", secondary_type, color, sex, level)
         self._weaknesses = ["Electric", "Grass"]
         self._resistances = ["Fire", "Water", "Ice", "Steel"]
         self._immunities = []
 
 
 class Grass(Pokemon):
-    def __init__(self, name, pokedex_num, color, sex, level=1):
-        super().__init__(name, pokedex_num, "Grass", color, sex, level)
+    def __init__(self, name, pokedex_num, secondary_type, color, sex, level=1):
+        super().__init__(name, pokedex_num, "Grass", secondary_type, color, sex, level)
         self._weaknesses = ["Fire", "Ice", "Poison", "Flying", "Bug"]
         self._resistances = ["Water", "Grass", "Electric", "Ground"]
         self._immunities = []
 
 
 class Electric(Pokemon):
-    def __init__(self, name, pokedex_num, color, sex, level=1):
-        super().__init__(name, pokedex_num, "Electric", color, sex, level)
+    def __init__(self, name, pokedex_num, secondary_type, color, sex, level=1):
+        super().__init__(
+            name, pokedex_num, "Electric", secondary_type, color, sex, level
+        )
         self._weaknesses = ["Ground"]
         self._resistances = ["Electric", "Flying", "Steel"]
         self._immunities = []
 
 
 class Ice(Pokemon):
-    def __init__(self, name, pokedex_num, color, sex, level=1):
-        super().__init__(name, pokedex_num, "Ice", color, sex, level)
+    def __init__(self, name, pokedex_num, secondary_type, color, sex, level=1):
+        super().__init__(name, pokedex_num, "Ice", secondary_type, color, sex, level)
         self._weaknesses = ["Fire", "Fighting", "Rock", "Steel"]
         self._resistances = ["Ice"]
         self._immunities = []
 
 
 class Fighting(Pokemon):
-    def __init__(self, name, pokedex_num, color, sex, level=1):
-        super().__init__(name, pokedex_num, "Fighting", color, sex, level)
+    def __init__(self, name, pokedex_num, secondary_type, color, sex, level=1):
+        super().__init__(
+            name, pokedex_num, "Fighting", secondary_type, color, sex, level
+        )
         self._weaknesses = ["Flying", "Psychic", "Fairy"]
         self._resistances = ["Bug", "Rock", "Dark"]
         self._immunities = []
 
 
 class Poison(Pokemon):
-    def __init__(self, name, pokedex_num, color, sex, level=1):
-        super().__init__(name, pokedex_num, "Poison", color, sex, level)
+    def __init__(self, name, pokedex_num, secondary_type, color, sex, level=1):
+        super().__init__(name, pokedex_num, "Poison", secondary_type, color, sex, level)
         self._weaknesses = ["Ground", "Psychic"]
         self._resistances = ["Grass", "Fighting", "Poison", "Bug", "Fairy"]
         self._immunities = []
 
 
 class Ground(Pokemon):
-    def __init__(self, name, pokedex_num, color, sex, level=1):
-        super().__init__(name, pokedex_num, "Ground", color, sex, level)
+    def __init__(self, name, pokedex_num, secondary_type, color, sex, level=1):
+        super().__init__(name, pokedex_num, "Ground", secondary_type, color, sex, level)
         self._weaknesses = ["Water", "Grass", "Ice"]
         self._resistances = ["Poison", "Rock"]
         self._immunities = ["Electric"]
 
 
 class Flying(Pokemon):
-    def __init__(self, name, pokedex_num, color, sex, level=1):
-        super().__init__(name, pokedex_num, "Flying", color, sex, level)
+    def __init__(self, name, pokedex_num, secondary_type, color, sex, level=1):
+        super().__init__(name, pokedex_num, "Flying", secondary_type, color, sex, level)
         self._weaknesses = ["Electric", "Ice", "Rock"]
         self._resistances = ["Grass", "Fighting", "Bug"]
         self._immunities = ["Ground"]
 
 
 class Psychic(Pokemon):
-    def __init__(self, name, pokedex_num, color, sex, level=1):
-        super().__init__(name, pokedex_num, "Psychic", color, sex, level)
+    def __init__(self, name, pokedex_num, secondary_type, color, sex, level=1):
+        super().__init__(
+            name, pokedex_num, "Psychic", secondary_type, color, sex, level
+        )
         self._weaknesses = ["Bug", "Ghost", "Dark"]
         self._resistances = ["Fighting", "Psychic"]
         self._immunities = []
 
 
 class Bug(Pokemon):
-    def __init__(self, name, pokedex_num, color, sex, level=1):
-        super().__init__(name, pokedex_num, "Bug", color, sex, level)
+    def __init__(self, name, pokedex_num, secondary_type, color, sex, level=1):
+        super().__init__(name, pokedex_num, "Bug", secondary_type, color, sex, level)
         self._weaknesses = ["Fire", "Flying", "Rock"]
         self._resistances = ["Grass", "Fighting", "Ground"]
         self._immunities = []
 
 
 class Rock(Pokemon):
-    def __init__(self, name, pokedex_num, color, sex, level=1):
-        super().__init__(name, pokedex_num, "Rock", color, sex, level)
+    def __init__(self, name, pokedex_num, secondary_type, color, sex, level=1):
+        super().__init__(name, pokedex_num, "Rock", secondary_type, color, sex, level)
         self._weaknesses = ["Water", "Grass", "Fighting", "Ground", "Steel"]
         self._resistances = ["Normal", "Fire", "Poison", "Flying"]
         self._immunities = []
 
 
 class Ghost(Pokemon):
-    def __init__(self, name, pokedex_num, color, sex, level=1):
-        super().__init__(name, pokedex_num, "Ghost", color, sex, level)
+    def __init__(self, name, pokedex_num, secondary_type, color, sex, level=1):
+        super().__init__(name, pokedex_num, "Ghost", secondary_type, color, sex, level)
         self._weaknesses = ["Ghost", "Dark"]
         self._resistances = ["Poison", "Bug"]
         self._immunities = ["Normal", "Fighting"]
 
 
 class Dragon(Pokemon):
-    def __init__(self, name, pokedex_num, color, sex, level=1):
-        super().__init__(name, pokedex_num, "Dragon", color, sex, level)
+    def __init__(self, name, pokedex_num, secondary_type, color, sex, level=1):
+        super().__init__(name, pokedex_num, "Dragon", secondary_type, color, sex, level)
         self._weaknesses = ["Ice", "Dragon", "Fairy"]
         self._resistances = ["Fire", "Water", "Grass", "Electric"]
         self._immunities = []
 
 
 class Dark(Pokemon):
-    def __init__(self, name, pokedex_num, color, sex, level=1):
-        super().__init__(name, pokedex_num, "Dark", color, sex, level)
+    def __init__(self, name, pokedex_num, secondary_type, color, sex, level=1):
+        super().__init__(name, pokedex_num, "Dark", secondary_type, color, sex, level)
         self._weaknesses = ["Fighting", "Bug", "Fairy"]
         self._resistances = ["Ghost", "Dark"]
         self._immunities = ["Psychic"]
 
 
 class Steel(Pokemon):
-    def __init__(self, name, pokedex_num, color, sex, level=1):
-        super().__init__(name, pokedex_num, "Steel", color, sex, level)
+    def __init__(self, name, pokedex_num, secondary_type, color, sex, level=1):
+        super().__init__(name, pokedex_num, "Steel", secondary_type, color, sex, level)
         self._weaknesses = ["Fire", "Fighting", "Ground"]
         self._resistances = [
             "Normal",
@@ -547,18 +557,70 @@ class Steel(Pokemon):
 
 
 class Fairy(Pokemon):
-    def __init__(self, name, pokedex_num, color, sex, level=1):
-        super().__init__(name, pokedex_num, "Fairy", color, sex, level)
+    def __init__(self, name, pokedex_num, secondary_type, color, sex, level=1):
+        super().__init__(name, pokedex_num, "Fairy", secondary_type, color, sex, level)
         self._weaknesses = ["Poison", "Steel"]
         self._resistances = ["Fighting", "Bug", "Dark"]
         self._immunities = ["Dragon"]
 
 
 if __name__ == "__main__":
-    bulbasaur = Pokemon("bulbasaur", 1, "grass", "blue", "male")
+    bulbasaur = Pokemon("bulbasaur", 1, "grass", "blue", "male", 3)
     print(bulbasaur)
     bulbasaur.attack()
     print(bulbasaur.get_stats())
     charmander = Pokemon("charmander", 4, "fire", "orange", "male")
+    print(charmander)
     charmander.attack()
     print(charmander.get_stats())
+
+
+def create_pokemon(
+    name: str,
+    pokedex_num: int,
+    primary_type: str | None = None,
+    secondary_type: str | None = None,
+    color: str = "gray",
+    sex: str = "male",
+    level: int = 1,
+):
+    """Gets the values of a pokemon
+    and returns an instance of the appropriate subclass of Pokemon.
+    """
+    # Map type names (as they appear in the CSV) to subclass constructors
+    TYPE_CLASS = {
+        "Normal": Normal,
+        "Fire": Fire,
+        "Water": Water,
+        "Grass": Grass,
+        "Electric": Electric,
+        "Ice": Ice,
+        "Fighting": Fighting,
+        "Poison": Poison,
+        "Ground": Ground,
+        "Flying": Flying,
+        "Psychic": Psychic,
+        "Bug": Bug,
+        "Rock": Rock,
+        "Ghost": Ghost,
+        "Dragon": Dragon,
+        "Dark": Dark,
+        "Steel": Steel,
+        "Fairy": Fairy,
+    }
+
+    if isinstance(primary_type, str):
+        primary_type = primary_type.strip().capitalize()
+
+    cls = Pokemon
+    if primary_type and primary_type in TYPE_CLASS:
+        cls = TYPE_CLASS[primary_type]
+
+    # Subclass constructors expect (name, pokedex_num, color, sex, level)
+    try:
+        return cls(name, pokedex_num, secondary_type, color, sex, level)
+    except TypeError:
+        # Fallback to base Pokemon if subclass constructor signature differs
+        return Pokemon(
+            name, pokedex_num, primary_type, secondary_type, color, sex, level
+        )
