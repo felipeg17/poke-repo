@@ -11,7 +11,7 @@ sys.path.insert(0, str(project_root))
 
 # Imports
 from pokemon.pokemon import Pokemon, Move, create_pokemon
-from combat.engine import CombatEngine
+from combat.engine import CombatEngine, math, random
 import pandas as pd
 
 
@@ -177,22 +177,26 @@ class Field:
     def reduce_hp(self, pokemon, damage):
         current = self.get_combat_hp(pokemon)
         self.set_combat_hp(pokemon, current - damage)
-        
+
+    def mod_combat_hp(self, pokemon, hp_):
+        current = self.get_combat_hp(pokemon)
+        self.set_combat_hp(pokemon, current + hp_)
+
     def get_combat_attack(self, pokemon):
         return self.__combat_attack.get(pokemon, 0)
-    
+
     def get_combat_defense(self, pokemon):
         return self.__combat_defense.get(pokemon, 0)
-    
+
     def get_combat_sp_attack(self, pokemon):
         return self.__combat_sp_attack.get(pokemon, 0)
-    
+
     def get_combat_sp_defense(self, pokemon):
         return self.__combat_sp_defense.get(pokemon, 0)
-    
+
     def get_combat_speed(self, pokemon):
         return self.__combat_speed.get(pokemon, 0)
-    
+
     def set_combat_attack(self, pokemon, at_):
         self.__combat_attack[pokemon] = max(0, at_)
 
@@ -201,29 +205,29 @@ class Field:
 
     def set_combat_sp_attack(self, pokemon, sp_a):
         self.__combat_sp_attack[pokemon] = max(0, sp_a)
-        
+
     def set_combat_sp_defense(self, pokemon, sp_d):
         self.__combat_sp_defense[pokemon] = max(0, sp_d)
 
     def set_combat_speed(self, pokemon, sp):
         self.__combat_speed[pokemon] = max(0, sp)
-    
+
     def mod_combat_attack(self, pokemon, at_):
         current = self.get_combat_attack(pokemon)
         self.set_combat_attack(pokemon, current + at_)
-        
+
     def mod_combat_defense(self, pokemon, def_):
         current = self.get_combat_defense(pokemon)
         self.set_combat_defense(pokemon, current + def_)
-        
+
     def mod_combat_sp_attack(self, pokemon, sp_a):
         current = self.get_combat_sp_attack(pokemon)
         self.set_combat_sp_attack(pokemon, current + sp_a)
-        
+
     def mod_combat_sp_defense(self, pokemon, sp_d):
         current = self.get_combat_sp_defense(pokemon)
         self.set_combat_sp_defense(pokemon, current + sp_d)
-        
+
     def mod_combat_speed(self, pokemon, sp):
         current = self.get_combat_speed(pokemon)
         self.set_combat_speed(pokemon, current + sp)
@@ -387,7 +391,10 @@ class Field:
             return (True, messages)
 
         if action1["action"] == "attack" and action2["action"] == "attack":
-            if self.__active1.get_stats().speed >= self.__active2.get_stats().speed:
+            if (
+                self.__active1.get_stats().speed >= self.__active2.get_stats().speed
+                or action1["move"].name == "Quick Attack"
+            ):
                 messages.append(f"{self.__active1._name} is faster!")
                 print(self.__active1.attack())
                 messages.append(f"{self.__active1._name} used {action1['move'].name}!")
@@ -490,6 +497,475 @@ class Field:
         bar = "█" * filled + "░" * empty
 
         return f"[{bar}] {current_hp}/{max_hp} HP"
+
+    def Move_Effect(self, move, attacker, defender, damage: int) -> int:
+        """Apply secondary effects of the move, if any.
+
+        This method checks if the move has any secondary effects (like
+        status conditions or stat changes) and applies them to the
+        attacker or defender as appropriate.
+        """
+        hits = 1  # Default number of hits is 1
+
+        if (
+            move.name == "Absorb"
+            or move.name == "Leech Life"
+            or move.name == "Mega Drain"
+        ):
+            heal_amount = math.floor(damage / 2)
+            self.mod_combat_hp(attacker, heal_amount)
+            print(f"{attacker._name} healed for {heal_amount} HP!")
+
+        if move.name == "Acid":
+            random_value = random.randint(1, 100)
+            if random_value <= 10:  # 10% chance to lower defense
+                self.mod_combat_defense(defender, -1)
+                print(f"{defender._name}'s Defense fell!")
+
+        if move.name == "Acid Armor" or move.name == "Barrier":
+            self.mod_combat_defense(attacker, 2)
+            print(f"{attacker._name}'s Defense rose sharply!")
+
+        if move.name == "Agility":
+            self.mod_combat_speed(attacker, 2)
+            print(f"{attacker._name}'s Speed rose sharply!")
+
+        if move.name == "Amnesia" or move.name == "Growth":
+            self.mod_combat_sp_attack(attacker, 2)
+            self.mod_combat_sp_defense(attacker, 2)
+            print(f"{attacker._name}'s Special rose sharply!")
+
+        if move.name == "Aurora Beam":
+            random_value = random.randint(1, 100)
+            if random_value <= 10:  # 10% chance to lower attack
+                self.mod_combat_attack(defender, -1)
+                print(f"{defender._name}'s Attack fell!")
+
+        if (
+            move.name == "Barrage"
+            or move.name == "Comet Punch"
+            or move.name == "Double Slap"
+            or move.name == "Fury Attack"
+            or move.name == "Fury Swipes"
+            or move.name == "Pin Missile"
+            or move.name == "Spike Cannon"
+        ):
+            random_value = random.randint(1, 100)
+            if random_value <= 37:  # 37% chance to hit 2 times
+                hits = 2
+            if random_value > 37 and random_value < 75:  # 37% chance to hit 3 times
+                hits = 3
+            if random_value >= 75 and random_value <= 87:  # 12% chance to hit 4 times
+                hits = 4
+            if random_value > 87:  # 13% chance to hit 5 times
+                hits = 5
+            print(f"{attacker._name} will hit {hits} times!")
+
+        if move.name == "Bite" or move.name == "Bone Club" or move.name == "Hyper Fang":
+            random_value = random.randint(1, 100)
+            if random_value <= 10 and defender.status is None:  # 10% chance to flinch
+                defender.apply_status("Flinched")
+                print(f"{defender._name} flinched!")
+
+        if (
+            move.name == "Blizzard"
+            or move.name == "Ice Beam"
+            or move.name == "Ice Punch"
+        ):
+            random_value = random.randint(1, 100)
+            if (
+                random_value <= 10
+                and defender.status is None
+                and defender.get_attribute("main_type") != "Ice"
+                and defender.get_attribute("secondary_type") != "Ice"
+            ):  # 10% chance to freeze
+                defender.apply_status("Frozen")
+                print(f"{defender._name} was frozen!")
+
+        if move.name == "Body Slam" or move.name == "Lick":
+            random_value = random.randint(1, 100)
+            if random_value <= 30 and defender.status is None:  # 30% chance to paralyze
+                defender.apply_status("Paralyzed")
+                print(f"{defender._name} was paralyzed!")
+
+        if move.name == "Bonemerang" or move.name == "Double Kick":
+            hits = 2
+            print(f"{attacker._name} will hit {hits} times!")
+
+        if move.name == "Bubble" or move.name == "Constrict":
+            random_value = random.randint(1, 100)
+            if random_value <= 10:  # 10% chance to lower speed
+                self.mod_combat_speed(defender, -1)
+                print(f"{defender._name}'s Speed fell!")
+
+        if move.name == "Bubble Beam":
+            random_value = random.randint(1, 100)
+            if random_value <= 33:  # 33% chance to lower speed
+                self.mod_combat_speed(defender, -1)
+                print(f"{defender._name}'s Speed fell!")
+
+        if move.name == "Confuse Ray" or move.name == "Supersonic":
+            if defender.status is None:
+                defender.apply_status("Confused")
+                print(f"{defender._name} became confused!")
+
+        if move.name == "Confusion" or move.name == "Psybeam":
+            random_value = random.randint(1, 100)
+            if random_value <= 10 and defender.status is None:  # 10% chance to confuse
+                defender.apply_status("Confused")
+                print(f"{defender._name} became confused!")
+
+        if move.name == "Defense Curl" or move.name == "Harden":
+            self.mod_combat_defense(attacker, 1)
+            print(f"{attacker._name}'s Defense rose!")
+
+        if move.name == "Dizzy Punch":
+            random_value = random.randint(1, 100)
+            if random_value <= 20 and defender.status is None:  # 20% chance to confuse
+                defender.apply_status("Confused")
+                print(f"{defender._name} became confused!")
+
+        if move.name == "Double-Edge":
+            recoil = math.floor(damage / 4)
+            self.reduce_hp(attacker, recoil)
+            print(f"{attacker._name} took {recoil} recoil damage!")
+
+        if move.name == "Dream Eater":
+            if defender.status == "Asleep":
+                heal_amount = math.floor(damage / 2)
+                self.mod_combat_hp(attacker, heal_amount)
+                print(f"{attacker._name} healed for {heal_amount} HP!")
+
+        if (
+            move.name == "Fissure"
+            or move.name == "Guillotine"
+            or move.name == "Horn Drill"
+        ):
+            if self.get_combat_speed(attacker) > self.get_combat_speed(defender):
+                random_value = random.randint(1, 100)
+                if random_value <= 30:  # 30% chance to instantly defeat
+                    damage = self.get_combat_hp(defender)
+                    print(f"{defender._name} was instantly defeated!")
+
+        if move.name == "Flamethrower":
+            random_value = random.randint(1, 100)
+            if (
+                random_value <= 10
+                and defender.status is None
+                and defender.get_attribute("main_type") != "Fire"
+                and defender.get_attribute("secondary_type") != "Fire"
+            ):  # 10% chance to burn
+                defender.apply_status("Burned")
+                print(f"{defender._name} was burned!")
+
+        if (
+            move.name == "Glare"
+            or move.name == "Stun Spore"
+            or move.name == "Thunder Wave"
+        ):
+            if (
+                defender.status is None
+                and defender.get_attribute("main_type") != "Ground"
+                and defender.get_attribute("secondary_type") != "Ground"
+            ):
+                defender.apply_status("Paralyzed")
+                print(f"{defender._name} was paralyzed!")
+
+        if move.name == "Growl":
+            self.mod_combat_attack(defender, -1)
+            print(f"{defender._name}'s Attack fell!")
+
+        if move.name == "Haze":
+            self.__combat_attack[attacker] = attacker.get_stats().attack
+            self.__combat_defense[attacker] = attacker.get_stats().defense
+            self.__combat_sp_attack[attacker] = attacker.get_stats().sp_attack
+            self.__combat_sp_defense[attacker] = attacker.get_stats().sp_defense
+            self.__combat_speed[attacker] = attacker.get_stats().speed
+
+            self.__combat_attack[defender] = defender.get_stats().attack
+            self.__combat_defense[defender] = defender.get_stats().defense
+            self.__combat_sp_attack[defender] = defender.get_stats().sp_attack
+            self.__combat_sp_defense[defender] = defender.get_stats().sp_defense
+            self.__combat_speed[defender] = defender.get_stats().speed
+            print(f"{attacker._name} and {defender._name}'s stat changes were reset!")
+
+            self.active1_moves = []
+            self.active2_moves = []
+            if attacker.status == "Confused":
+                attacker.status = None
+                print(f"{attacker._name} is no longer confused!")
+            if defender.status in [
+                "Confused",
+                "Flinched",
+                "Paralyzed",
+                "Frozen",
+                "Burned",
+                "Asleep",
+                "Poisoned",
+            ]:
+                defender.status = None
+                print(f"{defender._name} is no longer affected by status conditions!")
+
+        if (
+            move.name == "Headbutt"
+            or move.name == "Low Kick"
+            or move.name == "Rolling Kick"
+            or move.name == "Stomp"
+        ):
+            random_value = random.randint(1, 100)
+            if random_value <= 30 and defender.status is None:  # 30% chance to flinch
+                defender.apply_status("Flinched")
+                print(f"{defender._name} flinched!")
+
+        if (
+            move.name == "Hypnosis"
+            or move.name == "Lovely Kiss"
+            or move.name == "Sing"
+            or move.name == "Sleep Powder"
+            or move.name == "Spore"
+        ):
+            if defender.status is None:
+                defender.apply_status("Asleep")
+                print(f"{defender._name} fell asleep!")
+
+        if move.name == "Leech Seed":
+            if (
+                defender.status is None
+                and defender.get_attribute("main_type") != "Grass"
+                and defender.get_attribute("secondary_type") != "Grass"
+            ):
+                defender.apply_status("Leech Seeded")
+                print(f"{defender._name} was seeded!")
+
+        if move.name == "Leer" or move.name == "Tail Whip":
+            self.mod_combat_defense(defender, -1)
+            print(f"{defender._name}'s Defense fell!")
+
+        if move.name == "Meditate":
+            self.mod_combat_attack(attacker, 1)
+            print(f"{attacker._name}'s Attack rose!")
+
+        if move.name == "Metronome":
+            while True:
+                random_move = random.choice(
+                    [
+                        move
+                        for poke in [attacker, defender]
+                        for move in poke.get_moveset().current_moves
+                    ]
+                )
+                if random_move.name != "Metronome" and random_move.name != "Struggle":
+                    break
+            print(f"{attacker._name} used Metronome and called {random_move.name}!")
+            damage, was_critical, msg = self.execute_attack(
+                attacker,
+                defender,
+                random_move,
+                self.active1_moves
+                if attacker == self.__active1
+                else self.active2_moves,
+                self.active2_moves
+                if defender == self.__active2
+                else self.active1_moves,
+            )
+            print(msg)
+
+        if move.name == "Mimic":
+            for moves in defender.get_moveset().current_moves:
+                print(moves.name)
+            choice = input(f"Choose a move to mimic from {defender._name}'s moveset: ")
+            for moves in defender.get_moveset().current_moves:
+                if moves.name.lower() == choice.lower():
+                    damage, was_critical, msg = self.execute_attack(
+                        attacker,
+                        defender,
+                        moves,
+                        self.active1_moves
+                        if attacker == self.__active1
+                        else self.active2_moves,
+                        self.active2_moves
+                        if defender == self.__active2
+                        else self.active1_moves,
+                    )
+                    print(msg)
+                    break
+
+        if move.name == "Mirror Move":
+            last_move = (
+                self.active2_moves[-1]
+                if attacker == self.__active1
+                else self.active1_moves[-1]
+            )
+            print(f"{attacker._name} used Mirror Move and copied {last_move.name}!")
+            damage, was_critical, msg = self.execute_attack(
+                attacker,
+                defender,
+                last_move,
+                self.active1_moves
+                if attacker == self.__active1
+                else self.active2_moves,
+                self.active2_moves
+                if defender == self.__active2
+                else self.active1_moves,
+            )
+            print(msg)
+
+        if move.name == "Night Shade" or move.name == "Seismic Toss":
+            level = attacker.get_attribute("level")
+            damage = level
+            print(f"{defender._name} took {damage} damage!")
+
+        if (
+            move.name == "Poison Gas"
+            or move.name == "Poison Powder"
+            or move.name == "Toxic"
+        ):
+            if (
+                defender.status is None
+                and defender.get_attribute("main_type") != "Poison"
+                and defender.get_attribute("secondary_type") != "Poison"
+            ):
+                defender.apply_status("Poisoned")
+                print(f"{defender._name} was poisoned!")
+
+        if move.name == "Poison Sting":
+            random_value = random.randint(1, 100)
+            if (
+                random_value <= 20
+                and defender.status is None
+                and defender.get_attribute("main_type") != "Poison"
+                and defender.get_attribute("secondary_type") != "Poison"
+            ):  # 20% chance to poison
+                defender.apply_status("Poisoned")
+                print(f"{defender._name} was poisoned!")
+
+        if move.name == "Psychic":
+            random_value = random.randint(1, 100)
+            if random_value <= 33:  # 33% chance to lower sp_defense
+                self.mod_combat_sp_defense(defender, -1)
+                self.mod_combat_sp_attack(defender, -1)
+                print(f"{defender._name}'s Special fell!")
+
+        if move.name == "Psywave":
+            level = attacker.get_attribute("level")
+            random_multiplier = random.uniform(0.5, 1.5)
+            damage = math.floor(level * random_multiplier)
+            print(f"{defender._name} took {damage} damage from Psywave!")
+
+        if move.name == "Rage":
+            if defender.status == None:
+                defender.apply_status("Rage")
+                print(f"{defender._name} is now in Rage!")
+
+        if move.name == "Recover" or move.name == "Soft-Boiled":
+            heal_amount = math.floor(attacker.get_stats().hp / 2)
+            self.mod_combat_hp(attacker, heal_amount)
+            print(f"{attacker._name} healed for {heal_amount} HP!")
+
+        if move.name == "Rest":
+            attacker.apply_status("Asleep")
+            self.set_combat_hp(attacker, attacker.get_stats().hp)
+            print(f"{attacker._name} restored its HP and fell asleep!")
+
+        if move.name == "Screech":
+            self.mod_combat_defense(defender, -2)
+            print(f"{defender._name}'s Defense fell sharply!")
+
+        if move.name == "Self-Destruct" or move.name == "Explosion":
+            self.set_combat_hp(attacker, 0)
+            print(f"{attacker._name} fainted due to recoil!")
+
+        if move.name == "Sharpen":
+            self.mod_combat_attack(attacker, 1)
+            print(f"{attacker._name}'s Attack rose!")
+
+        if move.name == "Sludge":
+            random_value = random.randint(1, 100)
+            if (
+                random_value <= 30
+                and defender.status is None
+                and defender.get_attribute("main_type") != "Poison"
+                and defender.get_attribute("secondary_type") != "Poison"
+            ):  # 30% chance to poison
+                defender.apply_status("Poisoned")
+                print(f"{defender._name} was poisoned!")
+
+        if move.name == "Smog":
+            random_value = random.randint(1, 100)
+            if (
+                random_value <= 40
+                and defender.status is None
+                and defender.get_attribute("main_type") != "Poison"
+                and defender.get_attribute("secondary_type") != "Poison"
+            ):  # 40% chance to poison
+                defender.apply_status("Poisoned")
+                print(f"{defender._name} was poisoned!")
+
+        if move.name == "Splash":
+            print(f"{attacker._name} splashed around but nothing happened!")
+
+        if move.name == "String Shot":
+            self.mod_combat_speed(defender, -1)
+            print(f"{defender._name}'s Speed fell!")
+
+        if move.name == "Struggle":
+            recoil = math.floor(damage / 2)
+            self.reduce_hp(attacker, recoil)
+            print(f"{attacker._name} took {recoil} recoil damage!")
+
+        if move.name == "Submission" or move.name == "Take Down":
+            recoil = math.floor(damage / 4)
+            self.reduce_hp(attacker, recoil)
+            print(f"{attacker._name} took {recoil} recoil damage!")
+
+        if move.name == "Substitute":
+            heal_amount = math.floor(attacker.get_stats().hp / 4)
+            self.mod_combat_hp(attacker, heal_amount)
+            print(
+                f"{attacker._name} created a substitute that can absorb {heal_amount} HP worth of damage!"
+            )
+
+        if move.name == "Super Fang":
+            current_hp = self.get_combat_hp(defender)
+            damage = math.floor(current_hp / 2)
+            print(f"{defender._name} took {damage} damage from Super Fang!")
+
+        if move.name == "Sword Dance":
+            self.mod_combat_attack(attacker, 2)
+            print(f"{attacker._name}'s Attack rose sharply!")
+
+        if (
+            move.name == "Thunder"
+            or move.name == "Thunderbolt"
+            or move.name == "Thunder Punch"
+            or move.name == "Thunder Shock"
+        ):
+            random_value = random.randint(1, 100)
+            if (
+                random_value <= 10
+                and defender.status is None
+                and defender.get_attribute("main_type") != "Electric"
+                and defender.get_attribute("secondary_type") != "Electric"
+            ):  # 10% chance to paralyze
+                defender.apply_status("Paralyzed")
+                print(f"{defender._name} was paralyzed!")
+        if move.name == "Twineedle":
+            hits = 2
+            print(f"{attacker._name} will hit {hits} times!")
+            random_value = random.randint(1, 100)
+            if (
+                random_value <= 20
+                and defender.status is None
+                and defender.get_attribute("main_type") != "Poison"
+                and defender.get_attribute("secondary_type") != "Poison"
+            ):  # 20% chance to poison
+                defender.apply_status("Poisoned")
+                print(f"{defender._name} was poisoned!")
+        if move.name == "Withdraw":
+            self.mod_combat_defense(attacker, 1)
+            print(f"{attacker._name}'s Defense rose!")
+
+        return hits * damage
 
 
 class Battle:
