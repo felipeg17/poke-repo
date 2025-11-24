@@ -1,6 +1,6 @@
 import random
 import math
-from pokemon.pokemon import Pokemon, Move, Stats
+from pokemon.pokemon import Pokemon, Move
 
 
 # Computes damage based on types and stats
@@ -23,14 +23,21 @@ class CombatEngine:
         attacker_moves: list,
         defender_moves: list,
     ):
-        # Initialize CombatEngine with attacker, defender, move, and moves used by the attacker
+        # Initialize CombatEngine with attacker, defender, move, moves used by the attacker and defender, and field
         self.attacker = attacker
         self.defender = defender
         self.move = move
         self.attacker_moves = attacker_moves
         self.defender_moves = defender_moves
 
-    def calculate_damage(self):
+    def calculate_damage(
+        self,
+        attack_stats,
+        defense_stats,
+        sp_attack_stats,
+        sp_defense_stats,
+        speed_stats,
+    ):
         """Compute damage using helper methods.
 
         Returns a tuple `(damage, is_critical)` where `damage` is an integer
@@ -38,14 +45,16 @@ class CombatEngine:
         """
         # Determines if the move hits
         move_hit = self.Hit_Accuracy()
-        if not move_hit:
-            return 0, False  # If the move misses, damage is 0
+        if self.move.power == 0:
+            return 0, False, move_hit  # If the move has no power, damage is 0
 
         # Get all necessary attributes for the damage calculation
         level = self.attacker.get_attribute("level")
-        crit = self.critical_hit()
+        crit = self.critical_hit(speed_stats)
         power = self.move.power
-        A, D = self.attack_defense(crit)
+        A, D = self.attack_defense(
+            crit, attack_stats, defense_stats, sp_attack_stats, sp_defense_stats
+        )
         attacker_types = [self.attacker.get_attribute("main_type")]
         defender_interactions: dict = {
             "Weaknesses": self.defender.get_attribute("weaknesses"),
@@ -88,16 +97,16 @@ class CombatEngine:
         Damage = max(1, Damage)  # Ensure at least 1 damage is dealt
 
         Damage = Damage
-        return Damage, crit
+        return Damage, crit, move_hit
 
-    def critical_hit(self) -> bool:
+    def critical_hit(self, speed_stats) -> bool:
         """Determine whether the current move is a critical hit.
 
         A threshold is calculated from the attacker's speed and previous
         moves (for example, if 'Focus Energy' has been used). Returns True
         if a random roll is below the threshold.
         """
-        speed = self.attacker.get_stats().speed  # Attacker's speed stat
+        speed = speed_stats.get(self.attacker, 0)  # Attacker's speed stat
         # If Focus Energy was used, increase the chance of a critical hit
         if "Focus Energy" in [i.name for i in self.attacker_moves]:
             if self.move.name in ["Crabhammer", "Karate Chop", "Razor Leaf", "Slash"]:
@@ -120,7 +129,14 @@ class CombatEngine:
         return value < threshold
 
     # Determine attack and defense based on Generation I rules
-    def attack_defense(self, critical: bool):
+    def attack_defense(
+        self,
+        critical: bool,
+        attack_stats,
+        defense_stats,
+        sp_attack_stats,
+        sp_defense_stats,
+    ):
         """Compute effective Attack and Defense values for the current move.
 
         Adjustments include Reflect/Light Screen, Explosion/Selfdestruct effects,
@@ -128,11 +144,11 @@ class CombatEngine:
         """
 
         if self.move.category == "Special":
-            A = self.attacker.get_stats().sp_attack
-            D = self.defender.get_stats().sp_defense
+            A = sp_attack_stats.get(self.attacker, 0)
+            D = sp_defense_stats.get(self.defender, 0)
         elif self.move.category == "Physical":
-            A = self.attacker.get_stats().attack
-            D = self.defender.get_stats().defense
+            A = attack_stats.get(self.attacker, 0)
+            D = defense_stats.get(self.defender, 0)
 
         # Check whether Reflect or Light Screen are active
         if critical:
