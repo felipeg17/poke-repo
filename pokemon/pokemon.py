@@ -1,5 +1,5 @@
 import pandas as pd
-
+import random as random
 from pathlib import Path
 
 
@@ -57,7 +57,9 @@ class Pokemon:
         self._resistances: list = []
         self._immunities: list = []
 
-        self.status: str | None = None  # Status condition (e.g., 'paralyzed', 'burned')
+        self.status: dict | None = (
+            None  # Status condition (e.g., 'paralyzed', 'burned')
+        )
 
         ### TODO: Moveset
         # Shoudl be managed by another class -> composition
@@ -257,6 +259,29 @@ class Pokemon:
 
     def show_moves(self):
         self._moveset.show_moves()
+
+    def apply_status(self, new_status: str):
+        if self.status is None:
+            self.status = {}  # inicializar si está vacío
+
+        new_status = new_status
+        if new_status == "Paralyzed":
+            turns_left = 999
+        if new_status == "Burned":
+            turns_left = 999
+        if new_status == "Poisoned":
+            turns_left = 999
+        if new_status == "Asleep":
+            turns_left = random.randint(1, 7)
+        if new_status == "Frozen":
+            turns_left = 999
+        if new_status == "Confused":
+            turns_left = 999
+        if new_status == "Seeded":
+            turns_left = 999
+        if new_status == "Flinched":
+            turns_left = 1
+        self.status[new_status] = turns_left
 
 
 ### TODO: Move to another module
