@@ -57,6 +57,8 @@ class Pokemon:
         self._resistances: list = []
         self._immunities: list = []
 
+        self.status: str | None = None  # Status condition (e.g., 'paralyzed', 'burned')
+
         ### TODO: Moveset
         # Shoudl be managed by another class -> composition
         # Because a pokemon HAS a moveset
