@@ -42,10 +42,6 @@ class Trainer:
         if pokemon_used:
             df = df[~df["pokemon_name"].isin(pokemon_used)]
 
-        for _, row in df.iterrows():
-            print(
-                f"{int(row['pokedex_number']):>3} | {row['pokemon_name']} | {row['evolution_level']}"
-            )
         return df
 
     def choose_pokemon(self):
@@ -76,18 +72,42 @@ class Trainer:
             name = row["pokemon_name"]
             pokedex_number = int(row["pokedex_number"])
 
-            poke_type = (
-                input(f"Enter the primary type for {name}: ").strip().capitalize()
-            )
-            level = int(input(f"Enter the level for {name} (1-100): "))
+            poke_type = row["type1"]
+            poke_type2 = row["type2"]
+            while True:
+                try:
+                    level = int(input(f"Enter the level for {name} (1-100): "))
+                    if level >= 1 and level <= 100:
+                        break
+                    else:
+                        print("Level must be between 1 and 100.")
+                except ValueError:
+                    print("Invalid input. Please enter a valid number.")
             self.pokemon.append(
-                Pokemon(name, pokedex_number, poke_type, "gray", "male", level)
+                Pokemon(
+                    name, pokedex_number, poke_type, poke_type2, "gray", "male", level
+                )
             )
             print(f"\n {self.name} chose {name} for the battle!")
 
-            if len(self.pokemon) == 3:
+            if len(self.pokemon) == 1:
+                print("This is your full team for the battle.")
+                for pkm in self.pokemon:
+                    print(
+                        f"{pkm.get_attribute('pokedex_num')} - {pkm.get_attribute('pokemon_name')} - level {pkm.get_attribute('level')}"
+                    )
+                while True:
+                    print("Do you want to proceed with this team? (y/n)")
+                    confirm = input().strip().lower()
+                    if confirm == "y" or confirm == "n":
+                        break
+                    else:
+                        print("Invalid input, try again.")
+                        continue
+                if confirm == "n":
+                    self.pokemon = []
+                    continue
                 break
-
         return self.pokemon
 
 
@@ -202,23 +222,28 @@ class Field:
 
         return True
 
-    def execute_attack(self, attacker: Pokemon, defender: Pokemon, move: Move):
+    def execute_attack(
+        self,
+        attacker: Pokemon,
+        defender: Pokemon,
+        move: Move,
+        attacker_moves: list,
+        defender_moves: list,
+    ):
         """Execute an attack from attacker to defender using the specified move."""
         engine = CombatEngine(
             attacker=attacker,
             defender=defender,
             move=move,
-            attacker_moves=[],
-            defender_moves=[],
+            attacker_moves=attacker_moves,
+            defender_moves=defender_moves,
         )
 
         damage, was_critical = engine.calculate_damage()
-
         if damage == 0:
             return (0, False, "The attack missed!")
 
         self.reduce_hp(defender, damage)
-
         effectiveness = defender.receive_attack(move.type)
 
         message = f"It dealt {damage} damage!"
@@ -252,32 +277,48 @@ class Field:
 
         if action1["action"] == "switch" and action2["action"] == "switch":
             self.__active1 = action1["new_pokemon"]
+            self.active1_moves = []
             messages.append(f"{self.trainer1.name} sent out {self.__active1._name}!")
 
             self.__active2 = action2["new_pokemon"]
+            self.active2_moves = []
             messages.append(f"{self.trainer2.name} sent out {self.__active2._name}!")
             return (True, messages)
 
         elif action1["action"] == "switch":
             self.__active1 = action1["new_pokemon"]
+            self.active1_moves = []
             messages.append(f"{self.trainer1.name} sent out {self.__active1._name}!")
 
             if action2["action"] == "attack":
+                messages.append(self.__active2.attack())
                 messages.append(f"{self.__active2._name} used {action2['move'].name}!")
+                self.active2_moves.append(action2["move"])
                 damage, crit, msg = self.execute_attack(
-                    self.__active2, self.__active1, action2["move"]
+                    self.__active2,
+                    self.__active1,
+                    action2["move"],
+                    self.active2_moves,
+                    self.active1_moves,
                 )
                 messages.append(msg)
             return (True, messages)
 
         elif action2["action"] == "switch":
             self.__active2 = action2["new_pokemon"]
+            self.active2_moves = []
             messages.append(f"{self.trainer2.name} sent out {self.__active2._name}!")
 
             if action1["action"] == "attack":
+                messages.append(self.__active1.attack())
                 messages.append(f"{self.__active1._name} used {action1['move'].name}!")
+                self.active1_moves.append(action1["move"])
                 damage, crit, msg = self.execute_attack(
-                    self.__active1, self.__active2, action1["move"]
+                    self.__active1,
+                    self.__active2,
+                    action1["move"],
+                    self.active1_moves,
+                    self.active2_moves,
                 )
                 messages.append(msg)
             return (True, messages)
@@ -285,34 +326,58 @@ class Field:
         if action1["action"] == "attack" and action2["action"] == "attack":
             if self.__active1.get_stats().speed >= self.__active2.get_stats().speed:
                 messages.append(f"{self.__active1._name} is faster!")
+                print(self.__active1.attack())
                 messages.append(f"{self.__active1._name} used {action1['move'].name}!")
+                self.active1_moves.append(action1["move"])
                 damage, crit, msg = self.execute_attack(
-                    self.__active1, self.__active2, action1["move"]
+                    self.__active1,
+                    self.__active2,
+                    action1["move"],
+                    self.active1_moves,
+                    self.active2_moves,
                 )
                 messages.append(msg)
 
                 if self.get_combat_hp(self.__active2) > 0:
+                    print(self.__active2.attack())
                     messages.append(
                         f"{self.__active2._name} used {action2['move'].name}!"
                     )
+                    self.active2_moves.append(action2["move"])
                     damage, crit, msg = self.execute_attack(
-                        self.__active2, self.__active1, action2["move"]
+                        self.__active2,
+                        self.__active1,
+                        action2["move"],
+                        self.active2_moves,
+                        self.active1_moves,
                     )
                     messages.append(msg)
             else:
                 messages.append(f"{self.__active2._name} is faster!")
+                messages.append(self.__active2.attack())
                 messages.append(f"{self.__active2._name} used {action2['move'].name}!")
+                self.active2_moves.append(action2["move"])
                 damage, crit, msg = self.execute_attack(
-                    self.__active2, self.__active1, action2["move"]
+                    self.__active2,
+                    self.__active1,
+                    action2["move"],
+                    self.active2_moves,
+                    self.active1_moves,
                 )
                 messages.append(msg)
 
                 if self.get_combat_hp(self.__active1) > 0:
+                    messages.append(self.__active1.attack())
                     messages.append(
                         f"{self.__active1._name} used {action1['move'].name}!"
                     )
+                    self.active1_moves.append(action1["move"])
                     damage, crit, msg = self.execute_attack(
-                        self.__active1, self.__active2, action1["move"]
+                        self.__active1,
+                        self.__active2,
+                        action1["move"],
+                        self.active1_moves,
+                        self.active2_moves,
                     )
                     messages.append(msg)
 
@@ -513,6 +578,7 @@ class Battle:
         if confirm.lower() == "y":
             return {"action": "surrender"}
         else:
+            print("Surrender cancelled.")
             return self.action_py(
                 trainer,
                 self.field.get_active1()
@@ -637,4 +703,3 @@ class Battle:
                     return
                 else:
                     print("Invalid option. Choose 1 or 2.")
-
