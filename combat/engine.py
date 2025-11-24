@@ -250,17 +250,6 @@ class CombatEngine:
                 print(f"{self.attacker._name} is {Status.lower()} and can not attack")
                 return False, power
 
-            if Status1 == "Confused":
-                value = random.randint(0, 100)
-                if value <= 50:  # 50% of attacking himself
-                    self.defender = self.attacker
-                    self.defender_moves = self.attacker_moves
-                    power = 40
-                    print(
-                        f"{self.attacker._name} is confused and it is attacking itself!"
-                    )
-                return True, power
-
             if Status1 == "Seeded":
                 return True, power
 
