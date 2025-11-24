@@ -128,15 +128,30 @@ class Field:
         self.__active1 = self.__team1[0] if self.__team1 else None
         self.__active2 = self.__team2[0] if self.__team2 else None
         self.__combat_hp = {}
+        self.__combat_attack = {}
+        self.__combat_defense = {}
+        self.__combat_sp_attack = {}
+        self.__combat_sp_defense = {}
+        self.__combat_speed = {}
         self.__number_turn = 0
         self.active1_moves = []
         self.active2_moves = []
 
         for pokemon in self.__team1:
             self.__combat_hp[pokemon] = pokemon.get_stats().hp
+            self.__combat_attack[pokemon] = pokemon.get_stats().attack
+            self.__combat_defense[pokemon] = pokemon.get_stats().defense
+            self.__combat_sp_attack[pokemon] = pokemon.get_stats().sp_attack
+            self.__combat_sp_defense[pokemon] = pokemon.get_stats().sp_defense
+            self.__combat_speed[pokemon] = pokemon.get_stats().speed
 
         for pokemon in self.__team2:
             self.__combat_hp[pokemon] = pokemon.get_stats().hp
+            self.__combat_attack[pokemon] = pokemon.get_stats().attack
+            self.__combat_defense[pokemon] = pokemon.get_stats().defense
+            self.__combat_sp_attack[pokemon] = pokemon.get_stats().sp_attack
+            self.__combat_sp_defense[pokemon] = pokemon.get_stats().sp_defense
+            self.__combat_speed[pokemon] = pokemon.get_stats().speed
 
     def get_team1(self):
         return self.__team1
@@ -159,11 +174,59 @@ class Field:
     def set_combat_hp(self, pokemon, value):
         self.__combat_hp[pokemon] = max(0, value)
 
-    """Apply damage to pokemon, can't go below 0"""
-
     def reduce_hp(self, pokemon, damage):
         current = self.get_combat_hp(pokemon)
         self.set_combat_hp(pokemon, current - damage)
+        
+    def get_combat_attack(self, pokemon):
+        return self.__combat_attack.get(pokemon, 0)
+    
+    def get_combat_defense(self, pokemon):
+        return self.__combat_defense.get(pokemon, 0)
+    
+    def get_combat_sp_attack(self, pokemon):
+        return self.__combat_sp_attack.get(pokemon, 0)
+    
+    def get_combat_sp_defense(self, pokemon):
+        return self.__combat_sp_defense.get(pokemon, 0)
+    
+    def get_combat_speed(self, pokemon):
+        return self.__combat_speed.get(pokemon, 0)
+    
+    def set_combat_attack(self, pokemon, at_):
+        self.__combat_attack[pokemon] = max(0, at_)
+
+    def set_combat_defense(self, pokemon, def_):
+        self.__combat_defense[pokemon] = max(0, def_)
+
+    def set_combat_sp_attack(self, pokemon, sp_a):
+        self.__combat_sp_attack[pokemon] = max(0, sp_a)
+        
+    def set_combat_sp_defense(self, pokemon, sp_d):
+        self.__combat_sp_defense[pokemon] = max(0, sp_d)
+
+    def set_combat_speed(self, pokemon, sp):
+        self.__combat_speed[pokemon] = max(0, sp)
+    
+    def mod_combat_attack(self, pokemon, at_):
+        current = self.get_combat_attack(pokemon)
+        self.set_combat_attack(pokemon, current + at_)
+        
+    def mod_combat_defense(self, pokemon, def_):
+        current = self.get_combat_defense(pokemon)
+        self.set_combat_defense(pokemon, current + def_)
+        
+    def mod_combat_sp_attack(self, pokemon, sp_a):
+        current = self.get_combat_sp_attack(pokemon)
+        self.set_combat_sp_attack(pokemon, current + sp_a)
+        
+    def mod_combat_sp_defense(self, pokemon, sp_d):
+        current = self.get_combat_sp_defense(pokemon)
+        self.set_combat_sp_defense(pokemon, current + sp_d)
+        
+    def mod_combat_speed(self, pokemon, sp):
+        current = self.get_combat_speed(pokemon)
+        self.set_combat_speed(pokemon, current + sp)
 
     def end_battle(self):
         """True if at least one team is completely defeated"""
