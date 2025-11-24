@@ -372,15 +372,17 @@ class Moveset:
         pm_df = pm_df[pm_df["pokemon_id"] == self.pokedex_num]
         pm_df = pm_df[pm_df["level_learned"] <= self.level]
         pm_df = pm_df.sort_values(by="level_learned", ascending=False)
+        pm_df = pm_df.drop_duplicates(subset=['move_id'], keep='first')
         top_moves_ids = pm_df["move_id"].head(4).tolist()
-
         # Select corresponding Move objects
         selected = []
+        ids = []
 
         for m in self.available_moves:
             # Check if the move's ID is in the top moves list
-            if m.id in top_moves_ids:
+            if m.id in top_moves_ids and m.id not in ids:
                 selected.append(m)
+                ids.append(m.id)
 
         return selected
 
