@@ -370,8 +370,8 @@ class Field:
             self.__active2 = action2["new_pokemon"]
             self.active2_moves = []
             messages.append(f"{self.trainer2.name} sent out {self.__active2._name}!")
-            self.status_damage(self.__active1)
-            self.status_damage(self.__active2)
+            messages.append(self.status_damage(self.__active1))
+            messages.append(self.status_damage(self.__active2))
             return (True, messages)
 
         elif action1["action"] == "switch":
@@ -403,8 +403,8 @@ class Field:
                             f"{self.__active1._name} is no longer {active1_Status}"
                         )
 
-            self.status_damage(self.__active1)
-            self.status_damage(self.__active2)
+            messages.append(self.status_damage(self.__active1))
+            messages.append(self.status_damage(self.__active2))
             return (True, messages)
 
         elif action2["action"] == "switch":
@@ -436,8 +436,8 @@ class Field:
                             f"{self.__active2._name} is no longer {active2_Status}"
                         )
 
-            self.status_damage(self.__active1)
-            self.status_damage(self.__active2)
+            messages.append(self.status_damage(self.__active1))
+            messages.append(self.status_damage(self.__active2))
 
             return (True, messages)
 
@@ -459,7 +459,7 @@ class Field:
                     self.active2_moves,
                 )
                 messages.append(msg)
-                self.status_damage(self.__active1)
+                messages.append(self.status_damage(self.__active1))
                 if self.get_combat_hp(self.__active2) > 0:
                     print(self.__active2.attack())
                     messages.append(
@@ -474,7 +474,7 @@ class Field:
                         self.active1_moves,
                     )
                     messages.append(msg)
-                    self.status_damage(self.__active2)
+                    messages.append(self.status_damage(self.__active2))
                     active1_Status = (
                         list(self.__active1.status.keys())[0]
                         if self.__active1.status
@@ -514,7 +514,7 @@ class Field:
                         self.active2_moves,
                     )
                     messages.append(msg)
-                    self.status_damage(self.__active1)
+                    messages.append(self.status_damage(self.__active1))
                     active2_Status = (
                         list(self.__active2.status.keys())[0]
                         if self.__active2.status
@@ -1050,6 +1050,7 @@ class Field:
         return hits * damage, message
 
     def status_damage(self, attacker):
+        message = ""
         poke_status = list(attacker.status.keys())[0] if attacker.status else None
         if poke_status:
             if (
@@ -1058,8 +1059,9 @@ class Field:
                 or poke_status == "Seeded"
             ):
                 damage = math.floor((attacker.get_stats().hp) / 16)
-                print(f"{attacker._name} took {damage} damage from {poke_status}")
+                message = f"{attacker._name} took {damage} damage from {poke_status}"
                 self.reduce_hp(attacker, damage)
+        return message
 
 
 class Battle:
@@ -1182,9 +1184,9 @@ class Battle:
             elif current_hp <= 0:
                 status = " (defeated)"
             else:
-                status = ""
+                status = ", ".join(pokemon.status.keys()) if pokemon.status else None
 
-            print(f"({i}) {pokemon._name} {hp_bar}{status}")
+            print(f"({i}) {pokemon._name} {hp_bar} Status:{status}")
         print(f"{30 * '='}")
 
         try:
@@ -1342,4 +1344,3 @@ class Battle:
                     return
                 else:
                     print("Invalid option. Choose 1 or 2.")
-
