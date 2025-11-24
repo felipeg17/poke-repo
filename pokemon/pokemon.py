@@ -278,15 +278,15 @@ class Stats:
         self.set_initial_stats()
 
     def set_initial_stats(self):
+        print(f"Antes de subir de nivel: {self}")
         for _ in range(1, self.initial_level):
-            print(f"Antes de subir de nivel: {self}")
             self.hp = round(self.hp + (110 + self.base_hp) / 100)
             self.attack = round(self.attack + (5 + self.base_attack) / 100)
             self.defense = round(self.defense + (5 + self.base_defense) / 100)
             self.sp_attack = round(self.sp_attack + (5 + self.base_sp_attack) / 100)
             self.sp_defense = round(self.sp_defense + (5 + self.base_sp_defense) / 100)
             self.speed = round(self.speed + (5 + self.base_speed) / 100)
-            print(f"Estadísticas después de subir de nivel: {self}")
+        print(f"Estadísticas después de subir de nivel: {self}")
 
     def combat_stats(self, accuracy="100%", evasion="100%"):
         self.accuracy = accuracy
@@ -372,7 +372,7 @@ class Moveset:
         pm_df = pm_df[pm_df["pokemon_id"] == self.pokedex_num]
         pm_df = pm_df[pm_df["level_learned"] <= self.level]
         pm_df = pm_df.sort_values(by="level_learned", ascending=False)
-        pm_df = pm_df.drop_duplicates(subset=['move_id'], keep='first')
+        pm_df = pm_df.drop_duplicates(subset=["move_id"], keep="first")
         top_moves_ids = pm_df["move_id"].head(4).tolist()
         # Select corresponding Move objects
         selected = []
