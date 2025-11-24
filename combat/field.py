@@ -297,6 +297,14 @@ class Field:
         attacker_moves: list,
         defender_moves: list,
     ):
+        attacker_Status = list(attacker.status.keys())[0] if attacker.status else None
+        if attacker_Status == "Confused":
+            value = random.randint(0, 100)
+            if value <= 50:  # 50% of attacking himself
+                defender = attacker
+                defender_moves = attacker_moves
+                move = Move(0, "Confused Hit", "Normal", 40, 100, 10, "Physical")
+                print(f"{attacker._name} is confused and it is attacking itself!")
         """Execute an attack from attacker to defender using the specified move."""
         engine = CombatEngine(
             attacker=attacker,
@@ -362,6 +370,8 @@ class Field:
             self.__active2 = action2["new_pokemon"]
             self.active2_moves = []
             messages.append(f"{self.trainer2.name} sent out {self.__active2._name}!")
+            self.status_damage(self.__active1)
+            self.status_damage(self.__active2)
             return (True, messages)
 
         elif action1["action"] == "switch":
@@ -381,6 +391,20 @@ class Field:
                     self.active1_moves,
                 )
                 messages.append(msg)
+                active1_Status = (
+                    list(self.__active1.status.keys())[0]
+                    if self.__active1.status
+                    else None
+                )
+                if self.__active1.status:
+                    if active1_Status == "Flinched":
+                        del self.__active1.status[active1_Status]
+                        messages.append(
+                            f"{self.__active1._name} is no longer {active1_Status}"
+                        )
+
+            self.status_damage(self.__active1)
+            self.status_damage(self.__active2)
             return (True, messages)
 
         elif action2["action"] == "switch":
@@ -400,6 +424,21 @@ class Field:
                     self.active2_moves,
                 )
                 messages.append(msg)
+                active2_Status = (
+                    list(self.__active2.status.keys())[0]
+                    if self.__active2.status
+                    else None
+                )
+                if self.__active2.status:
+                    if active2_Status == "Flinched":
+                        del self.__active2.status[active2_Status]
+                        messages.append(
+                            f"{self.__active2._name} is no longer {active2_Status}"
+                        )
+
+            self.status_damage(self.__active1)
+            self.status_damage(self.__active2)
+
             return (True, messages)
 
         if action1["action"] == "attack" and action2["action"] == "attack":
@@ -420,7 +459,7 @@ class Field:
                     self.active2_moves,
                 )
                 messages.append(msg)
-
+                self.status_damage(self.__active1)
                 if self.get_combat_hp(self.__active2) > 0:
                     print(self.__active2.attack())
                     messages.append(
@@ -435,6 +474,18 @@ class Field:
                         self.active1_moves,
                     )
                     messages.append(msg)
+                    self.status_damage(self.__active2)
+                    active1_Status = (
+                        list(self.__active1.status.keys())[0]
+                        if self.__active1.status
+                        else None
+                    )
+                    if self.__active1.status:
+                        if active1_Status == "Flinched":
+                            del self.__active1.status[active1_Status]
+                            messages.append(
+                                f"{self.__active1._name} is no longer {active1_Status}"
+                            )
             else:
                 messages.append(f"{self.__active2._name} is faster!")
                 messages.append(self.__active2.attack())
@@ -448,7 +499,7 @@ class Field:
                     self.active1_moves,
                 )
                 messages.append(msg)
-
+                self.status_damage(self.__active2)
                 if self.get_combat_hp(self.__active1) > 0:
                     messages.append(self.__active1.attack())
                     messages.append(
@@ -463,6 +514,18 @@ class Field:
                         self.active2_moves,
                     )
                     messages.append(msg)
+                    self.status_damage(self.__active1)
+                    active2_Status = (
+                        list(self.__active2.status.keys())[0]
+                        if self.__active2.status
+                        else None
+                    )
+                    if self.__active2.status:
+                        if active2_Status == "Flinched":
+                            del self.__active2.status[active2_Status]
+                            messages.append(
+                                f"{self.__active2._name} is no longer {active2_Status}"
+                            )
 
             return (True, messages)
 
@@ -704,22 +767,30 @@ class Field:
 
             self.active1_moves = []
             self.active2_moves = []
-            if attacker.status == "Confused":
-                attacker.status = None
-                message = f"{attacker._name} is no longer confused!"
-            if defender.status in [
-                "Confused",
-                "Flinched",
-                "Paralyzed",
-                "Frozen",
-                "Burned",
-                "Asleep",
-                "Poisoned",
-            ]:
-                defender.status = None
-                message = (
-                    f"{defender._name} is no longer affected by status conditions!"
-                )
+            attacker_status = (
+                list(attacker.status.keys())[0] if attacker.status else None
+            )
+            if attacker_status:
+                if attacker_status == "Confused":
+                    attacker.status = None
+                    message = f"{attacker._name} is no longer confused!"
+            defender_status = (
+                list(defender.status.keys())[0] if defender.status else None
+            )
+            if defender_status:
+                if defender_status in [
+                    "Confused",
+                    "Flinched",
+                    "Paralyzed",
+                    "Frozen",
+                    "Burned",
+                    "Asleep",
+                    "Poisoned",
+                ]:
+                    defender.status = None
+                    message = (
+                        f"{defender._name} is no longer affected by status conditions!"
+                    )
 
         if (
             move.name == "Headbutt"
@@ -850,7 +921,7 @@ class Field:
                 and defender.get_attribute("secondary_type") not in ["Poison", "Steel"]
             ):  # 20% chance to poison
                 defender.apply_status("Poisoned")
-                message(f"{defender._name} was poisoned!")
+                message = f"{defender._name} was poisoned!"
 
         if move.name == "Psychic":
             random_value = random.randint(1, 100)
@@ -977,6 +1048,18 @@ class Field:
             message = f"{attacker._name}'s Defense rose!"
 
         return hits * damage, message
+
+    def status_damage(self, attacker):
+        poke_status = list(attacker.status.keys())[0] if attacker.status else None
+        if poke_status:
+            if (
+                poke_status == "Burned"
+                or poke_status == "Poisoned"
+                or poke_status == "Seeded"
+            ):
+                damage = math.floor((attacker.get_stats().hp) / 16)
+                print(f"{attacker._name} took {damage} damage from {poke_status}")
+                self.reduce_hp(attacker, damage)
 
 
 class Battle:
@@ -1259,3 +1342,4 @@ class Battle:
                     return
                 else:
                     print("Invalid option. Choose 1 or 2.")
+
