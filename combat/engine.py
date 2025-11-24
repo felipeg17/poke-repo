@@ -46,7 +46,7 @@ class CombatEngine:
         crit = self.critical_hit()
         power = self.move.power
         A, D = self.attack_defense(crit)
-        attacker_types = [self.attacker.get_attribute("type")]
+        attacker_types = [self.attacker.get_attribute("main_type")]
         defender_interactions: dict = {
             "Weaknesses": self.defender.get_attribute("weaknesses"),
             "Resistances": self.defender.get_attribute("resistances"),
@@ -54,18 +54,15 @@ class CombatEngine:
         }
         stab = 1.5 if self.move.type in attacker_types else 1.0
         move_type = self.move.type
-
-        type_effectiveness = 1
-
         # Type-effectiveness calculation
         if move_type in defender_interactions["Immunities"]:
-            type_effectiveness *= 0.0
-
-        if type_effectiveness != 0.0:
-            if move_type in defender_interactions["Resistances"]:
-                type_effectiveness *= 0.5
-            if move_type in defender_interactions["Weaknesses"]:
-                type_effectiveness *= 2.0
+            type_effectiveness = 0
+        elif move_type in defender_interactions["Resistances"]:
+            type_effectiveness = 0.5
+        elif move_type in defender_interactions["Weaknesses"]:
+            type_effectiveness = 2.0
+        else:
+            type_effectiveness = 1.0
 
         # Gets a random factor
         random_factor = random.randint(217, 255) / 255
@@ -129,39 +126,30 @@ class CombatEngine:
         Adjustments include Reflect/Light Screen, Explosion/Selfdestruct effects,
         and handling for stat values above 255. Returns a tuple `(A, D)`.
         """
-        # TODO: Implement move categories ("special" vs "physical") in future upgrade.
-        # For a future upgrade:
-        # if self.move.category == "special":
-        #   A = self.attacker.get_stats().sp_attack
-        #   D = self.defender.get_stats().sp_defense
-        # elif self.move.category == "physical":
-        #   A = self.attacker.get_stats().attack
-        #   D = self.defender.get_stats().defense
 
-        # As categories are not implemented yet, use physical stats by default
-        A = self.attacker.get_stats().attack
-        D = self.defender.get_stats().defense
+        if self.move.category == "Special":
+            A = self.attacker.get_stats().sp_attack
+            D = self.defender.get_stats().sp_defense
+        elif self.move.category == "Physical":
+            A = self.attacker.get_stats().attack
+            D = self.defender.get_stats().defense
 
         # Check whether Reflect or Light Screen are active
         if critical:
             reflect = False
-            # light_screen = False
+            light_screen = False
         else:
             reflect = "Reflect" in [i.name for i in self.defender_moves]
-            # light_screen = "Light Screen" == [i.name for i in self.defender_moves]
+            light_screen = "Light Screen" in [i.name for i in self.defender_moves]
 
-        # For a future update:
         # Compute effective defense
-        # if not critical:
-        #    if self.move.category == "physical" and reflect:
-        #        D *= 2
-        #    elif self.move.category == "special" and light_screen:
-        #        D *= 2
+        if not critical:
+            if self.move.category == "Physical" and reflect:
+                D *= 2
+            elif self.move.category == "Special" and light_screen:
+                D *= 2
 
-        # Current implementation: only physical moves
-        if reflect:
-            D *= 2
-
+        # Special case for Explosion and Selfdestruct
         if self.move.name in ["Explosion", "Selfdestruct"]:
             D = max(1, math.floor(D / 2))
 
