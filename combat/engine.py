@@ -43,6 +43,11 @@ class CombatEngine:
         Returns a tuple `(damage, is_critical)` where `damage` is an integer
         and `is_critical` is a boolean indicating whether the hit was critical.
         """
+        base_power = self.move.power
+        status_effect, power = self.status_changes(base_power)
+        if not status_effect:
+            return 0, False, False
+
         # Determines if the move hits
         move_hit = self.Hit_Accuracy()
         if self.move.power == 0:
@@ -51,7 +56,6 @@ class CombatEngine:
         # Get all necessary attributes for the damage calculation
         level = self.attacker.get_attribute("level")
         crit = self.critical_hit(speed_stats)
-        power = self.move.power
         A, D = self.attack_defense(
             crit, attack_stats, defense_stats, sp_attack_stats, sp_defense_stats
         )
@@ -174,6 +178,15 @@ class CombatEngine:
             A = math.floor(A / 4)
             D = math.floor(D / 4)
 
+        # When a pokemon is burned, its attack is halved
+        Status = (
+            list(self.attacker.status.keys())
+            if self.attacker.status is not None
+            else None
+        )
+        if Status == "Burned":
+            A = math.floor(A / 2)
+
         if D == 0:
             D = 1
 
@@ -202,3 +215,56 @@ class CombatEngine:
         # Roll to decide if the move hits
         R = random.uniform(0, 100)
         return R < Accuracy
+
+    def status_changes(self, power) -> bool:
+        """Gets the status of the attacker
+        returns true if pokemon can attack, and the power with the modifications if some are implemented
+        """
+        Status1 = list(self.attacker.status.keys())[0] if self.attacker.status else None
+        if not self.attacker.status:
+            return True, power
+
+        else:
+            for Status in list(self.attacker.status.keys()):
+                self.attacker.status[Status] -= 1
+                if self.attacker.status[Status] <= 0:
+                    del self.attacker.status[Status]
+                    print(f"{self.attacker._name} is no longer {Status}")
+
+            if Status == "Paralyzed":
+                value = random.randint(0, 100)
+                if value <= 25:  # 25% of not attacking
+                    print(
+                        f"{self.attacker._name} is totally {Status.lower()} and can not attack"
+                    )
+                    return False, power
+                return True, power
+
+            if Status1 == "Burned":
+                return True, power
+
+            if Status1 == "Poisoned":
+                return True, power
+
+            if Status1 == "Asleep" or Status == "Frozen":
+                print(f"{self.attacker._name} is {Status.lower()} and can not attack")
+                return False, power
+
+            if Status1 == "Confused":
+                value = random.randint(0, 100)
+                if value <= 50:  # 50% of attacking himself
+                    self.defender = self.attacker
+                    self.defender_moves = self.attacker_moves
+                    power = 40
+                    print(
+                        f"{self.attacker._name} is confused and it is attacking itself!"
+                    )
+                return True, power
+
+            if Status1 == "Seeded":
+                return True, power
+
+            if Status1 == "Flinched":
+                print(f"{self.attacker._name} is Flinched can not attack!")
+                return False, power
+        return True, power
