@@ -10,7 +10,7 @@ project_root = Path(__file__).parent.parent
 sys.path.insert(0, str(project_root))
 
 # Imports
-from pokemon.pokemon import Pokemon, Move
+from pokemon.pokemon import Pokemon, Move, create_pokemon
 from combat.engine import CombatEngine
 import pandas as pd
 
@@ -84,13 +84,13 @@ class Trainer:
                 except ValueError:
                     print("Invalid input. Please enter a valid number.")
             self.pokemon.append(
-                Pokemon(
+                create_pokemon(
                     name, pokedex_number, poke_type, poke_type2, "gray", "male", level
                 )
             )
             print(f"\n {self.name} chose {name} for the battle!")
 
-            if len(self.pokemon) == 1:
+            if len(self.pokemon) == 2:
                 print("This is your full team for the battle.")
                 for pkm in self.pokemon:
                     print(
