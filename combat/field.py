@@ -324,7 +324,12 @@ class Field:
         if was_critical:
             message += " A critical hit!"
         message += f" {effectiveness}"
-
+        defender_Status = (
+            list(defender.status.keys()) if defender.status is not None else None
+        )
+        if move.type == "Fire" and defender_Status == "Frozen":
+            defender.status = None
+            message += f"{defender._name} is no longer Frozen"
         return (damage, was_critical, message)
 
     def resolve_turn(self, action1, action2):
@@ -653,7 +658,7 @@ class Field:
                     damage = self.get_combat_hp(defender)
                     message = f"{defender._name} was instantly defeated!"
 
-        if move.name == "Flamethrower":
+        if move.name == "Flamethrower" or move.name == "Ember":
             random_value = random.randint(1, 100)
             if (
                 random_value <= 10
@@ -744,7 +749,7 @@ class Field:
                 and defender.get_attribute("main_type") != "Grass"
                 and defender.get_attribute("secondary_type") != "Grass"
             ):
-                defender.apply_status("Leech Seeded")
+                defender.apply_status("Seeded")
                 message = f"{defender._name} was seeded!"
 
         if move.name == "Leer" or move.name == "Tail Whip":
@@ -822,7 +827,6 @@ class Field:
         if move.name == "Night Shade" or move.name == "Seismic Toss":
             level = attacker.get_attribute("level")
             damage = level
-            print(f"{defender._name} took {damage} damage!")
 
         if (
             move.name == "Poison Gas"
@@ -831,8 +835,8 @@ class Field:
         ):
             if (
                 defender.status is None
-                and defender.get_attribute("main_type") != "Poison"
-                and defender.get_attribute("secondary_type") != "Poison"
+                and defender.get_attribute("main_type") not in ["Poison", "Steel"]
+                and defender.get_attribute("secondary_type") not in ["Poison", "Steel"]
             ):
                 defender.apply_status("Poisoned")
                 message = f"{defender._name} was poisoned!"
@@ -842,8 +846,8 @@ class Field:
             if (
                 random_value <= 20
                 and defender.status is None
-                and defender.get_attribute("main_type") != "Poison"
-                and defender.get_attribute("secondary_type") != "Poison"
+                and defender.get_attribute("main_type") not in ["Poison", "Steel"]
+                and defender.get_attribute("secondary_type") not in ["Poison", "Steel"]
             ):  # 20% chance to poison
                 defender.apply_status("Poisoned")
                 message(f"{defender._name} was poisoned!")
@@ -893,8 +897,8 @@ class Field:
             if (
                 random_value <= 30
                 and defender.status is None
-                and defender.get_attribute("main_type") != "Poison"
-                and defender.get_attribute("secondary_type") != "Poison"
+                and defender.get_attribute("main_type") not in ["Poison", "Steel"]
+                and defender.get_attribute("secondary_type") not in ["Poison", "Steel"]
             ):  # 30% chance to poison
                 defender.apply_status("Poisoned")
                 message = f"{defender._name} was poisoned!"
@@ -904,8 +908,8 @@ class Field:
             if (
                 random_value <= 40
                 and defender.status is None
-                and defender.get_attribute("main_type") != "Poison"
-                and defender.get_attribute("secondary_type") != "Poison"
+                and defender.get_attribute("main_type") not in ["Poison", "Steel"]
+                and defender.get_attribute("secondary_type") not in ["Poison", "Steel"]
             ):  # 40% chance to poison
                 defender.apply_status("Poisoned")
                 message = f"{defender._name} was poisoned!"
@@ -962,8 +966,8 @@ class Field:
             if (
                 random_value <= 20
                 and defender.status is None
-                and defender.get_attribute("main_type") != "Poison"
-                and defender.get_attribute("secondary_type") != "Poison"
+                and defender.get_attribute("main_type") not in ["Poison", "Steel"]
+                and defender.get_attribute("secondary_type") not in ["Poison", "Steel"]
             ):  # 20% chance to poison
                 defender.apply_status("Poisoned")
                 message = f"{defender._name} was poisoned!"
@@ -1007,12 +1011,18 @@ class Battle:
         """Display the current battle status"""
         active_hp = self.field.get_combat_hp(active_pokemon)
         enemy_hp = self.field.get_combat_hp(enemy_pokemon)
-
+        Status1 = (
+            ", ".join(active_pokemon.status.keys()) if active_pokemon.status else None
+        )
+        Status2 = (
+            ", ".join(enemy_pokemon.status.keys()) if enemy_pokemon.status else None
+        )
         print(f"""
         {50 * "="}
         Turn: {trainer.name}
         {active_pokemon._name:<20} VS {enemy_pokemon._name:>20}
         {self.field.health_bar(active_hp, active_pokemon._stats.hp)}  {self.field.health_bar(enemy_hp, enemy_pokemon._stats.hp)}
+        Current Status:{Status1}                 Current Status: {Status2}
         {50 * "="}
         """)
 
