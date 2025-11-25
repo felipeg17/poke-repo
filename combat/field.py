@@ -3,13 +3,6 @@
 # Uses engine to compute damage and update stats
 # Defines win/loss conditions
 
-import sys
-from pathlib import Path
-
-project_root = Path(__file__).parent.parent
-sys.path.insert(0, str(project_root))
-
-# Imports
 from pokemon.pokemon import Pokemon, Move, create_pokemon
 from combat.engine import CombatEngine, math, random
 import pandas as pd
