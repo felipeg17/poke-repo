@@ -42,26 +42,38 @@ class Trainer:
         Prompts the user to enter a pokédex number and the Pokémon's type.
         Returns the list of chosen `Pokemon` objects.
         """
+        Page = 0
         while True:
-            print(
-                f"{self.name}, choose Pokémon #{len(self.pokemon) + 1} for the battle."
-            )
-
-            already_chosen = [p.get_attribute("pokemon_name") for p in self.pokemon]
-            df = self.pokemon_available(already_chosen)
-
-            while True:
-                try:
-                    chosen = int(input("Enter pokedex number: ").strip())
-                    break
-                except ValueError:
-                    print("Invalid input. Please enter a valid number.")
+            try:
+                self.print_dex(Page, df)
+                
+                vp = df[20*Page:20*(Page+1)]
+                vn = vp["pokedex_number"].tolist()
+                
+                chosen = input("Enter pokedex number or (z/x to change page): ").strip().lower()
+                
+                if chosen == 'z':
+                    Page = max(0, Page - 1)
+                    continue
+                elif chosen == 'x':
+                    Page = min((len(df) - 1) // 20, Page + 1)
+                    continue
+                
+                chosen = int(chosen)
+                if chosen not in vn:
+                    print("Choose a Pokémon visible on this page.")
+                    continue
+                
+                break
+            except ValueError:
+                print("Invalid input. Enter a number or z/x.")
 
             row = df.loc[df["pokedex_number"] == chosen]
             if row.empty:
                 print("Invalid number. Try again.")
                 continue
-            row = row.iloc[0]
+                
+            row = df.loc[df["pokedex_number"] == chosen].iloc[0]
             name = row["pokemon_name"]
             pokedex_number = int(row["pokedex_number"])
 
@@ -102,7 +114,14 @@ class Trainer:
                     continue
                 break
         return self.pokemon
-
+        
+    def print_dex(self, page: int = 0, df = None):
+        if df is None:
+            df = pd.read_csv(Pokemon.csv_path)
+        print(f"Poke_dex - Page #{page + 1}")
+        print(f"{'#':<5} {'Name':<9} {'Type':<7} {'ATK':<4} {'HP':<4}")
+        for index, row in df[20*page:20*(page+1)].iterrows():
+            print(f"{row['pokedex_number']} / {row['pokemon_name']} / {row['type1']} / {row['attack']} / {row['hp']}")    
 
 class Field:
     """Manage a battle between two `Trainer` instances.
