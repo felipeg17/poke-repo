@@ -19,16 +19,16 @@ class TypeRelations:
             with open(filename, newline="", encoding="utf-8") as csvfile:
                 reader = csv.DictReader(csvfile) #This converts each row of the CSV into a dictionary
                 for row in reader:
-                 type_key = row["type"].strip().lower()
+                  type_key = row["type"].strip().lower()
 
-                self._type_data[type_key] = {
-                    "weak": [x.strip().lower() for x in row["weak"].split(";")] 
-                        if row["weak"] != "none" else [],
+                  self._type_data[type_key] = {
+                    "weak": [x.strip().lower() for x in row["weaknesses"].split(";")] 
+                       if row["weak"].strip() else [],
                     "resist": [x.strip().lower() for x in row["resist"].split(";")] 
-                        if row["resist"] != "none" else [],
+                        if row["resist"].strip() else [],
                     "immune": [x.strip().lower() for x in row["immune"].split(";")] 
-                        if row["immune"] != "none" else []
-                }
+                        if row["immune"].strip() else []
+                 }
         except FileNotFoundError:
             print(f"Error: No se pudo encontrar el archivo {filename}")
         except Exception as e:
@@ -56,7 +56,7 @@ class Pokemon:
     definition = """
     Pocket Monster
     """
-    _type_relations = TypeRelations("types.csv")
+    _type_relations = TypeRelations(str(Path(__file__).parent / "utils" / "types.csv"))
     def __init__(
         self,
         pokemon_name: str,
@@ -82,7 +82,6 @@ class Pokemon:
         # * Changed to protected so that subclasses can access them
         self._name = pokemon_name
         self._pokedex_num = pokedex_num
-        self.type = type.lower()
         self._main_type = type.lower()
         self._sex = sex
         self._color = color
@@ -96,11 +95,9 @@ class Pokemon:
         # Moveset managed by another class
         self._moveset = Moveset(pokedex_num=self._pokedex_num, level=self._level)
         
-        relations= Pokemon._type_relations.get_relations(self.type)
-        self._weaknesses = [t.lower() for t in relations["weak"]]
-        self._resistances = [t.lower() for t in relations["resist"]]
-        self._immunities = [t.lower() for t in relations["immune"]]
-
+        self._weaknesses = Pokemon._type_relations.get_weaknesses(self._main_type)
+        self._resistances = Pokemon._type_relations.get_resistances(self._main_type)
+        self._immunities = Pokemon._type_relations.get_immunities(self._main_type)
 
 
 
@@ -157,9 +154,9 @@ class Pokemon:
         else:
             return "It's effective."
     
-    """"" This is a base of STABs logic"""
+    """This is a base of STABs logic"""
     def apply_stab(self, base_power: float, move_type: str) -> float:
-        if move_type.lower() == self.type.lower():
+        if move_type.lower() == self._main_type.lower():
           return base_power * 1.5
         return base_power
     
