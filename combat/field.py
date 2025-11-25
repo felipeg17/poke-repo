@@ -44,6 +44,10 @@ class Trainer:
         """
         Page = 0
         while True:
+            print(f"{self.name}, choose Pokémon #{len(self.pokemon) + 1} for the battle.")
+            already_chosen = [p.get_attribute("pokemon_name") for p in self.pokemon]
+            df = self.pokemon_available(already_chosen)
+            
             try:
                 self.print_dex(Page, df)
                 
