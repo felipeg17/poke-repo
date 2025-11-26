@@ -172,6 +172,7 @@ class Trainer {
     - name: str
     - pokemon : list
     + pokemon_available()
+    + create_pokemon()
     + choose_pokemon()
     + print_dex()
 }
