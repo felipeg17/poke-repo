@@ -93,13 +93,57 @@ Poke_repo/
 ```
 Así pues, el archivo main.py deberá importar la clase "Battle", que es donde se crea un campo "Field" y se llama al Engine, Pokemones, Movimientos y Estadísticas.
 
-Dentro de la función main, la cuál será ejecutada al correr el programa directamente, solo hay que escribir un comando, y es llamar a la función "main_menu()" de Battle, eso iniciará directamente el combate.
+Dentro de la función main, la cuál será ejecutada al correr el programa directamente, se deben instanciar ambos entrenadores, los cuales se agregan a un "field" y de ahí este se agrega a un "battle",
+del que se debe usar la función battle(), sin embargo, es mejor usar el código ya creado en el archivo "main.py" que ya se encuentra en este repositorio, ya que cuenta con su propia interfaz y puedes repetir combates indefinidamente.
 ```python
-from combat.field import Battle, Field
+from combat.field import Battle, Field, Trainer
 
 if __name__ == "__main__":
-    # Launch interactive main menu
-    batalla: Battle = Battle(Field)
-    batalla.main_menu()
+        """Main game loop with restart menu"""
+    print("=" * 60)
+    print("POKÉMON BATTLE SIMULATOR")
+    print("=" * 60)
+
+    while True:
+        print("\n" + "=" * 60)
+        trainer1_name = input("Trainer 1 name: ")
+        trainer2_name = input("Trainer 2 name: ")
+        trainer1 = Trainer(trainer1_name)
+        trainer2 = Trainer(trainer2_name)
+
+        print("\n" + "=" * 60)
+        trainer1.choose_pokemon()
+
+        print("\n" + "=" * 60)
+        trainer2.choose_pokemon()
+
+        print("\n" + "=" * 60)
+        print("BATTLE START!")
+        print("=" * 60)
+        field = Field(trainer1, trainer2)
+        batalla = Battle(field)
+        batalla.battle()
+
+        print("\n" + "=" * 60)
+        print("BATTLE END")
+        print("=" * 60)
+
+        while True:
+            option = input(
+                "\nWhat do you want to do?\n(1) Play again\n(2) Exit\n> "
+            ).strip()
+
+            if option == "1":
+                print("\n" + "=" * 60)
+                print("NEW BATTLE")
+                print("=" * 60)
+                break
+            elif option == "2":
+                print("\nThanks for playing! See you later!")
+                break
+            else:
+                print("Invalid option. Choose 1 or 2.")
+        if option == "2":
+            break
 
 ```
