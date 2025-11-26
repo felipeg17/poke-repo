@@ -8,39 +8,47 @@ from combat.engine import CombatEngine
 class TestCombatEngine:
     @pytest.fixture
     def pokemon_to_test(self):
-        
         trainer = Trainer("Test")
-        attacker = trainer.create_pokemon("pikachu", 25, "Electric", None, "yellow", "male", level=50)
-        defender = trainer.create_pokemon("charizard", 6, "Fire", "Flying", "orange", "male", level=50)
+        attacker = trainer.create_pokemon(
+            "pikachu", 25, "Electric", None, "yellow", "male", level=50
+        )
+        defender = trainer.create_pokemon(
+            "charizard", 6, "Fire", "Flying", "orange", "male", level=50
+        )
         return attacker, defender
 
     @pytest.fixture
     def stats_dicts(self, pokemon_to_test):
-        
         attacker, defender = pokemon_to_test
-        
+
         attack_stats = {
             attacker: attacker.get_stats().attack,
-            defender: defender.get_stats().attack
+            defender: defender.get_stats().attack,
         }
         defense_stats = {
             attacker: attacker.get_stats().defense,
-            defender: defender.get_stats().defense
+            defender: defender.get_stats().defense,
         }
         sp_attack_stats = {
             attacker: attacker.get_stats().sp_attack,
-            defender: defender.get_stats().sp_attack
+            defender: defender.get_stats().sp_attack,
         }
         sp_defense_stats = {
             attacker: attacker.get_stats().sp_defense,
-            defender: defender.get_stats().sp_defense
+            defender: defender.get_stats().sp_defense,
         }
         speed_stats = {
             attacker: attacker.get_stats().speed,
-            defender: defender.get_stats().speed
+            defender: defender.get_stats().speed,
         }
-        
-        return attack_stats, defense_stats, sp_attack_stats, sp_defense_stats, speed_stats
+
+        return (
+            attack_stats,
+            defense_stats,
+            sp_attack_stats,
+            sp_defense_stats,
+            speed_stats,
+        )
 
     @pytest.fixture
     def basic_move(self):
@@ -55,7 +63,6 @@ class TestCombatEngine:
         return Move(3, "Slash", "Normal", 70, 100, 20, "Physical")
 
     def test_engine_init(self, pokemon_to_test, basic_move):
-        
         attacker, defender = pokemon_to_test
 
         engine = CombatEngine(attacker, defender, basic_move, [], [])
@@ -66,11 +73,14 @@ class TestCombatEngine:
         assert engine.attacker_moves == []
         assert engine.defender_moves == []
 
-    def test_calculate_damage_returns_tuple(self, pokemon_to_test, basic_move, stats_dicts):
-        
+    def test_calculate_damage_returns_tuple(
+        self, pokemon_to_test, basic_move, stats_dicts
+    ):
         attacker, defender = pokemon_to_test
-        attack_stats, defense_stats, sp_attack_stats, sp_defense_stats, speed_stats = stats_dicts
-        
+        attack_stats, defense_stats, sp_attack_stats, sp_defense_stats, speed_stats = (
+            stats_dicts
+        )
+
         engine = CombatEngine(attacker, defender, basic_move, [], [])
 
         result = engine.calculate_damage(
@@ -78,16 +88,19 @@ class TestCombatEngine:
         )
 
         assert type(result) == tuple
-        assert len(result) == 3  
-        assert type(result[0]) == int  
-        assert type(result[1]) == bool  
-        assert type(result[2]) == bool  
+        assert len(result) == 3
+        assert type(result[0]) == int
+        assert type(result[1]) == bool
+        assert type(result[2]) == bool
 
-    def test_calculate_damage_is_positive(self, pokemon_to_test, basic_move, stats_dicts):
-        
+    def test_calculate_damage_is_positive(
+        self, pokemon_to_test, basic_move, stats_dicts
+    ):
         attacker, defender = pokemon_to_test
-        attack_stats, defense_stats, sp_attack_stats, sp_defense_stats, speed_stats = stats_dicts
-        
+        attack_stats, defense_stats, sp_attack_stats, sp_defense_stats, speed_stats = (
+            stats_dicts
+        )
+
         engine = CombatEngine(attacker, defender, basic_move, [], [])
 
         damage, _, _ = engine.calculate_damage(
@@ -97,9 +110,10 @@ class TestCombatEngine:
         assert damage >= 0
 
     def test_damage_increases_with_power(self, pokemon_to_test, stats_dicts):
-        
         attacker, defender = pokemon_to_test
-        attack_stats, defense_stats, sp_attack_stats, sp_defense_stats, speed_stats = stats_dicts
+        attack_stats, defense_stats, sp_attack_stats, sp_defense_stats, speed_stats = (
+            stats_dicts
+        )
 
         weak_move = Move(1, "Weak", "Normal", 40, 100, 35, "Physical")
         strong_move = Move(2, "Strong", "Normal", 120, 100, 35, "Physical")
@@ -116,15 +130,13 @@ class TestCombatEngine:
             attack_stats, defense_stats, sp_attack_stats, sp_defense_stats, speed_stats
         )
 
-        
         if hit_weak and hit_strong:
             assert damage_strong > damage_weak
 
     def test_critical_hit_returns_bool(self, pokemon_to_test, basic_move, stats_dicts):
-        
         attacker, defender = pokemon_to_test
         _, _, _, _, speed_stats = stats_dicts
-        
+
         engine = CombatEngine(attacker, defender, basic_move, [], [])
 
         result = engine.critical_hit(speed_stats)
@@ -132,7 +144,6 @@ class TestCombatEngine:
         assert isinstance(result, bool)
 
     def test_high_crit_move_increases_crit_chance(self, pokemon_to_test, stats_dicts):
-        
         attacker, defender = pokemon_to_test
         _, _, _, _, speed_stats = stats_dicts
 
@@ -154,11 +165,12 @@ class TestCombatEngine:
 
         assert crit_count_high > crit_count_normal
 
-    def test_attack_defense_returns_tuple(self, pokemon_to_test, basic_move, stats_dicts):
-        
+    def test_attack_defense_returns_tuple(
+        self, pokemon_to_test, basic_move, stats_dicts
+    ):
         attacker, defender = pokemon_to_test
         attack_stats, defense_stats, sp_attack_stats, sp_defense_stats, _ = stats_dicts
-        
+
         engine = CombatEngine(attacker, defender, basic_move, [], [])
 
         A, D = engine.attack_defense(
@@ -170,8 +182,9 @@ class TestCombatEngine:
         assert A > 0
         assert D > 0
 
-    def test_physical_vs_special_uses_different_stats(self, pokemon_to_test, stats_dicts):
-        
+    def test_physical_vs_special_uses_different_stats(
+        self, pokemon_to_test, stats_dicts
+    ):
         attacker, defender = pokemon_to_test
         attack_stats, defense_stats, sp_attack_stats, sp_defense_stats, _ = stats_dicts
 
@@ -188,11 +201,9 @@ class TestCombatEngine:
             False, attack_stats, defense_stats, sp_attack_stats, sp_defense_stats
         )
 
-        
         assert (A_phys, D_phys) != (A_spec, D_spec)
 
     def test_hit_accuracy_returns_bool(self, pokemon_to_test, basic_move):
-        
         attacker, defender = pokemon_to_test
 
         engine = CombatEngine(attacker, defender, basic_move, [], [])
@@ -202,7 +213,6 @@ class TestCombatEngine:
         assert type(result) == bool
 
     def test_perfect_accuracy_always_hits(self, pokemon_to_test):
-        
         attacker, defender = pokemon_to_test
         perfect_move = Move(1, "Swift", "Normal", 60, 100, 20, "Special")
         hits = 0
@@ -216,7 +226,6 @@ class TestCombatEngine:
         assert hits >= 95
 
     def test_low_accuracy_misses_more(self, pokemon_to_test):
-        
         attacker, defender = pokemon_to_test
 
         high_acc = Move(1, "Tackle", "Normal", 40, 100, 35, "Physical")
@@ -257,9 +266,10 @@ class TestCombatEngine:
         assert D_explosion < D_normal
 
     def test_minimum_damage_is_one(self, pokemon_to_test, stats_dicts):
-        
         attacker, defender = pokemon_to_test
-        attack_stats, defense_stats, sp_attack_stats, sp_defense_stats, speed_stats = stats_dicts
+        attack_stats, defense_stats, sp_attack_stats, sp_defense_stats, speed_stats = (
+            stats_dicts
+        )
 
         weak_move = Move(1, "Weak", "Normal", 1, 100, 35, "Physical")
 
@@ -268,100 +278,85 @@ class TestCombatEngine:
             attack_stats, defense_stats, sp_attack_stats, sp_defense_stats, speed_stats
         )
 
-        
         if hit and damage > 0:
             assert damage >= 1
 
     def test_status_changes_paralyzed(self, pokemon_to_test):
-        
         attacker, defender = pokemon_to_test
         move = Move(1, "Tackle", "Normal", 40, 100, 35, "Physical")
-        
-        
+
         attacker.apply_status("Paralyzed")
-        attacker.status["Paralyzed"] = 999 
-        
+        attacker.status["Paralyzed"] = 999
+
         can_attack_count = 0
         cannot_attack_count = 0
         iterations = 1000
-        
+
         for _ in range(iterations):
-            
             attacker.status = {"Paralyzed": 999}
-            
+
             engine = CombatEngine(attacker, defender, move, [], [])
             can_attack, _ = engine.status_changes(move.power)
-            
+
             if can_attack:
                 can_attack_count += 1
             else:
                 cannot_attack_count += 1
-        
-        
+
         assert 650 <= can_attack_count <= 850
         assert 150 <= cannot_attack_count <= 350
 
     def test_status_changes_frozen(self, pokemon_to_test):
-        
         attacker, defender = pokemon_to_test
         move = Move(1, "Tackle", "Normal", 40, 100, 35, "Physical")
-        
-        
+
         attacker.apply_status("Frozen")
-        attacker.status["Frozen"] = 3  
-        
+        attacker.status["Frozen"] = 3
+
         engine = CombatEngine(attacker, defender, move, [], [])
         can_attack, power = engine.status_changes(move.power)
-        
-       
-        assert power == move.power  
+
+        assert power == move.power
 
     def test_status_changes_burned_returns_true(self, pokemon_to_test):
-        
         attacker, defender = pokemon_to_test
         move = Move(1, "Tackle", "Normal", 40, 100, 35, "Physical")
-        
-        
+
         attacker.apply_status("Burned")
         attacker.status["Burned"] = 999
-        
+
         engine = CombatEngine(attacker, defender, move, [], [])
         can_attack, power = engine.status_changes(move.power)
-        
-        
+
         assert can_attack is True
 
     def test_status_changes_asleep(self, pokemon_to_test):
-        
         attacker, defender = pokemon_to_test
         move = Move(1, "Tackle", "Normal", 40, 100, 35, "Physical")
-        
-        
+
         attacker.apply_status("Asleep")
         attacker.status["Asleep"] = 3
-        
+
         engine = CombatEngine(attacker, defender, move, [], [])
         can_attack, power = engine.status_changes(move.power)
-        
-        
+
         assert can_attack is False
 
     def test_reflect_doubles_physical_defense(self, pokemon_to_test, stats_dicts):
-        
         attacker, defender = pokemon_to_test
         attack_stats, defense_stats, sp_attack_stats, sp_defense_stats, _ = stats_dicts
 
         physical_move = Move(1, "Tackle", "Normal", 40, 100, 35, "Physical")
         reflect_move = Move(99, "Reflect", "Psychic", 0, 100, 20, "Status")
 
-        
         engine_no_reflect = CombatEngine(attacker, defender, physical_move, [], [])
         _, D_no_reflect = engine_no_reflect.attack_defense(
             False, attack_stats, defense_stats, sp_attack_stats, sp_defense_stats
         )
 
-        
-        engine_with_reflect = CombatEngine(attacker, defender, physical_move, [], [reflect_move])
+        engine_with_reflect = CombatEngine(
+            attacker, defender, physical_move, [], [reflect_move]
+        )
         _, D_with_reflect = engine_with_reflect.attack_defense(
             False, attack_stats, defense_stats, sp_attack_stats, sp_defense_stats
         )
@@ -369,23 +364,21 @@ class TestCombatEngine:
         assert D_with_reflect == D_no_reflect * 2
 
     def test_light_screen_doubles_special_defense(self, pokemon_to_test, stats_dicts):
-        
         attacker, defender = pokemon_to_test
         attack_stats, defense_stats, sp_attack_stats, sp_defense_stats, _ = stats_dicts
 
         special_move = Move(1, "Thunderbolt", "Electric", 90, 100, 15, "Special")
         light_screen_move = Move(99, "Light Screen", "Psychic", 0, 100, 30, "Status")
 
-    
         engine_no_screen = CombatEngine(attacker, defender, special_move, [], [])
         _, D_no_screen = engine_no_screen.attack_defense(
-        False, attack_stats, defense_stats, sp_attack_stats, sp_defense_stats
+            False, attack_stats, defense_stats, sp_attack_stats, sp_defense_stats
         )
 
-    
-        engine_with_screen = CombatEngine(attacker, defender, special_move, [], [light_screen_move])
-    
-    
+        engine_with_screen = CombatEngine(
+            attacker, defender, special_move, [], [light_screen_move]
+        )
+
         _, D_with_screen = engine_with_screen.attack_defense(
             False, attack_stats, defense_stats, sp_attack_stats, sp_defense_stats
         )
@@ -394,36 +387,34 @@ class TestCombatEngine:
         print(f"D con Light Screen: {D_with_screen}")
         print(f"Esperado: {D_no_screen * 2}")
 
-    
         assert D_with_screen == D_no_screen * 2
 
     def test_critical_hit_ignores_reflect(self, pokemon_to_test, stats_dicts):
-        
         attacker, defender = pokemon_to_test
         attack_stats, defense_stats, sp_attack_stats, sp_defense_stats, _ = stats_dicts
 
         physical_move = Move(1, "Tackle", "Normal", 40, 100, 35, "Physical")
         reflect_move = Move(99, "Reflect", "Psychic", 0, 100, 20, "Status")
 
-        
         engine_crit_no_reflect = CombatEngine(attacker, defender, physical_move, [], [])
         _, D_crit_no_reflect = engine_crit_no_reflect.attack_defense(
             True, attack_stats, defense_stats, sp_attack_stats, sp_defense_stats
         )
 
-        
-        engine_crit_with_reflect = CombatEngine(attacker, defender, physical_move, [], [reflect_move])
+        engine_crit_with_reflect = CombatEngine(
+            attacker, defender, physical_move, [], [reflect_move]
+        )
         _, D_crit_with_reflect = engine_crit_with_reflect.attack_defense(
             True, attack_stats, defense_stats, sp_attack_stats, sp_defense_stats
         )
 
-        
         assert D_crit_with_reflect == D_crit_no_reflect
 
     def test_move_with_zero_power(self, pokemon_to_test, stats_dicts):
-        
         attacker, defender = pokemon_to_test
-        attack_stats, defense_stats, sp_attack_stats, sp_defense_stats, speed_stats = stats_dicts
+        attack_stats, defense_stats, sp_attack_stats, sp_defense_stats, speed_stats = (
+            stats_dicts
+        )
 
         status_move = Move(1, "Growl", "Normal", 0, 100, 40, "Status")
 
@@ -434,5 +425,3 @@ class TestCombatEngine:
 
         assert damage == 0
         assert is_crit is False
-
-
