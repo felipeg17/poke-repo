@@ -523,6 +523,7 @@ class Field:
         elif action2["action"] == "switch":
             active2 = action2["new_pokemon"]
             assert active2 is not None
+            self.__active2 = active2
             self.active2_moves = []
             messages.append(f"{self.trainer2.name} sent out {active2._name}!")
 
