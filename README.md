@@ -43,12 +43,14 @@ class Pokemon {
     - _weaknesses: list
     - _resistances: list
     - _immunities: list
+    - _status: str
     + attack()
     + level_up()
     + receive_attack(attack_type)
     + show_moves()
     + get_stats()
     + get_moveset()
+    + apply_status()
 }
 
 class Stats {
@@ -79,6 +81,7 @@ class Move {
     - power: int
     - accuracy: int
     - pp: int
+    - category: str
     + __str__()
 }
 
@@ -90,6 +93,11 @@ class Field {
     - __active1: Pokemon
     - __active2: Pokemon
     - __combat_hp: dict
+    - __combat_attack: dict
+    - __combat_defense: dict
+    - __combat_sp_attack: dict
+    - __combat_sp_defense: dict
+    - __combat_speed: dict
     - __number_turn: int
     - active1_moves: list
     - active2_moves: list
@@ -99,14 +107,52 @@ class Field {
     + get_active2()
     + set_active1()
     + set_active2()
+    + get_number_turn()
+    + mod_combat_hp()
+    + get_combat_attack()
+    + get_combat_defense()
+    + get_combat_sp_attack()
+    + get_combat_sp_defense()
+    + get_combat_speed()
+    + set_combat_attack()
+    + set_combat_defense()
+    + set_combat_sp_attack()
+    + set_combat_sp_defense()
+    + set_combat_speed()
+    + mod_combat_attack()
+    + mod_combat_defense()
+    + mod_combat_sp_attack()
+    + mod_combat_sp_defense()
+    + mod_combat_speed()
+    + end_battle()
+    + winner_game()
+    + pokemon_available()
+    + switch_defeat()
+    + switch_pokemon()
+    + remove_defeated_pokemon()
     + health_bar()
-    + player_turn()
+    + Move_Effect()
+    + status_damage()
     + get_combat_hp()
     + set_combat_hp()
     + reduce_hp()
-    + exe_at()
+    + execute_attack()
     + resolve_turn()
-    + combat()
+}
+
+class Battle {
+    - field : Field
+    + display_battle_header()
+    + display_turn_header()
+    + display_battle_status()
+    + action_py()
+    + choice_attack()
+    + choice_switch()
+    + choice_surrender()
+    + switch_after_defeat()
+    + display_messages()
+    + battle()
+    + main_menu()
 }
 
 class CombatEngine {
@@ -119,6 +165,7 @@ class CombatEngine {
     + critical_hit()
     + attack_defense()
     + Hit_Accuracy()
+    + status_changes()
 }
 
 class Trainer {
@@ -126,6 +173,7 @@ class Trainer {
     - pokemon : list
     + pokemon_available()
     + choose_pokemon()
+    + print_dex()
 }
 
 class Normal {}
@@ -151,6 +199,7 @@ Pokemon *-- Stats
 Pokemon *-- Moveset
 Moveset *-- Move
 
+Battle *-- Field
 Field *-- Trainer
 Trainer *-- Pokemon
 Field --> CombatEngine: usa
