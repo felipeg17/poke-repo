@@ -152,7 +152,7 @@ class Trainer:
                     print("Invalid input. Enter a number or z/x.")
 
             row_df = df.loc[df["pokedex_number"] == chosen]
-            if row.empty:
+            if row_df.empty:
                 print("Invalid number. Try again.")
                 continue
 
