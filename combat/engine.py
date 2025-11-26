@@ -20,53 +20,56 @@ class CombatEngine:
         attacker: Pokemon,
         defender: Pokemon,
         move: Move,
-        attacker_moves: list,
-        defender_moves: list,
-    ):
+        attacker_moves: list[Move],
+        defender_moves: list[Move],
+    ) -> None:
         # Initialize CombatEngine with attacker, defender, move, moves used by the attacker and defender, and field
         self.attacker = attacker
         self.defender = defender
         self.move = move
-        self.attacker_moves = attacker_moves
-        self.defender_moves = defender_moves
+        self.attacker_moves : list[Move] = attacker_moves
+        self.defender_moves : list[Move] = defender_moves
 
     def calculate_damage(
         self,
-        attack_stats,
-        defense_stats,
-        sp_attack_stats,
-        sp_defense_stats,
-        speed_stats,
-    ):
+        attack_stats: dict,
+        defense_stats:  dict,
+        sp_attack_stats:  dict,
+        sp_defense_stats: dict,
+        speed_stats: dict,
+    ) -> tuple[int, bool, bool]:
         """Compute damage using helper methods.
 
         Returns a tuple `(damage, is_critical)` where `damage` is an integer
         and `is_critical` is a boolean indicating whether the hit was critical.
         """
-        base_power = self.move.power
+        base_power : int = self.move.power
         status_effect, power = self.status_changes(base_power)
+        
         if not status_effect:
             return 0, False, False
 
         # Determines if the move hits
-        move_hit = self.Hit_Accuracy()
+        move_hit:  bool = self.Hit_Accuracy()
         if self.move.power == 0:
             return 0, False, move_hit  # If the move has no power, damage is 0
 
         # Get all necessary attributes for the damage calculation
-        level = self.attacker.get_attribute("level")
-        crit = self.critical_hit(speed_stats)
+        level : int = self.attacker.get_attribute("level")
+        crit : bool= self.critical_hit(speed_stats)
         A, D = self.attack_defense(
             crit, attack_stats, defense_stats, sp_attack_stats, sp_defense_stats
         )
-        attacker_types = [self.attacker.get_attribute("main_type")]
+        attacker_types: list[str] = [self.attacker.get_attribute("main_type")]
         defender_interactions: dict = {
             "Weaknesses": self.defender.get_attribute("weaknesses"),
             "Resistances": self.defender.get_attribute("resistances"),
             "Immunities": self.defender.get_attribute("immunities"),
         }
-        stab = 1.5 if self.move.type in attacker_types else 1.0
-        move_type = self.move.type
+        stab : float = 1.5 if self.move.type in attacker_types else 1.0
+        move_type : str = self.move.type
+        
+        type_effectiveness: float
         # Type-effectiveness calculation
         if move_type in defender_interactions["Immunities"]:
             type_effectiveness = 0
@@ -78,11 +81,11 @@ class CombatEngine:
             type_effectiveness = 1.0
 
         # Gets a random factor
-        random_factor = random.randint(217, 255) / 255
+        random_factor : float = random.randint(217, 255) / 255
 
         # Damage calculation
         if crit:  # If it's a critical hit, level is multiplied by 2
-            Damage = int(
+            Damage : int = int(
                 ((((2 * level * 2 / 5) + 2) * power * (A / D)) / 50 + 2)
                 * stab
                 * type_effectiveness
@@ -99,11 +102,11 @@ class CombatEngine:
 
         Damage = math.floor(Damage * random_factor)
         Damage = max(1, Damage)  # Ensure at least 1 damage is dealt
-
         Damage = Damage
+        
         return Damage, crit, move_hit
 
-    def critical_hit(self, speed_stats) -> bool:
+    def critical_hit(self, speed_stats: dict) -> bool:
         """Determine whether the current move is a critical hit.
 
         A threshold is calculated from the attacker's speed and previous
@@ -129,7 +132,7 @@ class CombatEngine:
         if threshold > 255:
             threshold = 255
         # Roll a random value to determine critical outcome
-        value = random.randint(0, 255)
+        value : int= random.randint(0, 255)
         return value < threshold
 
     # Determine attack and defense based on Generation I rules
@@ -192,16 +195,16 @@ class CombatEngine:
 
         return A, D
 
-    def Hit_Accuracy(self):
+    def Hit_Accuracy(self) -> bool:
         """Determine whether the move hits its target. Returns True on hit.
 
         This computes the final hit chance from move accuracy, attacker
         accuracy, and defender evasion, then compares it against a random roll.
         """
         # Compute hit chance based on accuracy and evasion
-        move_accuracy = self.move.accuracy
-        accuracy_multiplier = 1
-        evasion_multiplier = 1
+        move_accuracy: float = self.move.accuracy
+        accuracy_multiplier: float = 1
+        evasion_multiplier: float = 1
         self.attacker.get_stats().combat_stats()
         self.defender.get_stats().combat_stats()
         if self.attacker.get_stats().accuracy == "100%":
@@ -210,13 +213,13 @@ class CombatEngine:
             evasion_multiplier = 1
 
         # Final hit chance
-        Accuracy = move_accuracy * accuracy_multiplier * evasion_multiplier
+        Accuracy : float= move_accuracy * accuracy_multiplier * evasion_multiplier
 
         # Roll to decide if the move hits
-        R = random.uniform(0, 100)
+        R : float= random.uniform(0, 100)
         return R < Accuracy
 
-    def status_changes(self, power) -> bool:
+    def status_changes(self, power : int) -> tuple[bool, int]:
         """Gets the status of the attacker
         returns true if pokemon can attack, and the power with the modifications if some are implemented
         """

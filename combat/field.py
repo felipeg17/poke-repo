@@ -6,6 +6,7 @@
 from pokemon.pokemon import Pokemon, Move, create_pokemon
 from combat.engine import CombatEngine, math, random
 import pandas as pd
+from pandas import Series
 
 
 class Trainer:
@@ -21,9 +22,9 @@ class Trainer:
 
     def __init__(self, name: str):
         self.name = name
-        self.pokemon = []
+        self.pokemon : list[Pokemon] = []
 
-    def pokemon_available(self, pokemon_used=None):
+    def pokemon_available(self, pokemon_used : list[str] | None = None) -> pd.DataFrame:
         """Return a DataFrame of available Pokémon filtered by `pokemon_used`.
 
         Parameters
@@ -37,7 +38,7 @@ class Trainer:
 
         return df
 
-    def choose_pokemon(self):
+    def choose_pokemon(self) -> list[Pokemon]:
         """Interactively choose up to 3 Pokémon for this trainer.
         Prompts the user to enter a pokédex number and the Pokémon's type.
         Returns the list of chosen `Pokemon` objects.
@@ -55,7 +56,7 @@ class Trainer:
                     vp = df[20*Page:20*(Page+1)]
                     vn = vp["pokedex_number"].tolist()
                 
-                    chosen = input("Enter pokedex number or (z/x to change page): ").strip().lower()
+                    chosen_str = input("Enter pokedex number or (z/x to change page): ").strip().lower()
                 
                     if chosen == 'z':
                         Page = max(0, Page - 1)
@@ -64,21 +65,20 @@ class Trainer:
                         Page = min((len(df) - 1) // 20, Page + 1)
                         continue
                 
-                    chosen = int(chosen)
+                    chosen : int = int(chosen_str)
                     if chosen not in vn:
                         print("Choose a Pokémon visible on this page.")
                         continue
-                
                     break
                 except ValueError:
                     print("Invalid input. Enter a number or z/x.")
 
-            row = df.loc[df["pokedex_number"] == chosen]
+            row_df = df.loc[df["pokedex_number"] == chosen]
             if row.empty:
                 print("Invalid number. Try again.")
                 continue
                 
-            row = df.loc[df["pokedex_number"] == chosen].iloc[0]
+            row : Series= row_df.iloc[0]
             name = row["pokemon_name"]
             pokedex_number = int(row["pokedex_number"])
             poke_type = row["type1"]
@@ -121,7 +121,7 @@ class Trainer:
                 break
         return self.pokemon
         
-    def print_dex(self, page: int = 0, df = None):
+    def print_dex(self, page: int = 0, df: pd.DataFrame | None = None) -> None:
         if df is None:
             df = pd.read_csv(Pokemon.csv_path)
         print(f"Poke_dex - Page #{page + 1}")
@@ -152,8 +152,8 @@ class Field:
         self.__combat_sp_defense = {}
         self.__combat_speed = {}
         self.__number_turn = 0
-        self.active1_moves = []
-        self.active2_moves = []
+        self.active1_moves : list[Move] = []
+        self.active2_moves : list[Move] = []
 
         for pokemon in self.__team1:
             self.__combat_hp[pokemon] = pokemon.get_stats().hp
@@ -171,99 +171,99 @@ class Field:
             self.__combat_sp_defense[pokemon] = pokemon.get_stats().sp_defense
             self.__combat_speed[pokemon] = pokemon.get_stats().speed
 
-    def get_team1(self):
+    def get_team1(self) -> list[Pokemon]:
         return self.__team1
 
-    def get_team2(self):
+    def get_team2(self) -> list[Pokemon]:
         return self.__team2
 
-    def get_active1(self):
+    def get_active1(self) -> Pokemon | None:
         return self.__active1
 
-    def get_active2(self):
+    def get_active2(self) -> Pokemon | None:
         return self.__active2
 
-    def get_number_turn(self):
+    def get_number_turn(self) -> int:
         return self.__number_turn
 
-    def get_combat_hp(self, pokemon):
+    def get_combat_hp(self, pokemon : Pokemon) -> int:
         return self.__combat_hp.get(pokemon, 0)
 
-    def set_combat_hp(self, pokemon, value):
+    def set_combat_hp(self, pokemon : Pokemon, value :  int) -> None:
         self.__combat_hp[pokemon] = max(0, value)
 
-    def reduce_hp(self, pokemon, damage):
+    def reduce_hp(self, pokemon : Pokemon, damage : int) -> None:
         current = self.get_combat_hp(pokemon)
         self.set_combat_hp(pokemon, current - damage)
 
-    def mod_combat_hp(self, pokemon, hp_):
+    def mod_combat_hp(self, pokemon : Pokemon, hp_ :  int) -> None:
         current = self.get_combat_hp(pokemon)
         self.set_combat_hp(pokemon, current + hp_)
 
-    def get_combat_attack(self, pokemon):
+    def get_combat_attack(self, pokemon : Pokemon) -> int:
         return self.__combat_attack.get(pokemon, 0)
 
-    def get_combat_defense(self, pokemon):
+    def get_combat_defense(self, pokemon : Pokemon) -> int:
         return self.__combat_defense.get(pokemon, 0)
 
-    def get_combat_sp_attack(self, pokemon):
+    def get_combat_sp_attack(self, pokemon :  Pokemon) -> int:
         return self.__combat_sp_attack.get(pokemon, 0)
 
-    def get_combat_sp_defense(self, pokemon):
+    def get_combat_sp_defense(self, pokemon : Pokemon) -> int:
         return self.__combat_sp_defense.get(pokemon, 0)
 
-    def get_combat_speed(self, pokemon):
+    def get_combat_speed(self, pokemon : Pokemon) -> int:
         return self.__combat_speed.get(pokemon, 0)
 
-    def set_combat_attack(self, pokemon, at_):
+    def set_combat_attack(self, pokemon : Pokemon, at_ :  int) -> None:
         self.__combat_attack[pokemon] = max(0, at_)
 
-    def set_combat_defense(self, pokemon, def_):
+    def set_combat_defense(self, pokemon :  Pokemon, def_ : int) -> None:
         self.__combat_defense[pokemon] = max(0, def_)
 
-    def set_combat_sp_attack(self, pokemon, sp_a):
+    def set_combat_sp_attack(self, pokemon : Pokemon, sp_a :  int) -> None:
         self.__combat_sp_attack[pokemon] = max(0, sp_a)
 
-    def set_combat_sp_defense(self, pokemon, sp_d):
+    def set_combat_sp_defense(self, pokemon : Pokemon, sp_d :  int) -> None:
         self.__combat_sp_defense[pokemon] = max(0, sp_d)
 
-    def set_combat_speed(self, pokemon, sp):
+    def set_combat_speed(self, pokemon : Pokemon, sp : int) -> None:
         self.__combat_speed[pokemon] = max(0, sp)
 
-    def mod_combat_attack(self, pokemon, at_):
+    def mod_combat_attack(self, pokemon : Pokemon, at_ : int) -> None:
         current = self.get_combat_attack(pokemon)
         self.set_combat_attack(pokemon, current + at_)
 
-    def mod_combat_defense(self, pokemon, def_):
+    def mod_combat_defense(self, pokemon : Pokemon, def_ : int) -> None:
         current = self.get_combat_defense(pokemon)
         self.set_combat_defense(pokemon, current + def_)
 
-    def mod_combat_sp_attack(self, pokemon, sp_a):
+    def mod_combat_sp_attack(self, pokemon : Pokemon, sp_a : int) -> None:
         current = self.get_combat_sp_attack(pokemon)
         self.set_combat_sp_attack(pokemon, current + sp_a)
 
-    def mod_combat_sp_defense(self, pokemon, sp_d):
+    def mod_combat_sp_defense(self, pokemon : Pokemon, sp_d : int) -> None:
         current = self.get_combat_sp_defense(pokemon)
         self.set_combat_sp_defense(pokemon, current + sp_d)
 
-    def mod_combat_speed(self, pokemon, sp):
+    def mod_combat_speed(self, pokemon : Pokemon, sp : int) -> None:
         current = self.get_combat_speed(pokemon)
         self.set_combat_speed(pokemon, current + sp)
 
-    def end_battle(self):
+    def end_battle(self) -> bool:
         """True if at least one team is completely defeated"""
         team1_alive = any(self.get_combat_hp(p) > 0 for p in self.__team1)
         team2_alive = any(self.get_combat_hp(p) > 0 for p in self.__team2)
         return not (team1_alive and team2_alive)
 
-    def winner_game(self):
+    def winner_game(self) -> Trainer | None:
         """Returns winner or None if battle isn't over"""
         if not self.end_battle():
             return None
         team1_alive = any(self.get_combat_hp(p) > 0 for p in self.__team1)
         return self.trainer1 if team1_alive else self.trainer2
 
-    def pokemon_available(self, trainer):
+    def pokemon_available(self, trainer : Trainer) -> list[Pokemon]:
         """Get list of Pokémon that can still battle for a trainer"""
         if trainer == self.trainer1:
             team = self.__team1
@@ -279,7 +279,7 @@ class Field:
 
         return available
 
-    def switch_defeat(self, trainer):
+    def switch_defeat(self, trainer : Trainer) -> bool:
         """True if active pokemon fainted and trainer has replacements"""
         active = self.__active1 if trainer == self.trainer1 else self.__active2
         if active is None:
@@ -288,7 +288,7 @@ class Field:
             self.get_combat_hp(active) <= 0 and len(self.pokemon_available(trainer)) > 0
         )
 
-    def switch_pokemon(self, trainer, new_pokemon):
+    def switch_pokemon(self, trainer : Trainer, new_pokemon : Pokemon) -> bool:
         """Switch active Pokémon for a trainer"""
         if new_pokemon not in trainer.pokemon:
             return False
@@ -312,9 +312,10 @@ class Field:
         attacker: Pokemon,
         defender: Pokemon,
         move: Move,
-        attacker_moves: list,
-        defender_moves: list,
-    ):
+        attacker_moves: list[Move],
+        defender_moves: list[Move],
+    ) -> tuple[int, bool, str]:
+        
         attacker_Status = list(attacker.status.keys())[0] if attacker.status else None
         if attacker_Status == "Confused":
             value = random.randint(0, 100)
@@ -354,11 +355,11 @@ class Field:
             list(defender.status.keys()) if defender.status is not None else None
         )
         if move.type == "Fire" and defender_Status == "Frozen":
-            defender.status = None
+            defender.status = {}
             message += f"{defender._name} is no longer Frozen"
         return (damage, was_critical, message)
 
-    def resolve_turn(self, action1, action2):
+    def resolve_turn(self, action1 : dict, action2 :  dict) -> tuple[bool, list[str]]:
         """
         Execute a turn based on both players' actions.
         if action is "surrender", the battle ends.
@@ -366,9 +367,14 @@ class Field:
         if action is "attack", the active Pokémon attacks the opponent's active Pokémon.
 
         """
+        active1 = self.get_active1()
+        active2 = self.get_active2()
 
+        if active1 is None or active2 is None:
+            return False, ["A Pokémon is missing"]
+        
         self.__number_turn += 1
-        messages = []
+        messages : list[str] = []
 
         if action1["action"] == "surrender":
             messages.append(f"{self.trainer1.name} surrendered!")
@@ -381,181 +387,193 @@ class Field:
             return (False, messages)
 
         if action1["action"] == "switch" and action2["action"] == "switch":
-            self.__active1 = action1["new_pokemon"]
+            active1 = action1["new_pokemon"]
+            assert active1 is not None
+            self.__active1 = active1
             self.active1_moves = []
-            messages.append(f"{self.trainer1.name} sent out {self.__active1._name}!")
+            messages.append(f"{self.trainer1.name} sent out {active1._name}!")
 
-            self.__active2 = action2["new_pokemon"]
+            active2 = action2["new_pokemon"]
+            assert active2 is not None
+            self.__active2 = active2
             self.active2_moves = []
-            messages.append(f"{self.trainer2.name} sent out {self.__active2._name}!")
-            messages.append(self.status_damage(self.__active1))
-            messages.append(self.status_damage(self.__active2))
+            messages.append(f"{self.trainer2.name} sent out {active2._name}!")
+            messages.append(self.status_damage(active1))
+            messages.append(self.status_damage(active2))
             return (True, messages)
 
         elif action1["action"] == "switch":
-            self.__active1 = action1["new_pokemon"]
+            active1 = action1["new_pokemon"]
+            assert active1 is not None
+            self.__active1 = active1
             self.active1_moves = []
-            messages.append(f"{self.trainer1.name} sent out {self.__active1._name}!")
+            messages.append(f"{self.trainer1.name} sent out {active1._name}!")
 
             if action2["action"] == "attack":
-                messages.append(self.__active2.attack())
-                messages.append(f"{self.__active2._name} used {action2['move'].name}!")
+                messages.append(active2.attack())
+                messages.append(f"{active2._name} used {action2['move'].name}!")
                 self.active2_moves.append(action2["move"])
-                damage, crit, msg = self.execute_attack(
-                    self.__active2,
-                    self.__active1,
+                
+                damage: int
+                crit: bool      
+                msg: str
+                
+                damage, crit , msg = self.execute_attack(
+                    active2,
+                    active1,
                     action2["move"],
                     self.active2_moves,
                     self.active1_moves,
                 )
                 messages.append(msg)
                 active1_Status = (
-                    list(self.__active1.status.keys())[0]
-                    if self.__active1.status
+                    list(active1.status.keys())[0]
+                    if active1.status
                     else None
                 )
-                if self.__active1.status:
+                if active1.status:
                     if active1_Status == "Flinched":
-                        del self.__active1.status[active1_Status]
+                        del active1.status[active1_Status]
                         messages.append(
-                            f"{self.__active1._name} is no longer {active1_Status}"
+                            f"{active1._name} is no longer {active1_Status}"
                         )
 
-            messages.append(self.status_damage(self.__active1))
-            messages.append(self.status_damage(self.__active2))
+            messages.append(self.status_damage(active1))
+            messages.append(self.status_damage(active2))
             return (True, messages)
 
         elif action2["action"] == "switch":
-            self.__active2 = action2["new_pokemon"]
+            active2 = action2["new_pokemon"]
+            assert active2 is not None
             self.active2_moves = []
-            messages.append(f"{self.trainer2.name} sent out {self.__active2._name}!")
+            messages.append(f"{self.trainer2.name} sent out {active2._name}!")
 
             if action1["action"] == "attack":
-                messages.append(self.__active1.attack())
-                messages.append(f"{self.__active1._name} used {action1['move'].name}!")
+                messages.append(active1.attack())
+                messages.append(f"{active1._name} used {action1['move'].name}!")
                 self.active1_moves.append(action1["move"])
                 damage, crit, msg = self.execute_attack(
-                    self.__active1,
-                    self.__active2,
+                    active1,
+                    active2,
                     action1["move"],
                     self.active1_moves,
                     self.active2_moves,
                 )
                 messages.append(msg)
                 active2_Status = (
-                    list(self.__active2.status.keys())[0]
-                    if self.__active2.status
+                    list(active2.status.keys())[0]
+                    if active2.status
                     else None
                 )
-                if self.__active2.status:
+                if active2.status:
                     if active2_Status == "Flinched":
-                        del self.__active2.status[active2_Status]
+                        del active2.status[active2_Status]
                         messages.append(
-                            f"{self.__active2._name} is no longer {active2_Status}"
+                            f"{active2._name} is no longer {active2_Status}"
                         )
 
-            messages.append(self.status_damage(self.__active1))
-            messages.append(self.status_damage(self.__active2))
+            messages.append(self.status_damage(active1))
+            messages.append(self.status_damage(active2))
 
             return (True, messages)
 
         if action1["action"] == "attack" and action2["action"] == "attack":
             if (
-                self.get_combat_speed(self.__active1)
-                >= self.get_combat_speed(self.__active2)
+                self.get_combat_speed(active1)
+                >= self.get_combat_speed(active2)
                 or action1["move"].name == "Quick Attack"
             ):
-                messages.append(f"{self.__active1._name} is faster!")
-                print(self.__active1.attack())
-                messages.append(f"{self.__active1._name} used {action1['move'].name}!")
+                messages.append(f"{active1._name} is faster!")
+                print(active1.attack())
+                messages.append(f"{active1._name} used {action1['move'].name}!")
                 self.active1_moves.append(action1["move"])
                 damage, crit, msg = self.execute_attack(
-                    self.__active1,
-                    self.__active2,
+                    active1,
+                    active2,
                     action1["move"],
                     self.active1_moves,
                     self.active2_moves,
                 )
                 messages.append(msg)
-                messages.append(self.status_damage(self.__active1))
-                if self.get_combat_hp(self.__active2) > 0:
-                    print(self.__active2.attack())
+                messages.append(self.status_damage(active1))
+                if self.get_combat_hp(active2) > 0:
+                    print(active2.attack())
                     messages.append(
-                        f"{self.__active2._name} used {action2['move'].name}!"
+                        f"{active2._name} used {action2['move'].name}!"
                     )
                     self.active2_moves.append(action2["move"])
                     damage, crit, msg = self.execute_attack(
-                        self.__active2,
-                        self.__active1,
+                        active2,
+                        active1,
                         action2["move"],
                         self.active2_moves,
                         self.active1_moves,
                     )
                     messages.append(msg)
-                    messages.append(self.status_damage(self.__active2))
+                    messages.append(self.status_damage(active2))
                     active1_Status = (
-                        list(self.__active1.status.keys())[0]
-                        if self.__active1.status
+                        list(active1.status.keys())[0]
+                        if active1.status
                         else None
                     )
-                    if self.__active1.status:
+                    if active1.status:
                         if active1_Status == "Flinched":
-                            del self.__active1.status[active1_Status]
+                            del active1.status[active1_Status]
                             messages.append(
-                                f"{self.__active1._name} is no longer {active1_Status}"
+                                f"{active1._name} is no longer {active1_Status}"
                             )
             else:
-                messages.append(f"{self.__active2._name} is faster!")
-                messages.append(self.__active2.attack())
-                messages.append(f"{self.__active2._name} used {action2['move'].name}!")
+                messages.append(f"{active2._name} is faster!")
+                messages.append(active2.attack())
+                messages.append(f"{active2._name} used {action2['move'].name}!")
                 self.active2_moves.append(action2["move"])
                 damage, crit, msg = self.execute_attack(
-                    self.__active2,
-                    self.__active1,
+                    active2,
+                    active1,
                     action2["move"],
                     self.active2_moves,
                     self.active1_moves,
                 )
                 messages.append(msg)
-                self.status_damage(self.__active2)
-                if self.get_combat_hp(self.__active1) > 0:
-                    messages.append(self.__active1.attack())
+                self.status_damage(active2)
+                if self.get_combat_hp(active1) > 0:
+                    messages.append(active1.attack())
                     messages.append(
-                        f"{self.__active1._name} used {action1['move'].name}!"
+                        f"{active1._name} used {action1['move'].name}!"
                     )
                     self.active1_moves.append(action1["move"])
                     damage, crit, msg = self.execute_attack(
-                        self.__active1,
-                        self.__active2,
+                        active1,
+                        active2,
                         action1["move"],
                         self.active1_moves,
                         self.active2_moves,
                     )
                     messages.append(msg)
-                    messages.append(self.status_damage(self.__active1))
+                    messages.append(self.status_damage(active1))
                     active2_Status = (
-                        list(self.__active2.status.keys())[0]
-                        if self.__active2.status
+                        list(active2.status.keys())[0]
+                        if active2.status
                         else None
                     )
-                    if self.__active2.status:
+                    if active2.status:
                         if active2_Status == "Flinched":
-                            del self.__active2.status[active2_Status]
+                            del active2.status[active2_Status]
                             messages.append(
-                                f"{self.__active2._name} is no longer {active2_Status}"
+                                f"{active2._name} is no longer {active2_Status}"
                             )
 
             return (True, messages)
 
         return (True, messages)
 
-    def remove_defeated_pokemon(self):
+    def remove_defeated_pokemon(self) -> tuple[bool, bool, list[str]]:
         """
         Check for defeated Pokémon and remove them from teams.
         """
-        messages = []
-        needs_switch1 = False
-        needs_switch2 = False
+        messages : list[str] = []
+        needs_switch1 : bool = False
+        needs_switch2 : bool = False
 
         if self.__active1 and self.get_combat_hp(self.__active1) <= 0:
             messages.append(f"{self.__active1._name} defeated!")
@@ -579,7 +597,7 @@ class Field:
 
         return (needs_switch1, needs_switch2, messages)
 
-    def health_bar(self, current_hp, max_hp, bar_length=20):
+    def health_bar(self, current_hp : int, max_hp : int, bar_length : int = 20) -> str:
         """
         Return a simple text health bar representation.
         """
@@ -592,15 +610,15 @@ class Field:
 
         return f"[{bar}] {current_hp}/{max_hp} HP"
 
-    def Move_Effect(self, move, attacker, defender, damage: int) -> tuple[int, str]:
+    def Move_Effect(self, move :  Move, attacker : Pokemon, defender : Pokemon, damage: int) -> tuple[int, str]:
         """Apply secondary effects of the move, if any.
 
         This method checks if the move has any secondary effects (like
         status conditions or stat changes) and applies them to the
         attacker or defender as appropriate.
         """
-        hits = 1  # Default number of hits is 1
-        message = ""
+        hits : int= 1  # Default number of hits is 1
+        message: str = ""
 
         if (
             move.name == "Absorb"
@@ -612,7 +630,7 @@ class Field:
             message = f"{attacker._name} healed for {heal_amount} HP!"
 
         if move.name == "Acid":
-            random_value = random.randint(1, 100)
+            random_value: int = random.randint(1, 100)
             if random_value <= 10:  # 10% chance to lower defense
                 self.mod_combat_defense(defender, -1)
                 message = f"{defender._name}'s Defense fell!"
@@ -790,7 +808,7 @@ class Field:
             )
             if attacker_status:
                 if attacker_status == "Confused":
-                    attacker.status = None
+                    attacker.status = {}
                     message = f"{attacker._name} is no longer confused!"
             defender_status = (
                 list(defender.status.keys())[0] if defender.status else None
@@ -1067,7 +1085,7 @@ class Field:
 
         return hits * damage, message
 
-    def status_damage(self, attacker):
+    def status_damage(self, attacker : Pokemon) -> str:
         message = ""
         poke_status = list(attacker.status.keys())[0] if attacker.status else None
         if poke_status:
@@ -1093,16 +1111,16 @@ class Battle:
     - Manage the battle loop
     """
 
-    def __init__(self, field: Field):
+    def __init__(self, field: Field) -> None:
         self.field = field
 
-    def display_battle_header(self):
+    def display_battle_header(self) -> None:
         """Display the battle header"""
         print(60 * "=")
         print(f"{self.field.trainer1.name} VS {self.field.trainer2.name}")
         print(60 * "=")
 
-    def display_turn_header(self):
+    def display_turn_header(self) -> None:
         """Display the turn header"""
         print("\n" + 60 * "=")
         print(f"TURN #{self.field.get_number_turn() + 1}")
@@ -1110,16 +1128,14 @@ class Battle:
 
     def display_battle_status(
         self, trainer: Trainer, active_pokemon: Pokemon, enemy_pokemon: Pokemon
-    ):
+    ) -> None:
         """Display the current battle status"""
         active_hp = self.field.get_combat_hp(active_pokemon)
         enemy_hp = self.field.get_combat_hp(enemy_pokemon)
-        Status1 = (
-            ", ".join(active_pokemon.status.keys()) if active_pokemon.status else None
-        )
-        Status2 = (
-            ", ".join(enemy_pokemon.status.keys()) if enemy_pokemon.status else None
-        )
+        Status1 = ", ".join(active_pokemon.status.keys()) if active_pokemon.status else "Normal"
+        Status2 = ", ".join(enemy_pokemon.status.keys()) if enemy_pokemon.status else "Normal"
+
+
         print(f"""
         {50 * "="}
         Turn: {trainer.name}
@@ -1131,11 +1147,11 @@ class Battle:
 
     def action_py(
         self, trainer: Trainer, active_pokemon: Pokemon, enemy_pokemon: Pokemon
-    ):
+    ) -> dict:
         """Prompt the trainer for an action during their turn"""
         self.display_battle_status(trainer, active_pokemon, enemy_pokemon)
 
-        choice = int(
+        choice = (
             input("""
               (1) Attack
               (2) Switch Pokémon
@@ -1143,11 +1159,11 @@ class Battle:
               """)
         )
 
-        if choice == 1:
+        if choice == "1":
             return self.choice_attack(trainer, active_pokemon, enemy_pokemon)
-        elif choice == 2:
+        elif choice == "2":
             return self.choice_switch(trainer, active_pokemon, enemy_pokemon)
-        elif choice == 0:
+        elif choice == "0":
             return self.choice_surrender(trainer)
         else:
             print("Invalid choice. Try again.")
@@ -1155,7 +1171,7 @@ class Battle:
 
     def choice_attack(
         self, trainer: Trainer, active_pokemon: Pokemon, enemy_pokemon: Pokemon
-    ):
+    ) -> dict:
         """Prompt the trainer to choose an attack move"""
         moves = active_pokemon.get_moveset().current_moves
 
@@ -1170,7 +1186,7 @@ class Battle:
             if choice_move == 0:
                 return self.action_py(trainer, active_pokemon, enemy_pokemon)
             elif 1 <= choice_move <= len(moves):
-                chosen_move = moves[choice_move - 1]
+                chosen_move = moves[int(choice_move) - 1]
                 if chosen_move.pp == 0:
                     print("No PP left for this move. Choose another one.")
                     return self.choice_attack(trainer, active_pokemon, enemy_pokemon)
@@ -1186,7 +1202,7 @@ class Battle:
 
     def choice_switch(
         self, trainer: Trainer, active_pokemon: Pokemon, enemy_pokemon: Pokemon
-    ):
+    ) -> dict:
         """Prompt the trainer to choose a Pokémon to switch to"""
         team = trainer.pokemon
         print(f"{30 * '='}")
@@ -1202,7 +1218,7 @@ class Battle:
             elif current_hp <= 0:
                 status = " (defeated)"
             else:
-                status = ", ".join(pokemon.status.keys()) if pokemon.status else None
+                status = ", ".join(pokemon.status.keys()) if isinstance(pokemon.status, dict) and pokemon.status else "Normal"
 
             print(f"({i}) {pokemon._name} {hp_bar} Status:{status}")
         print(f"{30 * '='}")
@@ -1231,22 +1247,19 @@ class Battle:
             print("Enter a valid number.")
             return self.choice_switch(trainer, active_pokemon, enemy_pokemon)
 
-    def choice_surrender(self, trainer: Trainer):
+    def choice_surrender(self, trainer: Trainer) -> dict:
         """Prompt the trainer to confirm surrendering"""
         confirm = input(f"Are you sure you want to surrender, {trainer.name}? (y/n) ")
         if confirm.lower() == "y":
             return {"action": "surrender"}
         else:
             print("Surrender cancelled.")
-            return self.action_py(
-                trainer,
-                self.field.get_active1()
-                if trainer == self.field.trainer1
-                else self.field.get_active2(),
-                self.field.get_active2()
-                if trainer == self.field.trainer1
-                else self.field.get_active1(),
-            )
+            active = self.field.get_active1() if trainer == self.field.trainer1 else self.field.get_active2()
+            enemy = self.field.get_active2() if trainer == self.field.trainer1 else self.field.get_active1()
+
+            assert active is not None and enemy is not None
+            
+            return self.action_py(trainer, active, enemy)
 
     def switch_after_defeat(self, trainer: Trainer):
         """Prompt the trainer to choose their next Pokémon after one is defeated"""
@@ -1272,23 +1285,28 @@ class Battle:
             except ValueError:
                 print("Enter a valid number.")
 
-    def display_messages(self, messages):
+    def display_messages(self, messages : list[str]) -> None:
         for msg in messages:
             print(msg)
 
-    def battle(self):
+    def battle(self) -> None:
         """Main battle loop"""
         self.display_battle_header()
         while not self.field.end_battle():
+            active1 = self.field.get_active1()
+            active2 = self.field.get_active2()
+            
+            if active1 is None or active2 is None:
+                print("Error: missing active Pokémon.")
+                break
+            
             self.display_turn_header()
 
             action1 = self.action_py(
-                self.field.trainer1, self.field.get_active1(), self.field.get_active2()
+                self.field.trainer1, active1, active2
             )
 
-            action2 = self.action_py(
-                self.field.trainer2, self.field.get_active2(), self.field.get_active1()
-            )
+            action2 = self.action_py(self.field.trainer2, active2, active1)
 
             continue_battle, messages = self.field.resolve_turn(action1, action2)
             self.display_messages(messages)
@@ -1312,9 +1330,9 @@ class Battle:
 
         winner = self.field.winner_game()
         if winner:
-            print(f"\n🎉 {winner.name} is the winner!")
+            print(f"{winner.name} is the winner!")
 
-    def main_menu():
+    def main_menu(self) -> None:
         """Main game loop with restart menu"""
         print("=" * 60)
         print("POKÉMON BATTLE SIMULATOR")
