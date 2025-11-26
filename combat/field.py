@@ -1041,11 +1041,6 @@ class Field:
             damage = math.floor(level * random_multiplier)
             message = f"{defender._name} took {damage} damage from Psywave!"
 
-        if move.name == "Rage":
-            if defender.status == None:
-                defender.apply_status("Rage")
-                message = f"{defender._name} is now in Rage!"
-
         if move.name == "Recover" or move.name == "Soft-Boiled":
             heal_amount = math.floor(attacker.get_stats().hp / 2)
             self.mod_combat_hp(attacker, heal_amount)
