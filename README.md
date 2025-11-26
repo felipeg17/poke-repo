@@ -152,7 +152,6 @@ class Battle {
     + switch_after_defeat()
     + display_messages()
     + battle()
-    + main_menu()
 }
 
 class CombatEngine {
