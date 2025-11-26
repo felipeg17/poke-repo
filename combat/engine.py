@@ -157,6 +157,10 @@ class CombatEngine:
             A = attack_stats.get(self.attacker, 0)
             D = defense_stats.get(self.defender, 0)
 
+        if A > 255 or D > 255:
+            A = math.floor(A / 4)
+            D = math.floor(D / 4)
+
         # Check whether Reflect or Light Screen are active
         if critical:
             reflect = False
@@ -176,10 +180,8 @@ class CombatEngine:
         if self.move.name in ["Explosion", "Selfdestruct"]:
             D = max(1, math.floor(D / 2))
 
-        # Special case for stats over 255
-        if A > 255 or D > 255:
-            A = math.floor(A / 4)
-            D = math.floor(D / 4)
+        
+        
 
         # When a pokemon is burned, its attack is halved
         Status = (
