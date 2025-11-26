@@ -27,14 +27,14 @@ class CombatEngine:
         self.attacker = attacker
         self.defender = defender
         self.move = move
-        self.attacker_moves : list[Move] = attacker_moves
-        self.defender_moves : list[Move] = defender_moves
+        self.attacker_moves: list[Move] = attacker_moves
+        self.defender_moves: list[Move] = defender_moves
 
     def calculate_damage(
         self,
         attack_stats: dict,
-        defense_stats:  dict,
-        sp_attack_stats:  dict,
+        defense_stats: dict,
+        sp_attack_stats: dict,
         sp_defense_stats: dict,
         speed_stats: dict,
     ) -> tuple[int, bool, bool]:
@@ -43,20 +43,20 @@ class CombatEngine:
         Returns a tuple `(damage, is_critical)` where `damage` is an integer
         and `is_critical` is a boolean indicating whether the hit was critical.
         """
-        base_power : int = self.move.power
+        base_power: int = self.move.power
         status_effect, power = self.status_changes(base_power)
-        
+
         if not status_effect:
             return 0, False, False
 
         # Determines if the move hits
-        move_hit:  bool = self.Hit_Accuracy()
+        move_hit: bool = self.Hit_Accuracy()
         if self.move.power == 0:
             return 0, False, move_hit  # If the move has no power, damage is 0
 
         # Get all necessary attributes for the damage calculation
-        level : int = self.attacker.get_attribute("level")
-        crit : bool= self.critical_hit(speed_stats)
+        level: int = self.attacker.get_attribute("level")
+        crit: bool = self.critical_hit(speed_stats)
         A, D = self.attack_defense(
             crit, attack_stats, defense_stats, sp_attack_stats, sp_defense_stats
         )
@@ -66,9 +66,9 @@ class CombatEngine:
             "Resistances": self.defender.get_attribute("resistances"),
             "Immunities": self.defender.get_attribute("immunities"),
         }
-        stab : float = 1.5 if self.move.type in attacker_types else 1.0
-        move_type : str = self.move.type
-        
+        stab: float = 1.5 if self.move.type in attacker_types else 1.0
+        move_type: str = self.move.type
+
         type_effectiveness: float
         # Type-effectiveness calculation
         if move_type in defender_interactions["Immunities"]:
@@ -81,11 +81,11 @@ class CombatEngine:
             type_effectiveness = 1.0
 
         # Gets a random factor
-        random_factor : float = random.randint(217, 255) / 255
+        random_factor: float = random.randint(217, 255) / 255
 
         # Damage calculation
         if crit:  # If it's a critical hit, level is multiplied by 2
-            Damage : int = int(
+            Damage: int = int(
                 ((((2 * level * 2 / 5) + 2) * power * (A / D)) / 50 + 2)
                 * stab
                 * type_effectiveness
@@ -103,7 +103,7 @@ class CombatEngine:
         Damage = math.floor(Damage * random_factor)
         Damage = max(1, Damage)  # Ensure at least 1 damage is dealt
         Damage = Damage
-        
+
         return Damage, crit, move_hit
 
     def critical_hit(self, speed_stats: dict) -> bool:
@@ -132,7 +132,7 @@ class CombatEngine:
         if threshold > 255:
             threshold = 255
         # Roll a random value to determine critical outcome
-        value : int= random.randint(0, 255)
+        value: int = random.randint(0, 255)
         return value < threshold
 
     # Determine attack and defense based on Generation I rules
@@ -213,13 +213,13 @@ class CombatEngine:
             evasion_multiplier = 1
 
         # Final hit chance
-        Accuracy : float= move_accuracy * accuracy_multiplier * evasion_multiplier
+        Accuracy: float = move_accuracy * accuracy_multiplier * evasion_multiplier
 
         # Roll to decide if the move hits
-        R : float= random.uniform(0, 100)
+        R: float = random.uniform(0, 100)
         return R < Accuracy
 
-    def status_changes(self, power : int) -> tuple[bool, int]:
+    def status_changes(self, power: int) -> tuple[bool, int]:
         """Gets the status of the attacker
         returns true if pokemon can attack, and the power with the modifications if some are implemented
         """
