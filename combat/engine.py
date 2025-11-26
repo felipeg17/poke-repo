@@ -180,9 +180,6 @@ class CombatEngine:
         if self.move.name in ["Explosion", "Selfdestruct"]:
             D = max(1, math.floor(D / 2))
 
-        
-        
-
         # When a pokemon is burned, its attack is halved
         Status = (
             list(self.attacker.status.keys())
