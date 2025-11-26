@@ -383,10 +383,6 @@ class TestCombatEngine:
             False, attack_stats, defense_stats, sp_attack_stats, sp_defense_stats
         )
 
-        print(f"D sin Light Screen: {D_no_screen}")
-        print(f"D con Light Screen: {D_with_screen}")
-        print(f"Esperado: {D_no_screen * 2}")
-
         assert D_with_screen == D_no_screen * 2
 
     def test_critical_hit_ignores_reflect(self, pokemon_to_test, stats_dicts):

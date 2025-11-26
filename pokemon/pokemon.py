@@ -261,26 +261,28 @@ class Pokemon:
         self._moveset.show_moves()
 
     def apply_status(self, new_status: str):
+        new_status = new_status
         if self.status is None:
             self.status = {}  # inicializar si está vacío
-
-        new_status = new_status
         if new_status == "Paralyzed":
             turns_left = 999
-        if new_status == "Burned":
+        elif new_status == "Burned":
             turns_left = 999
-        if new_status == "Poisoned":
+        elif new_status == "Poisoned":
             turns_left = 999
-        if new_status == "Asleep":
+        elif new_status == "Asleep":
             turns_left = random.randint(1, 7)
-        if new_status == "Frozen":
+        elif new_status == "Frozen":
             turns_left = 999
-        if new_status == "Confused":
+        elif new_status == "Confused":
             turns_left = 999
-        if new_status == "Seeded":
+        elif new_status == "Seeded":
             turns_left = 999
-        if new_status == "Flinched":
+        elif new_status == "Flinched":
             turns_left = 1
+        else:
+            # Unknown status, do not apply
+            return
         self.status[new_status] = turns_left
 
 

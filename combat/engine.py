@@ -50,7 +50,7 @@ class CombatEngine:
             return 0, False, False
 
         # Determines if the move hits
-        move_hit: bool = self.Hit_Accuracy()
+        move_hit: bool = self.hit_accuracy()
         if self.move.power == 0:
             return 0, False, move_hit  # If the move has no power, damage is 0
 
@@ -102,7 +102,6 @@ class CombatEngine:
 
         Damage = math.floor(Damage * random_factor)
         Damage = max(1, Damage)  # Ensure at least 1 damage is dealt
-        Damage = Damage
 
         return Damage, crit, move_hit
 
@@ -194,7 +193,7 @@ class CombatEngine:
 
         return A, D
 
-    def Hit_Accuracy(self) -> bool:
+    def hit_accuracy(self) -> bool:
         """Determine whether the move hits its target. Returns True on hit.
 
         This computes the final hit chance from move accuracy, attacker

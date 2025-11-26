@@ -396,8 +396,8 @@ class Field:
         attacker_moves: list[Move],
         defender_moves: list[Move],
     ) -> tuple[int, bool, str]:
-        attacker_Status = list(attacker.status.keys())[0] if attacker.status else None
-        if attacker_Status == "Confused":
+        attacker_status = list(attacker.status.keys())[0] if attacker.status else None
+        if attacker_status == "Confused":
             value = random.randint(0, 100)
             if value <= 50:  # 50% of attacking himself
                 defender = attacker
@@ -423,7 +423,7 @@ class Field:
         if not move_hit:
             return (0, False, "The attack missed!")
 
-        damage, message = self.Move_Effect(move, attacker, defender, base_damage)
+        damage, message = self.move_effect(move, attacker, defender, base_damage)
         self.reduce_hp(defender, damage)
         effectiveness = defender.receive_attack(move.type)
 
@@ -560,7 +560,7 @@ class Field:
                 or action1["move"].name == "Quick Attack"
             ):
                 messages.append(f"{active1._name} is faster!")
-                print(active1.attack())
+                messages.append(active1.attack())
                 messages.append(f"{active1._name} used {action1['move'].name}!")
                 self.active1_moves.append(action1["move"])
                 damage, crit, msg = self.execute_attack(
@@ -573,7 +573,7 @@ class Field:
                 messages.append(msg)
                 messages.append(self.status_damage(active1))
                 if self.get_combat_hp(active2) > 0:
-                    print(active2.attack())
+                    messages.append(active2.attack())
                     messages.append(f"{active2._name} used {action2['move'].name}!")
                     self.active2_moves.append(action2["move"])
                     damage, crit, msg = self.execute_attack(
@@ -607,7 +607,7 @@ class Field:
                     self.active1_moves,
                 )
                 messages.append(msg)
-                self.status_damage(active2)
+                messages.append(self.status_damage(active2))
                 if self.get_combat_hp(active1) > 0:
                     messages.append(active1.attack())
                     messages.append(f"{active1._name} used {action1['move'].name}!")
@@ -678,7 +678,7 @@ class Field:
 
         return f"[{bar}] {current_hp}/{max_hp} HP"
 
-    def Move_Effect(
+    def move_effect(
         self, move: Move, attacker: Pokemon, defender: Pokemon, damage: int
     ) -> tuple[int, str]:
         """Apply secondary effects of the move, if any.
@@ -969,7 +969,6 @@ class Field:
                 if defender == self.__active2
                 else self.active1_moves,
             )
-            message += msg
 
         if move.name == "Mimic":
             for moves in defender.get_moveset().current_moves:
@@ -1014,7 +1013,7 @@ class Field:
                 )
                 message += msg
             else:
-                print("Rival has not used any move")
+                message = "Rival has not used any move"
 
         if move.name == "Night Shade" or move.name == "Seismic Toss":
             level = attacker.get_attribute("level")
@@ -1130,6 +1129,41 @@ class Field:
             self.mod_combat_attack(attacker, 2)
             message = f"{attacker._name}'s Attack rose sharply!"
 
+        if move.name == "Transform":
+            attacker._main_type = defender._main_type
+            attacker._secondary_type = defender._secondary_type
+
+            # Copy enemy´s stats
+            self.__combat_attack[attacker] = self.__combat_attack[defender]
+            self.__combat_defense[attacker] = self.__combat_defense[defender]
+            self.__combat_sp_attack[attacker] = self.__combat_sp_attack[defender]
+            self.__combat_sp_defense[attacker] = self.__combat_sp_defense[defender]
+            self.__combat_speed[attacker] = self.__combat_speed[defender]
+
+            # Copy enemy´s movements
+            new_moves = []
+            for mv in defender.get_moveset().current_moves:
+                new_mv = Move(
+                    mv.id,
+                    mv.name,
+                    mv.type,
+                    mv.power,
+                    mv.accuracy,
+                    mv.pp,  # actual PP´s
+                    mv.category,
+                )
+                new_moves.append(new_mv)
+
+            attacker._moveset.current_moves = new_moves
+
+            # Copy enemy´s weaknesses/resistances/immunities
+            attacker._weaknesses = defender._weaknesses.copy()
+            attacker._resistances = defender._resistances.copy()
+            attacker._immunities = defender._immunities.copy()
+
+            message = f"{attacker._name} transformed into {defender._name}!"
+            return 0, message
+
         if (
             move.name == "Thunder"
             or move.name == "Thunderbolt"
@@ -1212,12 +1246,12 @@ class Battle:
         """Display the current battle status"""
         active_hp = self.field.get_combat_hp(active_pokemon)
         enemy_hp = self.field.get_combat_hp(enemy_pokemon)
-        Status1 = (
+        active_status = (
             ", ".join(active_pokemon.status.keys())
             if active_pokemon.status
             else "Normal"
         )
-        Status2 = (
+        enemy_status = (
             ", ".join(enemy_pokemon.status.keys()) if enemy_pokemon.status else "Normal"
         )
 
@@ -1226,7 +1260,7 @@ class Battle:
         Turn: {trainer.name}
         {active_pokemon._name:<20} VS {enemy_pokemon._name:>20}
         {self.field.health_bar(active_hp, active_pokemon._stats.hp)}  {self.field.health_bar(enemy_hp, enemy_pokemon._stats.hp)}
-        Current Status:{Status1}                 Current Status: {Status2}
+        Current Status:{active_status}                 Current Status: {enemy_status}
         {50 * "="}
         """)
 
