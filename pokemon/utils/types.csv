@@ -16,4 +16,4 @@ steel,fire;fighting;ground,normal;grass;ice;flying;psychic;bug;rock;dragon;steel
 fairy,poison;steel,fighting;bug;dark,dragon
 poison,ground;psychic,grass;fighting;poison;bug;fairy,
 flying,electric;ice;rock,grass;fighting;bug,ground
-bug,fire;flying;rock,grass;fighting;ground,
+bug,fire;flying;rock,grass;fighting;ground, 

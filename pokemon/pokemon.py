@@ -23,12 +23,12 @@ class TypeRelations:
 
                   self._type_data[type_key] = {
                     "weak": [x.strip().lower() for x in row["weaknesses"].split(";")] 
-                       if row["weak"].strip() else [],
-                    "resist": [x.strip().lower() for x in row["resist"].split(";")] 
-                        if row["resist"].strip() else [],
-                    "immune": [x.strip().lower() for x in row["immune"].split(";")] 
-                        if row["immune"].strip() else []
-                 }
+                       if row["weaknesses"].strip() else [],
+                    "resist": [x.strip().lower() for x in row["resistances"].split(";")] 
+                        if row["resistances"].strip() else [],
+                    "immune": [x.strip().lower() for x in row["immunities"].split(";")] 
+                        if row["immunities"].strip() else []
+                  }
         except FileNotFoundError:
             print(f"Error: No se pudo encontrar el archivo {filename}")
         except Exception as e:
@@ -145,11 +145,17 @@ class Pokemon:
 
     def receive_attack(self, attack_type):
         ### TODO: Return necessary information to compute damage
-        if attack_type in self._immunities:
+
+        attack = attack_type.strip().lower()
+        weaknesses = self._type_relations.get_weaknesses(self._main_type)
+        resistances = self._type_relations.get_resistances(self._main_type)
+        immunities = self._type_relations.get_immunities(self._main_type)
+
+        if attack in immunities:
             return "It's inmune!"
-        elif attack_type in self._weaknesses:
+        elif attack in weaknesses:
             return "It's super effective!"
-        elif attack_type in self._resistances:
+        elif attack in resistances:
             return "It's not very effective..."
         else:
             return "It's effective."
