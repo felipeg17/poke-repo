@@ -745,7 +745,9 @@ class Field:
 
         if move.name == "Bite" or move.name == "Bone Club" or move.name == "Hyper Fang":
             random_value = random.randint(1, 100)
-            if random_value <= 10 and defender.status is None:  # 10% chance to flinch
+            if random_value <= 10 and (
+                defender.status is None or defender.status == {}
+            ):  # 10% chance to flinch
                 defender.apply_status("Flinched")
                 message = f"{defender._name} flinched!"
 
@@ -757,7 +759,7 @@ class Field:
             random_value = random.randint(1, 100)
             if (
                 random_value <= 10
-                and defender.status is None
+                and (defender.status is None or defender.status == {})
                 and defender.get_attribute("main_type") != "Ice"
                 and defender.get_attribute("secondary_type") != "Ice"
             ):  # 10% chance to freeze
@@ -766,7 +768,9 @@ class Field:
 
         if move.name == "Body Slam" or move.name == "Lick":
             random_value = random.randint(1, 100)
-            if random_value <= 30 and defender.status is None:  # 30% chance to paralyze
+            if random_value <= 30 and (
+                defender.status is None or defender.status == {}
+            ):  # 30% chance to paralyze
                 defender.apply_status("Paralyzed")
                 message = f"{defender._name} was paralyzed!"
 
@@ -786,13 +790,15 @@ class Field:
                 message = f"{defender._name}'s Speed fell!"
 
         if move.name == "Confuse Ray" or move.name == "Supersonic":
-            if defender.status is None:
+            if defender.status is None or defender.status == {}:
                 defender.apply_status("Confused")
                 message = f"{defender._name} became confused!"
 
         if move.name == "Confusion" or move.name == "Psybeam":
             random_value = random.randint(1, 100)
-            if random_value <= 10 and defender.status is None:  # 10% chance to confuse
+            if random_value <= 10 and (
+                defender.status is None or defender.status == {}
+            ):  # 10% chance to confuse
                 defender.apply_status("Confused")
                 message = f"{defender._name} became confused!"
 
@@ -801,7 +807,9 @@ class Field:
             message = f"{attacker._name}'s Defense rose!"
         if move.name == "Dizzy Punch":
             random_value = random.randint(1, 100)
-            if random_value <= 20 and defender.status is None:  # 20% chance to confuse
+            if random_value <= 20 and (
+                defender.status is None or defender.status == {}
+            ):  # 20% chance to confuse
                 defender.apply_status("Confused")
                 message = f"{defender._name} became confused!"
 
@@ -831,7 +839,7 @@ class Field:
             random_value = random.randint(1, 100)
             if (
                 random_value <= 10
-                and defender.status is None
+                and (defender.status is None or defender.status == {})
                 and defender.get_attribute("main_type") != "Fire"
                 and defender.get_attribute("secondary_type") != "Fire"
             ):  # 10% chance to burn
@@ -844,7 +852,7 @@ class Field:
             or move.name == "Thunder Wave"
         ):
             if (
-                defender.status is None
+                (defender.status is None or defender.status == {})
                 and defender.get_attribute("main_type") != "Ground"
                 and defender.get_attribute("secondary_type") != "Ground"
             ):
@@ -905,7 +913,9 @@ class Field:
             or move.name == "Stomp"
         ):
             random_value = random.randint(1, 100)
-            if random_value <= 30 and defender.status is None:  # 30% chance to flinch
+            if random_value <= 30 and (
+                defender.status is None or defender.status == {}
+            ):  # 30% chance to flinch
                 defender.apply_status("Flinched")
                 message = f"{defender._name} flinched!"
 
@@ -916,13 +926,13 @@ class Field:
             or move.name == "Sleep Powder"
             or move.name == "Spore"
         ):
-            if defender.status is None:
+            if defender.status is None or defender.status == {}:
                 defender.apply_status("Asleep")
                 message = f"{defender._name} fell asleep!"
 
         if move.name == "Leech Seed":
             if (
-                defender.status is None
+                (defender.status is None or defender.status == {})
                 and defender.get_attribute("main_type") != "Grass"
                 and defender.get_attribute("secondary_type") != "Grass"
             ):
@@ -982,24 +992,29 @@ class Field:
                     break
 
         if move.name == "Mirror Move":
-            last_move = (
-                self.active2_moves[-1]
-                if attacker == self.__active1
-                else self.active1_moves[-1]
-            )
-            message = f"{attacker._name} used Mirror Move and copied {last_move.name}!"
-            damage, was_critical, msg = self.execute_attack(
-                attacker,
-                defender,
-                last_move,
-                self.active1_moves
-                if attacker == self.__active1
-                else self.active2_moves,
-                self.active2_moves
-                if defender == self.__active2
-                else self.active1_moves,
-            )
-            message += msg
+            if self.active2_moves:
+                last_move = (
+                    self.active2_moves[-1]
+                    if attacker == self.__active1
+                    else self.active1_moves[-1]
+                )
+                message = (
+                    f"{attacker._name} used Mirror Move and copied {last_move.name}!"
+                )
+                damage, was_critical, msg = self.execute_attack(
+                    attacker,
+                    defender,
+                    last_move,
+                    self.active1_moves
+                    if attacker == self.__active1
+                    else self.active2_moves,
+                    self.active2_moves
+                    if defender == self.__active2
+                    else self.active1_moves,
+                )
+                message += msg
+            else:
+                print("Rival has not used any move")
 
         if move.name == "Night Shade" or move.name == "Seismic Toss":
             level = attacker.get_attribute("level")
@@ -1011,7 +1026,7 @@ class Field:
             or move.name == "Toxic"
         ):
             if (
-                defender.status is None
+                (defender.status is None or defender.status == {})
                 and defender.get_attribute("main_type") not in ["Poison", "Steel"]
                 and defender.get_attribute("secondary_type") not in ["Poison", "Steel"]
             ):
@@ -1022,7 +1037,7 @@ class Field:
             random_value = random.randint(1, 100)
             if (
                 random_value <= 20
-                and defender.status is None
+                and (defender.status is None or defender.status == {})
                 and defender.get_attribute("main_type") not in ["Poison", "Steel"]
                 and defender.get_attribute("secondary_type") not in ["Poison", "Steel"]
             ):  # 20% chance to poison
@@ -1068,7 +1083,7 @@ class Field:
             random_value = random.randint(1, 100)
             if (
                 random_value <= 30
-                and defender.status is None
+                and (defender.status is None or defender.status == {})
                 and defender.get_attribute("main_type") not in ["Poison", "Steel"]
                 and defender.get_attribute("secondary_type") not in ["Poison", "Steel"]
             ):  # 30% chance to poison
@@ -1079,7 +1094,7 @@ class Field:
             random_value = random.randint(1, 100)
             if (
                 random_value <= 40
-                and defender.status is None
+                and (defender.status is None or defender.status == {})
                 and defender.get_attribute("main_type") not in ["Poison", "Steel"]
                 and defender.get_attribute("secondary_type") not in ["Poison", "Steel"]
             ):  # 40% chance to poison
@@ -1124,7 +1139,7 @@ class Field:
             random_value = random.randint(1, 100)
             if (
                 random_value <= 10
-                and defender.status is None
+                and (defender.status is None or defender.status == {})
                 and defender.get_attribute("main_type") != "Electric"
                 and defender.get_attribute("secondary_type") != "Electric"
             ):  # 10% chance to paralyze
@@ -1137,7 +1152,7 @@ class Field:
             random_value = random.randint(1, 100)
             if (
                 random_value <= 20
-                and defender.status is None
+                and (defender.status is None or defender.status == {})
                 and defender.get_attribute("main_type") not in ["Poison", "Steel"]
                 and defender.get_attribute("secondary_type") not in ["Poison", "Steel"]
             ):  # 20% chance to poison
