@@ -95,9 +95,11 @@ Así pues, el archivo main.py deberá importar la clase "Battle", que es donde s
 
 Dentro de la función main, la cuál será ejecutada al correr el programa directamente, solo hay que escribir un comando, y es llamar a la función "main_menu()" de Battle, eso iniciará directamente el combate.
 ```python
-from combat.field import Battle
+from combat.field import Battle, Field
 
 if __name__ == "__main__":
     # Launch interactive main menu
-    Battle.main_menu()
+    batalla: Battle = Battle(Field)
+    batalla.main_menu()
+
 ```
