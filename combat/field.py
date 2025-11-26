@@ -172,7 +172,7 @@ class Trainer:
                     print("Invalid input. Please enter a valid number.")
 
             self.pokemon.append(
-                create_pokemon(
+                self.create_pokemon(
                     name, pokedex_number, poke_type, poke_type2, "gray", "male", level
                 )
             )
