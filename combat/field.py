@@ -60,6 +60,7 @@ class Trainer:
         return df
 
     def create_pokemon(
+        self,
         name: str,
         pokedex_num: int,
         primary_type: str | None = None,
@@ -72,7 +73,7 @@ class Trainer:
         and returns an instance of the appropriate subclass of Pokemon.
         """
         # Map type names (as they appear in the CSV) to subclass constructors
-        TYPE_CLASS = {
+        TYPE_CLASS: dict = {
             "Normal": Normal,
             "Fire": Fire,
             "Water": Water,
@@ -96,7 +97,7 @@ class Trainer:
         if isinstance(primary_type, str):
             primary_type = primary_type.strip().capitalize()
 
-        cls = Pokemon
+        cls: type[Pokemon] = Pokemon
         if primary_type and primary_type in TYPE_CLASS:
             cls = TYPE_CLASS[primary_type]
 
