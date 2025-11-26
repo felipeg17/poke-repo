@@ -135,10 +135,10 @@ class Trainer:
                         .lower()
                     )
 
-                    if chosen == "z":
+                    if chosen_str == "z":
                         Page = max(0, Page - 1)
                         continue
-                    elif chosen == "x":
+                    elif chosen_str == "x":
                         Page = min((len(df) - 1) // 20, Page + 1)
                         continue
 
