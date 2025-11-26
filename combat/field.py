@@ -67,7 +67,7 @@ class Trainer:
         color: str = "gray",
         sex: str = "male",
         level: int = 1,
-    ):
+    ) -> Pokemon:
         """Gets the values of a pokemon
         and returns an instance of the appropriate subclass of Pokemon.
         """
