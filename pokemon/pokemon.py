@@ -16,10 +16,10 @@ class Pokemon:
         self,
         pokemon_name: str,
         pokedex_num: int,
-        type1: str,
-        type2: str,
+        type1: str | None,
+        type2: str | None,
         color: str,
-        sex: str,
+        sex: str | int,
         level: int = 1,
     ) -> None:
         """
@@ -594,11 +594,11 @@ class Fairy(Pokemon):
 
 
 if __name__ == "__main__":
-    bulbasaur = Pokemon("bulbasaur", 1, "grass", "blue", "male", 3)
+    bulbasaur = Pokemon("bulbasaur", 1, "Grass", "Poison", "blue", "male", 3)
     print(bulbasaur)
     bulbasaur.attack()
     print(bulbasaur.get_stats())
-    charmander = Pokemon("charmander", 4, "fire", "orange", "male")
+    charmander = Pokemon("charmander", 4, "Fire", None, "orange", "male")
     print(charmander)
     charmander.attack()
     print(charmander.get_stats())
