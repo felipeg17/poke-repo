@@ -3,7 +3,28 @@
 # Uses engine to compute damage and update stats
 # Defines win/loss conditions
 
-from pokemon.pokemon import Pokemon, Move, create_pokemon
+from pokemon.pokemon import (
+    Pokemon,
+    Move,
+    Normal,
+    Fire,
+    Water,
+    Grass,
+    Electric,
+    Ice,
+    Fighting,
+    Poison,
+    Ground,
+    Flying,
+    Psychic,
+    Bug,
+    Rock,
+    Ghost,
+    Dragon,
+    Dark,
+    Steel,
+    Fairy,
+)
 from combat.engine import CombatEngine, math, random
 import pandas as pd
 from pandas import Series
@@ -37,6 +58,56 @@ class Trainer:
             df = df[~df["pokemon_name"].isin(pokemon_used)]
 
         return df
+
+    def create_pokemon(
+        name: str,
+        pokedex_num: int,
+        primary_type: str | None = None,
+        secondary_type: str | None = None,
+        color: str = "gray",
+        sex: str = "male",
+        level: int = 1,
+    ):
+        """Gets the values of a pokemon
+        and returns an instance of the appropriate subclass of Pokemon.
+        """
+        # Map type names (as they appear in the CSV) to subclass constructors
+        TYPE_CLASS = {
+            "Normal": Normal,
+            "Fire": Fire,
+            "Water": Water,
+            "Grass": Grass,
+            "Electric": Electric,
+            "Ice": Ice,
+            "Fighting": Fighting,
+            "Poison": Poison,
+            "Ground": Ground,
+            "Flying": Flying,
+            "Psychic": Psychic,
+            "Bug": Bug,
+            "Rock": Rock,
+            "Ghost": Ghost,
+            "Dragon": Dragon,
+            "Dark": Dark,
+            "Steel": Steel,
+            "Fairy": Fairy,
+        }
+
+        if isinstance(primary_type, str):
+            primary_type = primary_type.strip().capitalize()
+
+        cls = Pokemon
+        if primary_type and primary_type in TYPE_CLASS:
+            cls = TYPE_CLASS[primary_type]
+
+        # Subclass constructors expect (name, pokedex_num, color, sex, level)
+        try:
+            return cls(name, pokedex_num, secondary_type, color, sex, level)
+        except TypeError:
+            # Fallback to base Pokemon if subclass constructor signature differs
+            return Pokemon(
+                name, pokedex_num, primary_type, secondary_type, color, sex, level
+            )
 
     def choose_pokemon(self) -> list[Pokemon]:
         """Interactively choose up to 3 Pokémon for this trainer.
