@@ -1,4 +1,4 @@
-# Módulos de Combat
+# Módulos de Combate
 En esta sección se explican de forma general las funcionalidades de los módulos
 - Engine
 - Field
