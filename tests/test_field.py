@@ -271,14 +271,14 @@ class TestField:
         trainer1, trainer2 = trainers
         field = Field(trainer1, trainer2)
 
-        assert field.get_number_turn() == 0
+        assert field.get_turn_number() == 0
 
         move = Move(150, "TestMove", "Normal", 40, 255, 10, "Physical")
         field.resolve_turn(
             {"action": "attack", "move": move}, {"action": "attack", "move": move}
         )
 
-        assert field.get_number_turn() == 1
+        assert field.get_turn_number() == 1
 
     def test_switch_then_attack(self, trainers):
         trainer1, trainer2 = trainers

@@ -140,6 +140,9 @@ class Pokemon:
             raise AttributeError(f"Pokemon has no attribute '{attribute_name}'")
         # Module for evolutions
 
+    def set_type(self, type: str):
+        self._main_type = type
+
     def __str__(self):
         return (
             f"{self._name} (#{self._pokedex_num}) - "
@@ -258,7 +261,6 @@ class Pokemon:
         self._moveset.show_moves()
 
     def apply_status(self, new_status: str):
-        new_status = new_status
         if self.status is None:
             self.status = {}  # inicializar si está vacío
         if new_status == "Paralyzed":
@@ -304,7 +306,6 @@ class Stats:
         self.set_initial_stats()
 
     def set_initial_stats(self):
-        print(f"Antes de subir de nivel: {self}")
         for _ in range(1, self.initial_level):
             self.hp = round(self.hp + (110 + self.base_hp) / 100)
             self.attack = round(self.attack + (5 + self.base_attack) / 100)

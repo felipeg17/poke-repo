@@ -228,7 +228,7 @@ class Field:
         self.__combat_sp_attack = {}
         self.__combat_sp_defense = {}
         self.__combat_speed = {}
-        self.__number_turn = 0
+        self.__turn_number = 0
         self.active1_moves: list[Move] = []
         self.active2_moves: list[Move] = []
 
@@ -260,8 +260,8 @@ class Field:
     def get_active2(self) -> Pokemon | None:
         return self.__active2
 
-    def get_number_turn(self) -> int:
-        return self.__number_turn
+    def get_turn_number(self) -> int:
+        return self.__turn_number
 
     def get_combat_hp(self, pokemon: Pokemon) -> int:
         return self.__combat_hp.get(pokemon, 0)
@@ -449,7 +449,7 @@ class Field:
         if active1 is None or active2 is None:
             return False, ["A Pokémon is missing"]
 
-        self.__number_turn += 1
+        self.__turn_number += 1
         messages: list[str] = []
 
         if action1["action"] == "surrender":
@@ -731,9 +731,9 @@ class Field:
             random_value = random.randint(1, 100)
             if random_value <= 37:  # 37% chance to hit 2 times
                 hits = 2
-            if random_value > 37 and random_value < 75:  # 37% chance to hit 3 times
+            if 37 < random_value < 75:  # 37% chance to hit 3 times
                 hits = 3
-            if random_value >= 75 and random_value <= 87:  # 12% chance to hit 4 times
+            if 75 <= random_value <= 87:  # 12% chance to hit 4 times
                 hits = 4
             if random_value > 87:  # 13% chance to hit 5 times
                 hits = 5
@@ -1115,7 +1115,7 @@ class Field:
             message = f"{attacker._name}'s Attack rose sharply!"
 
         if move.name == "Transform":
-            attacker._main_type = defender._main_type
+            attacker.set_type(defender.get_attribute("type"))
 
             # Copy enemy´s stats
             self.__combat_attack[attacker] = self.__combat_attack[defender]
@@ -1219,7 +1219,7 @@ class Battle:
     def display_turn_header(self) -> None:
         """Display the turn header"""
         print("\n" + 60 * "=")
-        print(f"TURN #{self.field.get_number_turn() + 1}")
+        print(f"TURN #{self.field.get_turn_number() + 1}")
         print(60 * "=")
 
     def display_battle_status(

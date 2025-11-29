@@ -85,25 +85,25 @@ class CombatEngine:
 
         # Damage calculation
         if crit:  # If it's a critical hit, level is multiplied by 2
-            Damage: int = int(
+            damage: int = int(
                 ((((2 * level * 2 / 5) + 2) * power * (A / D)) / 50 + 2)
                 * stab
                 * type_effectiveness
             )
         else:  # Normal damage calculation
-            Damage = int(
+            damage = int(
                 ((((2 * level / 5) + 2) * power * (A / D)) / 50 + 2)
                 * stab
                 * type_effectiveness
             )
 
-        if Damage == 1:  # If damage equals 1, do not apply the random factor
+        if damage == 1:  # If damage equals 1, do not apply the random factor
             random_factor = 1
 
-        Damage = math.floor(Damage * random_factor)
-        Damage = max(1, Damage)  # Ensure at least 1 damage is dealt
+        damage = math.floor(damage * random_factor)
+        damage = max(1, damage)  # Ensure at least 1 damage is dealt
 
-        return Damage, crit, move_hit
+        return damage, crit, move_hit
 
     def critical_hit(self, speed_stats: dict) -> bool:
         """Determine whether the current move is a critical hit.
