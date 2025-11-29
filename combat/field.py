@@ -175,7 +175,7 @@ class Trainer:
             )
             print(f"\n {self.name} chose {name} for the battle!")
 
-            if len(self.pokemon) == 2:
+            if len(self.pokemon) == 6:
                 print("This is your full team for the battle.")
                 for pkm in self.pokemon:
                     print(
