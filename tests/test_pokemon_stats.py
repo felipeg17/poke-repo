@@ -6,9 +6,9 @@ def test_pokemon_stats_base():
         pokemon_name="bulbasaur",
         type="grass",
         level=1,
-        pokedex_num=1, 
+        pokedex_num=1,
         color="green",
-        sex="male"
+        sex="male",
     )
 
     stats = bulbasaur.get_stats()
@@ -27,7 +27,7 @@ def test_pokemon_stats_level_increase():
         level=10,
         pokedex_num=1,
         color="green",
-        sex="male"
+        sex="male",
     )
 
     lvl10_stats = lvl10_bulbasaur.get_stats()
@@ -47,7 +47,7 @@ def test_level_up_method_increases_stats():
         level=5,
         pokedex_num=4,
         color="red",
-        sex="male"
+        sex="male",
     )
     charmander.level_up()
     stats_after = charmander.get_stats()

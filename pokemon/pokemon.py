@@ -7,45 +7,59 @@ import csv
 
 """Class about bring the information of types.csv
 and replace the classes of types of pokemon """
+
+
 class TypeRelations:
     def __init__(self, filename="types.csv"):
-    
         self._type_data = {}
         self.load_from_csv(filename)
-    
+
     def load_from_csv(self, filename):
-    
         try:
             with open(filename, newline="", encoding="utf-8") as csvfile:
-                reader = csv.DictReader(csvfile) #This converts each row of the CSV into a dictionary
+                reader = csv.DictReader(
+                    csvfile
+                )  # This converts each row of the CSV into a dictionary
                 for row in reader:
-                  type_key = row["type"].strip().lower()
+                    type_key = row["type"].strip().lower()
 
-                  self._type_data[type_key] = {
-                    "weak": [x.strip().lower() for x in row["weaknesses"].split(";")] 
-                       if row["weaknesses"].strip() else [],
-                    "resist": [x.strip().lower() for x in row["resistances"].split(";")] 
-                        if row["resistances"].strip() else [],
-                    "immune": [x.strip().lower() for x in row["immunities"].split(";")] 
-                        if row["immunities"].strip() else []
-                  }
+                    self._type_data[type_key] = {
+                        "weak": [
+                            x.strip().lower() for x in row["weaknesses"].split(";")
+                        ]
+                        if row["weaknesses"].strip()
+                        else [],
+                        "resist": [
+                            x.strip().lower() for x in row["resistances"].split(";")
+                        ]
+                        if row["resistances"].strip()
+                        else [],
+                        "immune": [
+                            x.strip().lower() for x in row["immunities"].split(";")
+                        ]
+                        if row["immunities"].strip()
+                        else [],
+                    }
         except FileNotFoundError:
-            print(f"Error: No se pudo encontrar el archivo {filename}")
+            print(f"Error: Could not find file {filename}")
         except Exception as e:
-            print(f"Error al cargar el archivo CSV: {e}")
+            print(f"Error loading CSV file: {e}")
+
     """This funtions help for getting especifics parts of structure"""
+
     def get_relations(self, pkm_type):
-        return self._type_data.get(pkm_type.lower(), {"weak": [], "resist": [], "immune": []})
-    
+        return self._type_data.get(
+            pkm_type.lower(), {"weak": [], "resist": [], "immune": []}
+        )
+
     def get_weaknesses(self, pkm_type):
         return self.get_relations(pkm_type)["weak"]
-    
+
     def get_resistances(self, pkm_type):
         return self.get_relations(pkm_type)["resist"]
-    
+
     def get_immunities(self, pkm_type):
         return self.get_relations(pkm_type)["immune"]
-    
 
 
 class Pokemon:
@@ -57,6 +71,7 @@ class Pokemon:
     Pocket Monster
     """
     _type_relations = TypeRelations(str(Path(__file__).parent / "utils" / "types.csv"))
+
     def __init__(
         self,
         pokemon_name: str,
@@ -94,12 +109,10 @@ class Pokemon:
         )
         # Moveset managed by another class
         self._moveset = Moveset(pokedex_num=self._pokedex_num, level=self._level)
-        
+
         self._weaknesses = Pokemon._type_relations.get_weaknesses(self._main_type)
         self._resistances = Pokemon._type_relations.get_resistances(self._main_type)
         self._immunities = Pokemon._type_relations.get_immunities(self._main_type)
-
-
 
         ### TODO: Moveset
         # Shoudl be managed by another class -> composition
@@ -159,13 +172,14 @@ class Pokemon:
             return "It's not very effective..."
         else:
             return "It's effective."
-    
+
     """This is a base of STABs logic"""
+
     def apply_stab(self, base_power: float, move_type: str) -> float:
         if move_type.lower() == self._main_type.lower():
-          return base_power * 1.5
+            return base_power * 1.5
         return base_power
-    
+
     def update_stats_after_battle(self):
         ### TODO: Update stats based on battle outcomes
         pass
@@ -455,8 +469,6 @@ class Moveset:
         if not self.current_moves:
             return "Moveset: (no moves)"
         return "Moveset: " + ", ".join(move.name for move in self.current_moves)
-
-
 
 
 if __name__ == "__main__":
