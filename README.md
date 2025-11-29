@@ -50,6 +50,7 @@ class Pokemon {
     + show_moves()
     + get_stats()
     + get_moveset()
+    + set_type()
     + apply_status()
 }
 
