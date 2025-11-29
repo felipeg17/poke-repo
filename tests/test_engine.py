@@ -10,10 +10,10 @@ class TestCombatEngine:
     def pokemon_to_test(self):
         trainer = Trainer("Test")
         attacker = trainer.create_pokemon(
-            "pikachu", 25, "Electric", None, "yellow", "male", level=50
+            "pikachu", 25, "Electric", "yellow", "male", level=50
         )
         defender = trainer.create_pokemon(
-            "charizard", 6, "Fire", "Flying", "orange", "male", level=50
+            "charizard", 6, "Fire", "orange", "male", level=50
         )
         return attacker, defender
 
@@ -208,7 +208,7 @@ class TestCombatEngine:
 
         engine = CombatEngine(attacker, defender, basic_move, [], [])
 
-        result = engine.Hit_Accuracy()
+        result = engine.hit_accuracy()
 
         assert type(result) == bool
 
@@ -220,7 +220,7 @@ class TestCombatEngine:
 
         for _ in range(iterations):
             engine = CombatEngine(attacker, defender, perfect_move, [], [])
-            if engine.Hit_Accuracy():
+            if engine.hit_accuracy():
                 hits += 1
 
         assert hits >= 95
@@ -237,11 +237,11 @@ class TestCombatEngine:
 
         for _ in range(iterations):
             engine_high = CombatEngine(attacker, defender, high_acc, [], [])
-            if engine_high.Hit_Accuracy():
+            if engine_high.hit_accuracy():
                 hits_high += 1
 
             engine_low = CombatEngine(attacker, defender, low_acc, [], [])
-            if engine_low.Hit_Accuracy():
+            if engine_low.hit_accuracy():
                 hits_low += 1
 
         assert hits_high > hits_low, f"High: {hits_high}, Low: {hits_low}"

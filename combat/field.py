@@ -64,7 +64,6 @@ class Trainer:
         name: str,
         pokedex_num: int,
         primary_type: str | None = None,
-        secondary_type: str | None = None,
         color: str = "gray",
         sex: str = "male",
         level: int = 1,
@@ -103,12 +102,10 @@ class Trainer:
 
         # Subclass constructors expect (name, pokedex_num, color, sex, level)
         try:
-            return cls(name, pokedex_num, secondary_type, color, sex, level)
+            return cls(name, pokedex_num, color, sex, level)
         except TypeError:
             # Fallback to base Pokemon if subclass constructor signature differs
-            return Pokemon(
-                name, pokedex_num, primary_type, secondary_type, color, sex, level
-            )
+            return Pokemon(name, pokedex_num, primary_type, color, sex, level)
 
     def choose_pokemon(self) -> list[Pokemon]:
         """Interactively choose up to 3 Pokémon for this trainer.
@@ -160,7 +157,6 @@ class Trainer:
             name = row["pokemon_name"]
             pokedex_number = int(row["pokedex_number"])
             poke_type = row["type1"]
-            poke_type2 = row["type2"]
 
             while True:
                 try:
@@ -174,7 +170,7 @@ class Trainer:
 
             self.pokemon.append(
                 self.create_pokemon(
-                    name, pokedex_number, poke_type, poke_type2, "gray", "male", level
+                    name, pokedex_number, poke_type, "gray", "male", level
                 )
             )
             print(f"\n {self.name} chose {name} for the battle!")
@@ -760,8 +756,7 @@ class Field:
             if (
                 random_value <= 10
                 and (defender.status is None or defender.status == {})
-                and defender.get_attribute("main_type") != "Ice"
-                and defender.get_attribute("secondary_type") != "Ice"
+                and defender.get_attribute("type") != "Ice"
             ):  # 10% chance to freeze
                 defender.apply_status("Frozen")
                 message = f"{defender._name} was frozen!"
@@ -840,8 +835,7 @@ class Field:
             if (
                 random_value <= 10
                 and (defender.status is None or defender.status == {})
-                and defender.get_attribute("main_type") != "Fire"
-                and defender.get_attribute("secondary_type") != "Fire"
+                and defender.get_attribute("type") != "Fire"
             ):  # 10% chance to burn
                 defender.apply_status("Burned")
                 message = f"{defender._name} was burned!"
@@ -852,10 +846,8 @@ class Field:
             or move.name == "Thunder Wave"
         ):
             if (
-                (defender.status is None or defender.status == {})
-                and defender.get_attribute("main_type") != "Ground"
-                and defender.get_attribute("secondary_type") != "Ground"
-            ):
+                defender.status is None or defender.status == {}
+            ) and defender.get_attribute("type") != "Ground":
                 defender.apply_status("Paralyzed")
                 message = f"{defender._name} was paralyzed!"
 
@@ -932,10 +924,8 @@ class Field:
 
         if move.name == "Leech Seed":
             if (
-                (defender.status is None or defender.status == {})
-                and defender.get_attribute("main_type") != "Grass"
-                and defender.get_attribute("secondary_type") != "Grass"
-            ):
+                defender.status is None or defender.status == {}
+            ) and defender.get_attribute("type") != "Grass":
                 defender.apply_status("Seeded")
                 message = f"{defender._name} was seeded!"
 
@@ -1025,10 +1015,8 @@ class Field:
             or move.name == "Toxic"
         ):
             if (
-                (defender.status is None or defender.status == {})
-                and defender.get_attribute("main_type") not in ["Poison", "Steel"]
-                and defender.get_attribute("secondary_type") not in ["Poison", "Steel"]
-            ):
+                defender.status is None or defender.status == {}
+            ) and defender.get_attribute("type") not in ["Poison", "Steel"]:
                 defender.apply_status("Poisoned")
                 message = f"{defender._name} was poisoned!"
 
@@ -1037,8 +1025,7 @@ class Field:
             if (
                 random_value <= 20
                 and (defender.status is None or defender.status == {})
-                and defender.get_attribute("main_type") not in ["Poison", "Steel"]
-                and defender.get_attribute("secondary_type") not in ["Poison", "Steel"]
+                and defender.get_attribute("type") not in ["Poison", "Steel"]
             ):  # 20% chance to poison
                 defender.apply_status("Poisoned")
                 message = f"{defender._name} was poisoned!"
@@ -1083,8 +1070,7 @@ class Field:
             if (
                 random_value <= 30
                 and (defender.status is None or defender.status == {})
-                and defender.get_attribute("main_type") not in ["Poison", "Steel"]
-                and defender.get_attribute("secondary_type") not in ["Poison", "Steel"]
+                and defender.get_attribute("type") not in ["Poison", "Steel"]
             ):  # 30% chance to poison
                 defender.apply_status("Poisoned")
                 message = f"{defender._name} was poisoned!"
@@ -1094,8 +1080,7 @@ class Field:
             if (
                 random_value <= 40
                 and (defender.status is None or defender.status == {})
-                and defender.get_attribute("main_type") not in ["Poison", "Steel"]
-                and defender.get_attribute("secondary_type") not in ["Poison", "Steel"]
+                and defender.get_attribute("type") not in ["Poison", "Steel"]
             ):  # 40% chance to poison
                 defender.apply_status("Poisoned")
                 message = f"{defender._name} was poisoned!"
@@ -1131,7 +1116,6 @@ class Field:
 
         if move.name == "Transform":
             attacker._main_type = defender._main_type
-            attacker._secondary_type = defender._secondary_type
 
             # Copy enemy´s stats
             self.__combat_attack[attacker] = self.__combat_attack[defender]
@@ -1174,8 +1158,7 @@ class Field:
             if (
                 random_value <= 10
                 and (defender.status is None or defender.status == {})
-                and defender.get_attribute("main_type") != "Electric"
-                and defender.get_attribute("secondary_type") != "Electric"
+                and defender.get_attribute("type") != "Electric"
             ):  # 10% chance to paralyze
                 defender.apply_status("Paralyzed")
                 message = f"{defender._name} was paralyzed!"
@@ -1187,8 +1170,7 @@ class Field:
             if (
                 random_value <= 20
                 and (defender.status is None or defender.status == {})
-                and defender.get_attribute("main_type") not in ["Poison", "Steel"]
-                and defender.get_attribute("secondary_type") not in ["Poison", "Steel"]
+                and defender.get_attribute("type") not in ["Poison", "Steel"]
             ):  # 20% chance to poison
                 defender.apply_status("Poisoned")
                 message = f"{defender._name} was poisoned!"

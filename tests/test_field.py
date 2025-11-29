@@ -12,19 +12,15 @@ class TestField:
 
         trainer1.pokemon = [
             trainer1.create_pokemon(
-                "pikachu", 25, "Electric", None, "yellow", "male", level=10
+                "pikachu", 25, "Electric", "yellow", "male", level=10
             ),
             trainer1.create_pokemon(
-                "charmander", 4, "Fire", None, "orange", "male", level=10
+                "charmander", 4, "Fire", "orange", "male", level=10
             ),
         ]
         trainer2.pokemon = [
-            trainer2.create_pokemon(
-                "squirtle", 7, "Water", None, "blue", "male", level=10
-            ),
-            trainer2.create_pokemon(
-                "bulbasaur", 1, "Grass", "Poison", "green", "male", level=10
-            ),
+            trainer2.create_pokemon("squirtle", 7, "Water", "blue", "male", level=10),
+            trainer2.create_pokemon("bulbasaur", 1, "Grass", "green", "male", level=10),
         ]
 
         return trainer1, trainer2
@@ -345,7 +341,7 @@ class TestField:
 
         initial_attack = field.get_combat_attack(defender)
 
-        damage, message = field.Move_Effect(move, attacker, defender, 0)
+        damage, message = field.move_effect(move, attacker, defender, 0)
 
         assert field.get_combat_attack(defender) < initial_attack
         assert "fell" in message.lower()

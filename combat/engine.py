@@ -60,7 +60,7 @@ class CombatEngine:
         A, D = self.attack_defense(
             crit, attack_stats, defense_stats, sp_attack_stats, sp_defense_stats
         )
-        attacker_types: list[str] = [self.attacker.get_attribute("main_type")]
+        attacker_types: list[str] = [self.attacker.get_attribute("type")]
         defender_interactions: dict = {
             "Weaknesses": self.defender.get_attribute("weaknesses"),
             "Resistances": self.defender.get_attribute("resistances"),

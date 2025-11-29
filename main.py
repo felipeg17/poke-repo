@@ -5,8 +5,7 @@ if __name__ == "__main__":
     bulbasaur = Pokemon(
         pokemon_name="bulbasaur",
         pokedex_num=1,
-        type1="Grass",
-        type2="Poison",
+        type="Grass",
         color="blue",
         sex="male",
         level=15,
