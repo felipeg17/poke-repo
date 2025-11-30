@@ -165,7 +165,7 @@ class Pokemon:
         immunities = self._type_relations.get_immunities(self._main_type)
 
         if attack in immunities:
-            return "It's inmune!"
+            return "It's immune!"
         elif attack in weaknesses:
             return "It's super effective!"
         elif attack in resistances:
