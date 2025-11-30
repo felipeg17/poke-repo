@@ -33,25 +33,29 @@ from pandas import Series
 class Trainer:
     """Represents a Pokémon trainer with a selectable team.
 
-    Attributes
-    ----------
-    name : str
-        Trainer's name.
-    pokemon : list[Pokemon]
-        List of the trainer's Pokémon objects.
+    Attributes:
+        name (str): Trainer's name.
+        pokemon (list[Pokemon]): List of the trainer's Pokémon objects.
     """
 
     def __init__(self, name: str):
+        """Initializes a Trainer.
+
+        Args:
+            name (str): The trainer's name.
+        """
         self.name = name
         self.pokemon: list[Pokemon] = []
 
     def pokemon_available(self, pokemon_used: list[str] | None = None) -> pd.DataFrame:
-        """Return a DataFrame of available Pokémon filtered by `pokemon_used`.
+        """Returns a DataFrame of available Pokémon filtered by pokemon_used.
 
-        Parameters
-        ----------
-        pokemon_used : list[str] | None
-            Names of Pokémon already chosen (to exclude from the list).
+        Args:
+            pokemon_used (list[str] | None, optional): Names of Pokémon already chosen
+                to exclude from the list. Defaults to None.
+
+        Returns:
+            pd.DataFrame: DataFrame with available Pokémon.
         """
         df = pd.read_csv(Pokemon.csv_path)
         if pokemon_used:
@@ -68,8 +72,18 @@ class Trainer:
         sex: str = "male",
         level: int = 1,
     ) -> Pokemon:
-        """Gets the values of a pokemon
-        and returns an instance of the appropriate subclass of Pokemon.
+        """Gets the values of a Pokémon and returns an instance of the appropriate subclass.
+
+        Args:
+            name (str): The Pokémon's name.
+            pokedex_num (int): The Pokédex number.
+            primary_type (str | None, optional): The primary type. Defaults to None.
+            color (str, optional): The Pokémon's color. Defaults to "gray".
+            sex (str, optional): The Pokémon's sex. Defaults to "male".
+            level (int, optional): The Pokémon's level. Defaults to 1.
+
+        Returns:
+            Pokemon: An instance of the appropriate Pokemon subclass.
         """
         # Map type names (as they appear in the CSV) to subclass constructors
         TYPE_CLASS: dict = {
@@ -108,9 +122,12 @@ class Trainer:
             return Pokemon(name, pokedex_num, primary_type, color, sex, level)
 
     def choose_pokemon(self) -> list[Pokemon]:
-        """Interactively choose up to 3 Pokémon for this trainer.
-        Prompts the user to enter a pokédex number and the Pokémon's type.
-        Returns the list of chosen `Pokemon` objects.
+        """Interactively choose up to 6 Pokémon for this trainer.
+
+        Prompts the user to enter a Pokédex number and the Pokémon's type.
+
+        Returns:
+            list[Pokemon]: The list of chosen Pokémon objects.
         """
         Page = 0
         while True:
@@ -196,6 +213,13 @@ class Trainer:
         return self.pokemon
 
     def print_dex(self, page: int = 0, df: pd.DataFrame | None = None) -> None:
+        """Prints the Pokédex page with available Pokémon.
+
+        Args:
+            page (int, optional): The page number to display. Defaults to 0.
+            df (pd.DataFrame | None, optional): DataFrame with Pokémon data.
+                Defaults to None.
+        """
         if df is None:
             df = pd.read_csv(Pokemon.csv_path)
         print(f"Poke_dex - Page #{page + 1}")
@@ -207,15 +231,25 @@ class Trainer:
 
 
 class Field:
-    """Manage a battle between two `Trainer` instances.
+    """Manages a battle between two Trainer instances.
 
     Responsibilities:
     - Track each trainer's team and active Pokémon
     - Keep combat HP for each Pokémon
     - Handle turns, switches, attacks
+
+    Attributes:
+        trainer1 (Trainer): First trainer in the battle.
+        trainer2 (Trainer): Second trainer in the battle.
     """
 
     def __init__(self, trainer1: Trainer, trainer2: Trainer):
+        """Initializes the battle field.
+
+        Args:
+            trainer1 (Trainer): First trainer.
+            trainer2 (Trainer): Second trainer.
+        """
         self.trainer1 = trainer1
         self.trainer2 = trainer2
         self.__team1 = trainer1.pokemon.copy()
@@ -264,12 +298,32 @@ class Field:
         return self.__turn_number
 
     def get_combat_hp(self, pokemon: Pokemon) -> int:
+        """Gets the current combat HP of a Pokémon.
+
+        Args:
+            pokemon (Pokemon): The Pokémon to query.
+
+        Returns:
+            int: Current HP value.
+        """
         return self.__combat_hp.get(pokemon, 0)
 
     def set_combat_hp(self, pokemon: Pokemon, value: int) -> None:
+        """Sets the combat HP of a Pokémon.
+
+        Args:
+            pokemon (Pokemon): The Pokémon to modify.
+            value (int): The new HP value.
+        """
         self.__combat_hp[pokemon] = max(0, value)
 
     def reduce_hp(self, pokemon: Pokemon, damage: int) -> None:
+        """Reduces the HP of a Pokémon by a damage amount.
+
+        Args:
+            pokemon (Pokemon): The Pokémon taking damage.
+            damage (int): Amount of damage to apply.
+        """
         current = self.get_combat_hp(pokemon)
         self.set_combat_hp(pokemon, current - damage)
 
@@ -328,20 +382,35 @@ class Field:
         self.set_combat_speed(pokemon, current + sp)
 
     def end_battle(self) -> bool:
-        """True if at least one team is completely defeated"""
+        """Checks if the battle has ended.
+
+        Returns:
+            bool: True if at least one team is completely defeated.
+        """
         team1_alive = any(self.get_combat_hp(p) > 0 for p in self.__team1)
         team2_alive = any(self.get_combat_hp(p) > 0 for p in self.__team2)
         return not (team1_alive and team2_alive)
 
     def winner_game(self) -> Trainer | None:
-        """Returns winner or None if battle isn't over"""
+        """Determines the winner of the battle.
+
+        Returns:
+            Trainer | None: The winning trainer or None if battle isn't over.
+        """
         if not self.end_battle():
             return None
         team1_alive = any(self.get_combat_hp(p) > 0 for p in self.__team1)
         return self.trainer1 if team1_alive else self.trainer2
 
     def pokemon_available(self, trainer: Trainer) -> list[Pokemon]:
-        """Get list of Pokémon that can still battle for a trainer"""
+        """Gets list of Pokémon that can still battle for a trainer.
+
+        Args:
+            trainer (Trainer): The trainer to query.
+
+        Returns:
+            list[Pokemon]: List of available Pokémon.
+        """
         if trainer == self.trainer1:
             team = self.__team1
             active = self.__active1
@@ -357,7 +426,14 @@ class Field:
         return available
 
     def switch_defeat(self, trainer: Trainer) -> bool:
-        """True if active pokemon fainted and trainer has replacements"""
+        """Checks if active Pokémon fainted and trainer has replacements.
+
+        Args:
+            trainer (Trainer): The trainer to check.
+
+        Returns:
+            bool: True if switch is needed and possible.
+        """
         active = self.__active1 if trainer == self.trainer1 else self.__active2
         if active is None:
             return False
@@ -366,7 +442,15 @@ class Field:
         )
 
     def switch_pokemon(self, trainer: Trainer, new_pokemon: Pokemon) -> bool:
-        """Switch active Pokémon for a trainer"""
+        """Switches active Pokémon for a trainer.
+
+        Args:
+            trainer (Trainer): The trainer switching Pokémon.
+            new_pokemon (Pokemon): The new Pokémon to switch to.
+
+        Returns:
+            bool: True if switch was successful, False otherwise.
+        """
         if new_pokemon not in trainer.pokemon:
             return False
 
@@ -392,6 +476,21 @@ class Field:
         attacker_moves: list[Move],
         defender_moves: list[Move],
     ) -> tuple[int, bool, str]:
+        """Executes an attack from attacker to defender using the specified move.
+
+        Args:
+            attacker (Pokemon): The attacking Pokémon.
+            defender (Pokemon): The defending Pokémon.
+            move (Move): The move to use.
+            attacker_moves (list[Move]): Moves used by the attacker so far.
+            defender_moves (list[Move]): Moves used by the defender so far.
+
+        Returns:
+            tuple[int, bool, str]: A tuple containing:
+                - damage (int): Damage dealt.
+                - was_critical (bool): Whether it was a critical hit.
+                - message (str): Description of what happened.
+        """
         attacker_status = list(attacker.status.keys())[0] if attacker.status else None
         if attacker_status == "confused":
             value = random.randint(0, 100)
@@ -400,7 +499,7 @@ class Field:
                 defender_moves = attacker_moves
                 move = Move(0, "Confused Hit", "normal", 40, 100, 10, "physical")
                 print(f"{attacker._name} is confused and it is attacking itself!")
-        """Execute an attack from attacker to defender using the specified move."""
+        
         engine = CombatEngine(
             attacker=attacker,
             defender=defender,
@@ -436,12 +535,20 @@ class Field:
         return (damage, was_critical, message)
 
     def resolve_turn(self, action1: dict, action2: dict) -> tuple[bool, list[str]]:
-        """
-        Execute a turn based on both players' actions.
-        if action is "surrender", the battle ends.
-        if action is "switch", the active Pokémon is switched.
-        if action is "attack", the active Pokémon attacks the opponent's active Pokémon.
+        """Executes a turn based on both players' actions.
 
+        If action is "surrender", the battle ends.
+        If action is "switch", the active Pokémon is switched.
+        If action is "attack", the active Pokémon attacks the opponent's active Pokémon.
+
+        Args:
+            action1 (dict): First trainer's action with keys like "action", "move", etc.
+            action2 (dict): Second trainer's action.
+
+        Returns:
+            tuple[bool, list[str]]: A tuple containing:
+                - continue_battle (bool): Whether the battle should continue.
+                - messages (list[str]): List of message strings describing what happened.
         """
         active1 = self.get_active1()
         active2 = self.get_active2()
@@ -632,8 +739,13 @@ class Field:
         return (True, messages)
 
     def remove_defeated_pokemon(self) -> tuple[bool, bool, list[str]]:
-        """
-        Check for defeated Pokémon and remove them from teams.
+        """Checks for defeated Pokémon and removes them from teams.
+
+        Returns:
+            tuple[bool, bool, list[str]]: A tuple containing:
+                - needs_switch1 (bool): Whether trainer 1 needs to switch.
+                - needs_switch2 (bool): Whether trainer 2 needs to switch.
+                - messages (list[str]): Messages about defeated Pokémon.
         """
         messages: list[str] = []
         needs_switch1: bool = False
@@ -662,8 +774,15 @@ class Field:
         return (needs_switch1, needs_switch2, messages)
 
     def health_bar(self, current_hp: int, max_hp: int, bar_length: int = 20) -> str:
-        """
-        Return a simple text health bar representation.
+        """Returns a simple text health bar representation.
+
+        Args:
+            current_hp (int): Current HP value.
+            max_hp (int): Maximum HP value.
+            bar_length (int, optional): Length of the bar in characters. Defaults to 20.
+
+        Returns:
+            str: A formatted health bar string.
         """
         if max_hp <= 0:
             bar = "░" * bar_length
@@ -677,11 +796,22 @@ class Field:
     def move_effect(
         self, move: Move, attacker: Pokemon, defender: Pokemon, damage: int
     ) -> tuple[int, str]:
-        """Apply secondary effects of the move, if any.
+        """Applies secondary effects of the move, if any.
 
         This method checks if the move has any secondary effects (like
         status conditions or stat changes) and applies them to the
         attacker or defender as appropriate.
+
+        Args:
+            move (Move): The move being used.
+            attacker (Pokemon): The attacking Pokémon.
+            defender (Pokemon): The defending Pokémon.
+            damage (int): Base damage before effects.
+
+        Returns:
+            tuple[int, str]: A tuple containing:
+                - final_damage (int): Damage after applying effects.
+                - message (str): Description of effects applied.
         """
         hits: int = 1  # Default number of hits is 1
         message: str = ""
@@ -1192,6 +1322,14 @@ class Field:
         return hits * damage, message
 
     def status_damage(self, attacker: Pokemon) -> str:
+        """Applies damage from status conditions like burn or poison.
+
+        Args:
+            attacker (Pokemon): The Pokémon to check for status damage.
+
+        Returns:
+            str: Message describing status damage if any occurred.
+        """
         message = ""
         poke_status = list(attacker.status.keys())[0] if attacker.status else None
         if poke_status:
@@ -1207,7 +1345,7 @@ class Field:
 
 
 class Battle:
-    """All interactions for battles
+    """Handles all interactions for battles.
 
     Responsibilities:
     - Display battle and turn headers
@@ -1215,9 +1353,17 @@ class Battle:
     - Prompt trainers for actions
     - Display messages
     - Manage the battle loop
+
+    Attributes:
+        field (Field): The battle field being managed.
     """
 
     def __init__(self, field: Field) -> None:
+        """Initializes the Battle interface.
+
+        Args:
+            field (Field): The field where the battle takes place.
+        """
         self.field = field
 
     def display_battle_header(self) -> None:
@@ -1235,7 +1381,13 @@ class Battle:
     def display_battle_status(
         self, trainer: Trainer, active_pokemon: Pokemon, enemy_pokemon: Pokemon
     ) -> None:
-        """Display the current battle status"""
+        """Displays the current battle status.
+
+        Args:
+            trainer (Trainer): The trainer whose turn it is.
+            active_pokemon (Pokemon): The active Pokémon.
+            enemy_pokemon (Pokemon): The enemy Pokémon.
+        """
         active_hp = self.field.get_combat_hp(active_pokemon)
         enemy_hp = self.field.get_combat_hp(enemy_pokemon)
         active_status = (
@@ -1259,7 +1411,16 @@ class Battle:
     def action_py(
         self, trainer: Trainer, active_pokemon: Pokemon, enemy_pokemon: Pokemon
     ) -> dict:
-        """Prompt the trainer for an action during their turn"""
+        """Prompts the trainer for an action during their turn.
+
+        Args:
+            trainer (Trainer): The trainer making the decision.
+            active_pokemon (Pokemon): The trainer's active Pokémon.
+            enemy_pokemon (Pokemon): The opponent's active Pokémon.
+
+        Returns:
+            dict: A dictionary describing the chosen action.
+        """
         self.display_battle_status(trainer, active_pokemon, enemy_pokemon)
 
         choice = input("""
@@ -1281,7 +1442,16 @@ class Battle:
     def choice_attack(
         self, trainer: Trainer, active_pokemon: Pokemon, enemy_pokemon: Pokemon
     ) -> dict:
-        """Prompt the trainer to choose an attack move"""
+        """Prompts the trainer to choose an attack move.
+
+        Args:
+            trainer (Trainer): The trainer choosing.
+            active_pokemon (Pokemon): The trainer's active Pokémon.
+            enemy_pokemon (Pokemon): The opponent's active Pokémon.
+
+        Returns:
+            dict: Dictionary with "action": "attack" and "move": chosen_move.
+        """
         moves = active_pokemon.get_moveset().current_moves
 
         print(f"\n{30 * '='}")
@@ -1312,7 +1482,16 @@ class Battle:
     def choice_switch(
         self, trainer: Trainer, active_pokemon: Pokemon, enemy_pokemon: Pokemon
     ) -> dict:
-        """Prompt the trainer to choose a Pokémon to switch to"""
+        """Prompts the trainer to choose a Pokémon to switch to.
+
+        Args:
+            trainer (Trainer): The trainer choosing.
+            active_pokemon (Pokemon): The trainer's current active Pokémon.
+            enemy_pokemon (Pokemon): The opponent's active Pokémon.
+
+        Returns:
+            dict: Dictionary with "action": "switch" and "new_pokemon": chosen_pokemon.
+        """
         team = trainer.pokemon
         print(f"{30 * '='}")
         print("Your team:")
@@ -1361,7 +1540,14 @@ class Battle:
             return self.choice_switch(trainer, active_pokemon, enemy_pokemon)
 
     def choice_surrender(self, trainer: Trainer) -> dict:
-        """Prompt the trainer to confirm surrendering"""
+        """Prompts the trainer to confirm surrendering.
+
+        Args:
+            trainer (Trainer): The trainer considering surrender.
+
+        Returns:
+            dict: Dictionary with "action": "surrender" if confirmed.
+        """
         confirm = input(f"Are you sure you want to surrender, {trainer.name}? (y/n) ")
         if confirm.lower() == "y":
             return {"action": "surrender"}
@@ -1383,7 +1569,14 @@ class Battle:
             return self.action_py(trainer, active, enemy)
 
     def switch_after_defeat(self, trainer: Trainer):
-        """Prompt the trainer to choose their next Pokémon after one is defeated"""
+        """Prompts the trainer to choose their next Pokémon after one is defeated.
+
+        Args:
+            trainer (Trainer): The trainer who needs to switch.
+
+        Returns:
+            Pokemon: The newly selected Pokémon.
+        """
         print(f"\n{trainer.name}, choose your next Pokémon:")
         available = self.field.pokemon_available(trainer)
 
@@ -1407,6 +1600,11 @@ class Battle:
                 print("Enter a valid number.")
 
     def display_messages(self, messages: list[str]) -> None:
+        """Displays a list of messages to the console.
+
+        Args:
+            messages (list[str]): Messages to display.
+        """
         for msg in messages:
             print(msg)
 
