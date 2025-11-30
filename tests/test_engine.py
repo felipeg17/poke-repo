@@ -10,10 +10,10 @@ class TestCombatEngine:
     def pokemon_to_test(self):
         trainer = Trainer("Test")
         attacker = trainer.create_pokemon(
-            "pikachu", 25, "Electric", "yellow", "male", level=50
+            "pikachu", 25, "electric", "yellow", "male", level=50
         )
         defender = trainer.create_pokemon(
-            "charizard", 6, "Fire", "orange", "male", level=50
+            "charizard", 6, "fire", "orange", "male", level=50
         )
         return attacker, defender
 
@@ -52,15 +52,15 @@ class TestCombatEngine:
 
     @pytest.fixture
     def basic_move(self):
-        return Move(1, "Thunderbolt", "Electric", 90, 100, 15, "Special")
+        return Move(1, "Thunderbolt", "electric", 90, 100, 15, "special")
 
     @pytest.fixture
     def weak_move(self):
-        return Move(2, "Tackle", "Normal", 40, 100, 35, "Physical")
+        return Move(2, "Tackle", "normal", 40, 100, 35, "physical")
 
     @pytest.fixture
     def high_crit_move(self):
-        return Move(3, "Slash", "Normal", 70, 100, 20, "Physical")
+        return Move(3, "Slash", "normal", 70, 100, 20, "physical")
 
     def test_engine_init(self, pokemon_to_test, basic_move):
         attacker, defender = pokemon_to_test
@@ -115,8 +115,8 @@ class TestCombatEngine:
             stats_dicts
         )
 
-        weak_move = Move(1, "Weak", "Normal", 40, 100, 35, "Physical")
-        strong_move = Move(2, "Strong", "Normal", 120, 100, 35, "Physical")
+        weak_move = Move(1, "Weak", "normal", 40, 100, 35, "physical")
+        strong_move = Move(2, "Strong", "normal", 120, 100, 35, "physical")
 
         random.seed(42)
         engine_weak = CombatEngine(attacker, defender, weak_move, [], [])
@@ -147,8 +147,8 @@ class TestCombatEngine:
         attacker, defender = pokemon_to_test
         _, _, _, _, speed_stats = stats_dicts
 
-        normal_move = Move(1, "Tackle", "Normal", 40, 100, 35, "Physical")
-        high_crit_move = Move(2, "Slash", "Normal", 70, 100, 20, "Physical")
+        normal_move = Move(1, "Tackle", "normal", 40, 100, 35, "physical")
+        high_crit_move = Move(2, "Slash", "normal", 70, 100, 20, "physical")
 
         crit_count_normal = 0
         crit_count_high = 0
@@ -188,8 +188,8 @@ class TestCombatEngine:
         attacker, defender = pokemon_to_test
         attack_stats, defense_stats, sp_attack_stats, sp_defense_stats, _ = stats_dicts
 
-        physical_move = Move(1, "Tackle", "Normal", 40, 100, 35, "Physical")
-        special_move = Move(2, "Thunderbolt", "Electric", 90, 100, 15, "Special")
+        physical_move = Move(1, "Tackle", "normal", 40, 100, 35, "physical")
+        special_move = Move(2, "Thunderbolt", "electric", 90, 100, 15, "special")
 
         engine_physical = CombatEngine(attacker, defender, physical_move, [], [])
         A_phys, D_phys = engine_physical.attack_defense(
@@ -214,7 +214,7 @@ class TestCombatEngine:
 
     def test_perfect_accuracy_always_hits(self, pokemon_to_test):
         attacker, defender = pokemon_to_test
-        perfect_move = Move(1, "Swift", "Normal", 60, 100, 20, "Special")
+        perfect_move = Move(1, "Swift", "normal", 60, 100, 20, "special")
         hits = 0
         iterations = 100
 
@@ -228,8 +228,8 @@ class TestCombatEngine:
     def test_low_accuracy_misses_more(self, pokemon_to_test):
         attacker, defender = pokemon_to_test
 
-        high_acc = Move(1, "Tackle", "Normal", 40, 100, 35, "Physical")
-        low_acc = Move(2, "Thunder", "Electric", 110, 70, 10, "Special")
+        high_acc = Move(1, "Tackle", "normal", 40, 100, 35, "physical")
+        low_acc = Move(2, "Thunder", "electric", 110, 70, 10, "special")
 
         hits_high = 0
         hits_low = 0
@@ -250,8 +250,8 @@ class TestCombatEngine:
         attacker, defender = pokemon_to_test
         attack_stats, defense_stats, sp_attack_stats, sp_defense_stats, _ = stats_dicts
 
-        normal_move = Move(1, "Tackle", "Normal", 40, 100, 35, "Physical")
-        explosion = Move(2, "Explosion", "Normal", 250, 100, 5, "Physical")
+        normal_move = Move(1, "Tackle", "normal", 40, 100, 35, "physical")
+        explosion = Move(2, "Explosion", "normal", 250, 100, 5, "physical")
 
         engine_normal = CombatEngine(attacker, defender, normal_move, [], [])
         _, D_normal = engine_normal.attack_defense(
@@ -271,7 +271,7 @@ class TestCombatEngine:
             stats_dicts
         )
 
-        weak_move = Move(1, "Weak", "Normal", 1, 100, 35, "Physical")
+        weak_move = Move(1, "Weak", "normal", 1, 100, 35, "physical")
 
         engine = CombatEngine(attacker, defender, weak_move, [], [])
         damage, _, hit = engine.calculate_damage(
@@ -283,17 +283,17 @@ class TestCombatEngine:
 
     def test_status_changes_paralyzed(self, pokemon_to_test):
         attacker, defender = pokemon_to_test
-        move = Move(1, "Tackle", "Normal", 40, 100, 35, "Physical")
+        move = Move(1, "Tackle", "normal", 40, 100, 35, "physical")
 
-        attacker.apply_status("Paralyzed")
-        attacker.status["Paralyzed"] = 999
+        attacker.apply_status("paralyzed")
+        attacker.status["paralyzed"] = 999
 
         can_attack_count = 0
         cannot_attack_count = 0
         iterations = 1000
 
         for _ in range(iterations):
-            attacker.status = {"Paralyzed": 999}
+            attacker.status = {"paralyzed": 999}
 
             engine = CombatEngine(attacker, defender, move, [], [])
             can_attack, _ = engine.status_changes(move.power)
@@ -308,10 +308,10 @@ class TestCombatEngine:
 
     def test_status_changes_frozen(self, pokemon_to_test):
         attacker, defender = pokemon_to_test
-        move = Move(1, "Tackle", "Normal", 40, 100, 35, "Physical")
+        move = Move(1, "Tackle", "normal", 40, 100, 35, "physical")
 
-        attacker.apply_status("Frozen")
-        attacker.status["Frozen"] = 3
+        attacker.apply_status("frozen")
+        attacker.status["frozen"] = 3
 
         engine = CombatEngine(attacker, defender, move, [], [])
         can_attack, power = engine.status_changes(move.power)
@@ -320,10 +320,10 @@ class TestCombatEngine:
 
     def test_status_changes_burned_returns_true(self, pokemon_to_test):
         attacker, defender = pokemon_to_test
-        move = Move(1, "Tackle", "Normal", 40, 100, 35, "Physical")
+        move = Move(1, "Tackle", "normal", 40, 100, 35, "physical")
 
-        attacker.apply_status("Burned")
-        attacker.status["Burned"] = 999
+        attacker.apply_status("burned")
+        attacker.status["burned"] = 999
 
         engine = CombatEngine(attacker, defender, move, [], [])
         can_attack, power = engine.status_changes(move.power)
@@ -332,10 +332,10 @@ class TestCombatEngine:
 
     def test_status_changes_asleep(self, pokemon_to_test):
         attacker, defender = pokemon_to_test
-        move = Move(1, "Tackle", "Normal", 40, 100, 35, "Physical")
+        move = Move(1, "Tackle", "normal", 40, 100, 35, "physical")
 
-        attacker.apply_status("Asleep")
-        attacker.status["Asleep"] = 3
+        attacker.apply_status("asleep")
+        attacker.status["asleep"] = 3
 
         engine = CombatEngine(attacker, defender, move, [], [])
         can_attack, power = engine.status_changes(move.power)
@@ -346,8 +346,8 @@ class TestCombatEngine:
         attacker, defender = pokemon_to_test
         attack_stats, defense_stats, sp_attack_stats, sp_defense_stats, _ = stats_dicts
 
-        physical_move = Move(1, "Tackle", "Normal", 40, 100, 35, "Physical")
-        reflect_move = Move(99, "Reflect", "Psychic", 0, 100, 20, "Status")
+        physical_move = Move(1, "Tackle", "normal", 40, 100, 35, "physical")
+        reflect_move = Move(99, "Reflect", "psychic", 0, 100, 20, "special")
 
         engine_no_reflect = CombatEngine(attacker, defender, physical_move, [], [])
         _, D_no_reflect = engine_no_reflect.attack_defense(
@@ -367,8 +367,8 @@ class TestCombatEngine:
         attacker, defender = pokemon_to_test
         attack_stats, defense_stats, sp_attack_stats, sp_defense_stats, _ = stats_dicts
 
-        special_move = Move(1, "Thunderbolt", "Electric", 90, 100, 15, "Special")
-        light_screen_move = Move(99, "Light Screen", "Psychic", 0, 100, 30, "Status")
+        special_move = Move(1, "Thunderbolt", "electric", 90, 100, 15, "special")
+        light_screen_move = Move(99, "Light Screen", "psychic", 0, 100, 30, "special")
 
         engine_no_screen = CombatEngine(attacker, defender, special_move, [], [])
         _, D_no_screen = engine_no_screen.attack_defense(
@@ -389,8 +389,8 @@ class TestCombatEngine:
         attacker, defender = pokemon_to_test
         attack_stats, defense_stats, sp_attack_stats, sp_defense_stats, _ = stats_dicts
 
-        physical_move = Move(1, "Tackle", "Normal", 40, 100, 35, "Physical")
-        reflect_move = Move(99, "Reflect", "Psychic", 0, 100, 20, "Status")
+        physical_move = Move(1, "Tackle", "normal", 40, 100, 35, "physical")
+        reflect_move = Move(99, "Reflect", "psychic", 0, 100, 20, "special")
 
         engine_crit_no_reflect = CombatEngine(attacker, defender, physical_move, [], [])
         _, D_crit_no_reflect = engine_crit_no_reflect.attack_defense(
@@ -412,7 +412,7 @@ class TestCombatEngine:
             stats_dicts
         )
 
-        status_move = Move(1, "Growl", "Normal", 0, 100, 40, "Status")
+        status_move = Move(1, "Growl", "normal", 0, 100, 40, "physical")
 
         engine = CombatEngine(attacker, defender, status_move, [], [])
         damage, is_crit, move_hit = engine.calculate_damage(

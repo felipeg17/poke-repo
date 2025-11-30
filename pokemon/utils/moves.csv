@@ -1,165 +1,165 @@
 id,name,type,power,accuracy,pp,category
-1,Absorb,Grass,20,100,25,Special
-2,Acid,Poison,40,100,30,Physical
-3,Acid Armor,Poison,0,100,20,Physical
-4,Agility,Psychic,0,100,30,Special
-5,Amnesia,Psychic,0,100,20,Special
-6,Aurora Beam,Ice,65,100,20,Special
-7,Barrage,Normal,15,85,20,Physical
-8,Barrier,Psychic,0,100,20,Special
-9,Bide,Normal,0,100,10,Physical
-10,Bind,Normal,15,85,20,Physical
-11,Bite,Normal,60,100,25,Physical
-12,Blizzard,Ice,110,70,5,Special
-13,Body Slam,Normal,85,100,15,Physical
-14,Bone Club,Ground,65,85,20,Physical
-15,Bonemerang,Ground,50,90,10,Physical
-16,Bubble,Water,40,100,30,Special
-17,Bubble Beam,Water,65,100,20,Special
-18,Clamp,Water,35,85,10,Special
-19,Comet Punch,Normal,18,85,15,Physical
-20,Confuse Ray,Ghost,0,100,10,Physical
-21,Confusion,Psychic,50,100,25,Special
-22,Constrict,Normal,10,100,35,Physical
-23,Conversion,Normal,0,100,30,Physical
-24,Counter,Fighting,0,100,20,Physical
-25,Crabhammer,Water,100,90,10,Special
-26,Cut,Normal,50,95,30,Physical
-27,Defense Curl,Normal,0,100,40,Physical
-28,Dig,Ground,80,100,10,Physical
-29,Disable,Normal,0,100,20,Physical
-30,Dizzy Punch,Normal,70,100,10,Physical
-31,Double Kick,Fighting,30,100,30,Physical
-32,Double Slap,Normal,15,85,10,Physical
-33,Double Team,Normal,0,100,15,Physical
-34,Double-Edge,Normal,120,100,15,Physical
-35,Dragon Rage,Dragon,0,100,10,Special
-36,Dream Eater,Psychic,100,100,15,Special
-37,Drill Peck,Flying,80,100,20,Physical
-38,Earthquake,Ground,100,100,10,Physical
-39,Egg Bomb,Normal,100,75,10,Physical
-40,Ember,Fire,40,100,25,Special
-41,Explosion,Normal,250,100,5,Physical
-42,Fire Blast,Fire,110,85,5,Special
-43,Fire Punch,Fire,75,100,15,Special
-44,Fire Spin,Fire,35,85,15,Special
-45,Fissure,Ground,0,30,5,Physical
-46,Flamethrower,Fire,90,100,15,Special
-47,Fly,Flying,90,95,15,Physical
-48,Focus Energy,Normal,0,100,30,Physical
-49,Fury Attack,Normal,15,85,20,Physical
-50,Fury Swipes,Normal,18,80,20,Physical
-51,Glare,Normal,0,75,30,Physical
-52,Growl,Normal,0,100,40,Physical
-53,Growth,Normal,0,100,20,Physical
-54,Guillotine,Normal,0,30,5,Physical
-55,Gust,Normal,40,100,35,Physical
-56,Harden,Normal,0,100,30,Physical
-57,Haze,Ice,0,100,30,Special
-58,Headbutt,Normal,70,100,15,Physical
-59,High Jump Kick,Fighting,85,90,10,Physical
-60,Horn Attack,Normal,65,100,25,Physical
-61,Horn Drill,Normal,0,30,5,Physical
-62,Hydro Pump,Water,110,80,5,Special
-63,Hyper Beam,Normal,150,90,5,Physical
-64,Hyper Fang,Normal,80,90,15,Physical
-65,Hypnosis,Psychic,0,60,20,Special
-66,Ice Beam,Ice,90,100,10,Special
-67,Ice Punch,Ice,75,100,15,Special
-68,Jump Kick,Fighting,70,95,25,Physical
-69,Karate Chop,Fighting,50,100,25,Physical
-70,Kinesis,Psychic,0,80,15,Special
-71,Leech Life,Bug,20,100,15,Physical
-72,Leech Seed,Grass,0,90,10,Special
-73,Leer,Normal,0,100,30,Physical
-74,Lick,Ghost,30,100,30,Physical
-75,Light Screen,Psychic,0,100,30,Special
-76,Lovely Kiss,Normal,0,75,10,Physical
-77,Low Kick,Fighting,50,100,20,Physical
-78,Meditate,Psychic,0,100,40,Special
-79,Mega Drain,Grass,40,100,10,Special
-80,Mega Kick,Normal,120,75,5,Physical
-81,Mega Punch,Normal,80,85,20,Physical
-82,Metronome,Normal,0,100,10,Physical
-83,Mimic,Normal,0,100,10,Physical
-84,Minimize,Normal,0,100,10,Physical
-85,Mirror Move,Flying,0,100,20,Physical
-86,Mist,Ice,0,100,30,Special
-87,Night Shade,Ghost,0,100,15,Physical
-88,Pay Day,Normal,40,100,20,Physical
-89,Peck,Flying,35,100,35,Physical
-90,Petal Dance,Grass,120,100,20,Special
-91,Pin Missile,Bug,25,95,20,Physical
-92,Poison Gas,Poison,0,90,40,Physical
-93,Poison Powder,Poison,0,75,35,Physical
-94,Poison Sting,Poison,15,100,35,Physical
-95,Pound,Normal,40,100,35,Physical
-96,Psybeam,Psychic,65,100,20,Special
-97,Psychic,Psychic,90,100,10,Special
-98,Psywave,Psychic,0,80,15,Special
-99,Quick Attack,Normal,40,100,30,Physical
-100,Rage,Normal,20,100,20,Physical
-101,Razor Leaf,Grass,55,95,25,Special
-102,Razor Wind,Normal,80,100,10,Physical
-103,Recover,Normal,0,100,10,Physical
-104,Reflect,Psychic,0,100,20,Special
-105,Rest,Psychic,0,100,10,Special
-106,Roar,Normal,0,100,20,Physical
-107,Rock Slide,Rock,75,90,10,Physical
-108,Rock Throw,Rock,50,90,15,Physical
-109,Rolling Kick,Fighting,60,85,15,Physical
-110,Sand Attack,Ground,0,100,15,Physical
-111,Scratch,Normal,40,100,35,Physical
-112,Screech,Normal,0,85,40,Physical
-113,Seismic Toss,Fighting,0,100,20,Physical
-114,Self-Destruct,Normal,200,100,5,Physical
-115,Sharpen,Normal,0,100,30,Physical
-116,Sing,Normal,0,55,15,Physical
-117,Skull Bash,Normal,130,100,5,Physical
-118,Sky Attack,Flying,140,90,5,Physical
-119,Slam,Normal,80,75,20,Physical
-120,Slash,Normal,70,100,20,Physical
-121,Sleep Powder,Grass,0,75,15,Special
-122,Sludge,Poison,65,100,20,Physical
-123,Smog,Poison,30,70,20,Physical
-124,Smokescreen,Normal,0,100,20,Physical
-125,Soft-Boiled,Normal,0,100,10,Physical
-126,Solar Beam,Grass,120,100,10,Special
-127,Sonic Boom,Normal,0,90,20,Physical
-128,Spike Cannon,Normal,20,100,15,Physical
-129,Splash,Normal,0,100,40,Physical
-130,Spore,Grass,0,100,15,Special
-131,Stomp,Normal,65,100,20,Physical
-132,Strength,Normal,80,100,15,Physical
-133,String Shot,Bug,0,95,40,Physical
-134,Struggle,Normal,50,100,1,Physical
-135,Stun Spore,Grass,0,75,30,Special
-136,Submission,Fighting,80,80,25,Physical
-137,Substitute,Normal,0,100,10,Physical
-138,Super Fang,Normal,0,90,10,Physical
-139,Supersonic,Normal,0,55,20,Physical
-140,Surf,Water,90,100,15,Special
-141,Swift,Normal,60,100,20,Physical
-142,Swords Dance,Normal,0,100,20,Physical
-143,Tackle,Normal,40,100,35,Physical
-144,Tail Whip,Normal,0,100,30,Physical
-145,Take Down,Normal,90,85,20,Physical
-146,Teleport,Psychic,0,100,20,Special
-147,Thrash,Normal,120,100,10,Physical
-148,Thunder,Electric,110,70,10,Special
-149,Thunder Punch,Electric,75,100,15,Special
-150,Thunder Shock,Electric,40,100,30,Special
-151,Thunder Wave,Electric,0,90,20,Special
-152,Thunderbolt,Electric,90,100,15,Special
-153,Toxic,Poison,0,90,10,Physical
-154,Transform,Normal,0,100,10,Physical
-155,Tri Attack,Normal,80,100,10,Physical
-156,Twineedle,Bug,25,100,20,Physical
-157,Vice Grip,Normal,55,100,30,Physical
-158,Vine Whip,Grass,45,100,25,Special
-159,Water Gun,Water,40,100,25,Special
-160,Waterfall,Water,80,100,15,Special
-161,Whirlwind,Normal,0,100,20,Physical
-162,Wing Attack,Flying,60,100,35,Physical
-163,Withdraw,Water,0,100,40,Special
-164,Wrap,Normal,15,85,20,Physical
+1,Absorb,grass,20,100,25,special
+2,Acid,poison,40,100,30,physical
+3,Acid Armor,poison,0,100,20,physical
+4,Agility,psychic,0,100,30,special
+5,Amnesia,psychic,0,100,20,special
+6,Aurora Beam,ice,65,100,20,special
+7,Barrage,normal,15,85,20,physical
+8,Barrier,psychic,0,100,20,special
+9,Bide,normal,0,100,10,physical
+10,Bind,normal,15,85,20,physical
+11,Bite,normal,60,100,25,physical
+12,Blizzard,ice,110,70,5,special
+13,Body Slam,normal,85,100,15,physical
+14,Bone Club,ground,65,85,20,physical
+15,Bonemerang,ground,50,90,10,physical
+16,Bubble,water,40,100,30,special
+17,Bubble Beam,water,65,100,20,special
+18,Clamp,water,35,85,10,special
+19,Comet Punch,normal,18,85,15,physical
+20,Confuse Ray,ghost,0,100,10,physical
+21,Confusion,psychic,50,100,25,special
+22,Constrict,normal,10,100,35,physical
+23,Conversion,normal,0,100,30,physical
+24,Counter,fighting,0,100,20,physical
+25,Crabhammer,water,100,90,10,special
+26,Cut,normal,50,95,30,physical
+27,Defense Curl,normal,0,100,40,physical
+28,Dig,ground,80,100,10,physical
+29,Disable,normal,0,100,20,physical
+30,Dizzy Punch,normal,70,100,10,physical
+31,Double Kick,fighting,30,100,30,physical
+32,Double Slap,normal,15,85,10,physical
+33,Double Team,normal,0,100,15,physical
+34,Double-Edge,normal,120,100,15,physical
+35,Dragon Rage,dragon,0,100,10,special
+36,Dream Eater,psychic,100,100,15,special
+37,Drill Peck,flying,80,100,20,physical
+38,Earthquake,ground,100,100,10,physical
+39,Egg Bomb,normal,100,75,10,physical
+40,Ember,fire,40,100,25,special
+41,Explosion,normal,250,100,5,physical
+42,Fire Blast,fire,110,85,5,special
+43,Fire Punch,fire,75,100,15,special
+44,Fire Spin,fire,35,85,15,special
+45,Fissure,ground,0,30,5,physical
+46,Flamethrower,fire,90,100,15,special
+47,Fly,flying,90,95,15,physical
+48,Focus Energy,normal,0,100,30,physical
+49,Fury Attack,normal,15,85,20,physical
+50,Fury Swipes,normal,18,80,20,physical
+51,Glare,normal,0,75,30,physical
+52,Growl,normal,0,100,40,physical
+53,Growth,normal,0,100,20,physical
+54,Guillotine,normal,0,30,5,physical
+55,Gust,normal,40,100,35,physical
+56,Harden,normal,0,100,30,physical
+57,Haze,ice,0,100,30,special
+58,Headbutt,normal,70,100,15,physical
+59,High Jump Kick,fighting,85,90,10,physical
+60,Horn Attack,normal,65,100,25,physical
+61,Horn Drill,normal,0,30,5,physical
+62,Hydro Pump,water,110,80,5,special
+63,Hyper Beam,normal,150,90,5,physical
+64,Hyper Fang,normal,80,90,15,physical
+65,Hypnosis,psychic,0,60,20,special
+66,Ice Beam,ice,90,100,10,special
+67,Ice Punch,ice,75,100,15,special
+68,Jump Kick,fighting,70,95,25,shysical
+69,Karate Chop,fighting,50,100,25,shysical
+70,Kinesis,psychic,0,80,15,special
+71,Leech Life,bug,20,100,15,physical
+72,Leech Seed,grass,0,90,10,special
+73,Leer,normal,0,100,30,physical
+74,Lick,ghost,30,100,30,physical
+75,Light Screen,psychic,0,100,30,special
+76,Lovely Kiss,normal,0,75,10,physical
+77,Low Kick,fighting,50,100,20,physical
+78,Meditate,psychic,0,100,40,special
+79,Mega Drain,grass,40,100,10,special
+80,Mega Kick,normal,120,75,5,physical
+81,Mega Punch,normal,80,85,20,physical
+82,Metronome,normal,0,100,10,physical
+83,Mimic,normal,0,100,10,physical
+84,Minimize,normal,0,100,10,physical
+85,Mirror Move,flying,0,100,20,physical
+86,Mist,ice,0,100,30,special
+87,Night Shade,ghost,0,100,15,physical
+88,Pay Day,normal,40,100,20,physical
+89,Peck,flying,35,100,35,physical
+90,Petal Dance,grass,120,100,20,special
+91,Pin Missile,bug,25,95,20,physical
+92,Poison Gas,poison,0,90,40,physical
+93,Poison Powder,poison,0,75,35,physical
+94,Poison Sting,poison,15,100,35,physical
+95,Pound,normal,40,100,35,physical
+96,Psybeam,psychic,65,100,20,special
+97,Psychic,psychic,90,100,10,special
+98,Psywave,psychic,0,80,15,special
+99,Quick Attack,normal,40,100,30,physical
+100,Rage,normal,20,100,20,physical
+101,Razor Leaf,grass,55,95,25,special
+102,Razor Wind,normal,80,100,10,physical
+103,Recover,normal,0,100,10,physical
+104,Reflect,psychic,0,100,20,special
+105,Rest,psychic,0,100,10,special
+106,Roar,normal,0,100,20,physical
+107,Rock Slide,rock,75,90,10,physical
+108,Rock Throw,rock,50,90,15,physical
+109,Rolling Kick,fighting,60,85,15,physical
+110,Sand Attack,ground,0,100,15,physical
+111,Scratch,normal,40,100,35,physical
+112,Screech,normal,0,85,40,physical
+113,Seismic Toss,fighting,0,100,20,physical
+114,Self-Destruct,normal,200,100,5,physical
+115,Sharpen,normal,0,100,30,physical
+116,Sing,normal,0,55,15,physical
+117,Skull Bash,normal,130,100,5,physical
+118,Sky Attack,flying,140,90,5,physical
+119,Slam,Normal,80,75,20,physical
+120,Slash,normal,70,100,20,physical
+121,Sleep Powder,grass,0,75,15,special
+122,Sludge,poison,65,100,20,physical
+123,Smog,poison,30,70,20,physical
+124,Smokescreen,normal,0,100,20,physical
+125,Soft-Boiled,normal,0,100,10,physical
+126,Solar Beam,grass,120,100,10,special
+127,Sonic Boom,normal,0,90,20,physical
+128,Spike Cannon,normal,20,100,15,physical
+129,Splash,normal,0,100,40,physical
+130,Spore,grass,0,100,15,special
+131,Stomp,normal,65,100,20,physical
+132,Strength,normal,80,100,15,physical
+133,String Shot,bug,0,95,40,physical
+134,Struggle,normal,50,100,1,physical
+135,Stun Spore,grass,0,75,30,special
+136,Submission,fighting,80,80,25,physical
+137,Substitute,normal,0,100,10,physical
+138,Super Fang,normal,0,90,10,physical
+139,Supersonic,normal,0,55,20,physical
+140,Surf,water,90,100,15,special
+141,Swift,normal,60,100,20,physical
+142,Swords Dance,normal,0,100,20,physical
+143,Tackle,normal,40,100,35,physical
+144,Tail Whip,normal,0,100,30,physical
+145,Take Down,normal,90,85,20,physical
+146,Teleport,psychic,0,100,20,special
+147,Thrash,normal,120,100,10,physical
+148,Thunder,electric,110,70,10,special
+149,Thunder Punch,electric,75,100,15,special
+150,Thunder Shock,electric,40,100,30,special
+151,Thunder Wave,electric,0,90,20,special
+152,Thunderbolt,electric,90,100,15,special
+153,Toxic,poison,0,90,10,physical
+154,Transform,normal,0,100,10,physical
+155,Tri Attack,normal,80,100,10,physical
+156,Twineedle,bug,25,100,20,physical
+157,Vice Grip,normal,55,100,30,physical
+158,Vine Whip,grass,45,100,25,special
+159,Water Gun,water,40,100,25,special
+160,Waterfall,water,80,100,15,special
+161,Whirlwind,normal,0,100,20,physical
+162,Wing Attack,flying,60,100,35,physical
+163,Withdraw,water,0,100,40,special
+164,Wrap,normal,15,85,20,physical

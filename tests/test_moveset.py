@@ -8,7 +8,7 @@ def test_pokemon_moveset_initialization():
     bulbasaur = Pokemon(
         pokemon_name="bulbasaur",
         pokedex_num=1,
-        type="Grass",
+        type="grass",
         color="green",
         sex="male",
         level=25,
@@ -25,7 +25,7 @@ def test_pokemon_moveset_has_expected_moves():
     bulbasaur = Pokemon(
         pokemon_name="bulbasaur",
         pokedex_num=1,
-        type="Grass",
+        type="grass",
         color="green",
         sex="male",
         level=50,
@@ -47,7 +47,7 @@ def test_show_moves_output(capsys):
     bulbasaur = Pokemon(
         pokemon_name="bulbasaur",
         pokedex_num=1,
-        type="Grass",
+        type="grass",
         color="green",
         sex="male",
         level=50,
@@ -74,7 +74,7 @@ def test_pokemon_without_moves(monkeypatch):
     pokemon = Pokemon(
         pokemon_name="missingno",
         pokedex_num=1,
-        type="Normal",
+        type="normal",
         color="gray",
         sex="none",
         level=1,

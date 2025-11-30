@@ -12,15 +12,15 @@ class TestField:
 
         trainer1.pokemon = [
             trainer1.create_pokemon(
-                "pikachu", 25, "Electric", "yellow", "male", level=10
+                "pikachu", 25, "electric", "yellow", "male", level=10
             ),
             trainer1.create_pokemon(
-                "charmander", 4, "Fire", "orange", "male", level=10
+                "charmander", 4, "fire", "orange", "male", level=10
             ),
         ]
         trainer2.pokemon = [
-            trainer2.create_pokemon("squirtle", 7, "Water", "blue", "male", level=10),
-            trainer2.create_pokemon("bulbasaur", 1, "Grass", "green", "male", level=10),
+            trainer2.create_pokemon("squirtle", 7, "water", "blue", "male", level=10),
+            trainer2.create_pokemon("bulbasaur", 1, "grass", "green", "male", level=10),
         ]
 
         return trainer1, trainer2
@@ -90,7 +90,7 @@ class TestField:
         trainer1, trainer2 = trainers
         field = Field(trainer1, trainer2)
 
-        move = Move(150, "TestMove", "Normal", 40, 255, 10, "Physical")
+        move = Move(150, "TestMove", "normal", 40, 255, 10, "physical")
 
         continue_battle, messages = field.resolve_turn(
             {"action": "surrender"}, {"action": "attack", "move": move}
@@ -131,7 +131,7 @@ class TestField:
         trainer1, trainer2 = trainers
         field = Field(trainer1, trainer2)
 
-        move = Move(150, "TestMove", "Normal", 40, 255, 10, "Physical")
+        move = Move(150, "TestMove", "normal", 40, 255, 10, "physical")
 
         current_active1 = field.get_active1()
         current_active2 = field.get_active2()
@@ -154,7 +154,7 @@ class TestField:
         trainer1, trainer2 = trainers
         field = Field(trainer1, trainer2)
 
-        move = Move(150, "TestMove", "Normal", 40, 255, 10, "Physical")
+        move = Move(150, "TestMove", "normal", 40, 255, 10, "physical")
 
         speed1 = field.get_combat_speed(field.get_active1())
         speed2 = field.get_combat_speed(field.get_active2())
@@ -243,7 +243,7 @@ class TestField:
         trainer1, trainer2 = trainers
         field = Field(trainer1, trainer2)
 
-        move = Move(150, "TestMove", "Normal", 40, 255, 10, "Physical")
+        move = Move(150, "TestMove", "normal", 40, 255, 10, "physical")
 
         attacker = field.get_active1()
         defender = field.get_active2()
@@ -273,7 +273,7 @@ class TestField:
 
         assert field.get_turn_number() == 0
 
-        move = Move(150, "TestMove", "Normal", 40, 255, 10, "Physical")
+        move = Move(150, "TestMove", "normal", 40, 255, 10, "physical")
         field.resolve_turn(
             {"action": "attack", "move": move}, {"action": "attack", "move": move}
         )
@@ -284,7 +284,7 @@ class TestField:
         trainer1, trainer2 = trainers
         field = Field(trainer1, trainer2)
 
-        move = Move(150, "TestMove", "Normal", 40, 255, 10, "Physical")
+        move = Move(150, "TestMove", "normal", 40, 255, 10, "physical")
 
         initial_active2 = field.get_active2()
         new_pokemon = trainer2.pokemon[1]
@@ -321,14 +321,14 @@ class TestField:
 
         pikachu = trainer1.pokemon[0]
 
-        pikachu.apply_status("Burned")
+        pikachu.apply_status("burned")
 
         initial_hp = field.get_combat_hp(pikachu)
 
         message = field.status_damage(pikachu)
 
         assert field.get_combat_hp(pikachu) < initial_hp
-        assert "Burned" in message
+        assert "burned" in message
 
     def test_move_effect_basic(self, trainers):
         trainer1, trainer2 = trainers
@@ -337,7 +337,7 @@ class TestField:
         attacker = trainer1.pokemon[0]
         defender = trainer2.pokemon[0]
 
-        move = Move(150, "Growl", "Normal", 0, 100, 40, "Status")
+        move = Move(150, "Growl", "normal", 0, 100, 40, "physical")
 
         initial_attack = field.get_combat_attack(defender)
 

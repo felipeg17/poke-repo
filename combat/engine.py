@@ -149,10 +149,10 @@ class CombatEngine:
         and handling for stat values above 255. Returns a tuple `(A, D)`.
         """
 
-        if self.move.category == "Special":
+        if self.move.category == "special":
             A = sp_attack_stats.get(self.attacker, 0)
             D = sp_defense_stats.get(self.defender, 0)
-        elif self.move.category == "Physical":
+        elif self.move.category == "physical":
             A = attack_stats.get(self.attacker, 0)
             D = defense_stats.get(self.defender, 0)
 
@@ -170,9 +170,9 @@ class CombatEngine:
 
         # Compute effective defense
         if not critical:
-            if self.move.category == "Physical" and reflect:
+            if self.move.category == "physical" and reflect:
                 D *= 2
-            elif self.move.category == "Special" and light_screen:
+            elif self.move.category == "special" and light_screen:
                 D *= 2
 
         # Special case for Explosion and Selfdestruct
@@ -180,12 +180,12 @@ class CombatEngine:
             D = max(1, math.floor(D / 2))
 
         # When a pokemon is burned, its attack is halved
-        Status = (
+        Status2 = (
             list(self.attacker.status.keys())
             if self.attacker.status is not None
             else None
         )
-        if Status == "Burned":
+        if Status2 == "burned":
             A = math.floor(A / 2)
 
         if D == 0:
@@ -221,7 +221,6 @@ class CombatEngine:
         """Gets the status of the attacker
         returns true if pokemon can attack, and the power with the modifications if some are implemented
         """
-        Status1 = list(self.attacker.status.keys())[0] if self.attacker.status else None
         if not self.attacker.status:
             return True, power
 
@@ -231,30 +230,31 @@ class CombatEngine:
                 if self.attacker.status[Status] <= 0:
                     del self.attacker.status[Status]
                     print(f"{self.attacker._name} is no longer {Status}")
+                    return True, power
 
-            if Status == "Paralyzed":
+            if Status == "paralyzed":
                 value = random.randint(0, 100)
                 if value <= 25:  # 25% of not attacking
                     print(
-                        f"{self.attacker._name} is totally {Status.lower()} and can not attack"
+                        f"{self.attacker._name} is totally {Status} and can not attack"
                     )
                     return False, power
                 return True, power
 
-            if Status1 == "Burned":
+            if Status == "burned":
                 return True, power
 
-            if Status1 == "Poisoned":
+            if Status == "poisoned":
                 return True, power
 
-            if Status1 == "Asleep" or Status == "Frozen":
-                print(f"{self.attacker._name} is {Status.lower()} and can not attack")
+            if Status == "asleep" or Status == "frozen":
+                print(f"{self.attacker._name} is {Status} and can not attack")
                 return False, power
 
-            if Status1 == "Seeded":
+            if Status == "seeded":
                 return True, power
 
-            if Status1 == "Flinched":
-                print(f"{self.attacker._name} is Flinched can not attack!")
+            if Status == "flinched":
+                print(f"{self.attacker._name} is flinched can not attack!")
                 return False, power
         return True, power

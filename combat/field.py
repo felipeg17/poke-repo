@@ -73,28 +73,28 @@ class Trainer:
         """
         # Map type names (as they appear in the CSV) to subclass constructors
         TYPE_CLASS: dict = {
-            "Normal": Normal,
-            "Fire": Fire,
-            "Water": Water,
-            "Grass": Grass,
-            "Electric": Electric,
-            "Ice": Ice,
-            "Fighting": Fighting,
-            "Poison": Poison,
-            "Ground": Ground,
-            "Flying": Flying,
-            "Psychic": Psychic,
-            "Bug": Bug,
-            "Rock": Rock,
-            "Ghost": Ghost,
-            "Dragon": Dragon,
-            "Dark": Dark,
-            "Steel": Steel,
-            "Fairy": Fairy,
+            "normal": Normal,
+            "fire": Fire,
+            "water": Water,
+            "grass": Grass,
+            "electric": Electric,
+            "ice": Ice,
+            "fighting": Fighting,
+            "poison": Poison,
+            "ground": Ground,
+            "flying": Flying,
+            "psychic": Psychic,
+            "bug": Bug,
+            "rock": Rock,
+            "ghost": Ghost,
+            "dragon": Dragon,
+            "dark": Dark,
+            "steel": Steel,
+            "fairy": Fairy,
         }
 
         if isinstance(primary_type, str):
-            primary_type = primary_type.strip().capitalize()
+            primary_type = primary_type.strip()
 
         cls: type[Pokemon] = Pokemon
         if primary_type and primary_type in TYPE_CLASS:
@@ -393,12 +393,12 @@ class Field:
         defender_moves: list[Move],
     ) -> tuple[int, bool, str]:
         attacker_status = list(attacker.status.keys())[0] if attacker.status else None
-        if attacker_status == "Confused":
+        if attacker_status == "confused":
             value = random.randint(0, 100)
             if value <= 50:  # 50% of attacking himself
                 defender = attacker
                 defender_moves = attacker_moves
-                move = Move(0, "Confused Hit", "Normal", 40, 100, 10, "Physical")
+                move = Move(0, "Confused Hit", "normal", 40, 100, 10, "physical")
                 print(f"{attacker._name} is confused and it is attacking itself!")
         """Execute an attack from attacker to defender using the specified move."""
         engine = CombatEngine(
@@ -430,9 +430,9 @@ class Field:
         defender_Status = (
             list(defender.status.keys()) if defender.status is not None else None
         )
-        if move.type == "Fire" and defender_Status == "Frozen":
+        if move.type == "fire" and defender_Status == "frozen":
             defender.status = {}
-            message += f"{defender._name} is no longer Frozen"
+            message += f"{defender._name} is no longer frozen"
         return (damage, was_critical, message)
 
     def resolve_turn(self, action1: dict, action2: dict) -> tuple[bool, list[str]]:
@@ -506,7 +506,7 @@ class Field:
                     list(active1.status.keys())[0] if active1.status else None
                 )
                 if active1.status:
-                    if active1_Status == "Flinched":
+                    if active1_Status == "flinched":
                         del active1.status[active1_Status]
                         messages.append(
                             f"{active1._name} is no longer {active1_Status}"
@@ -539,7 +539,7 @@ class Field:
                     list(active2.status.keys())[0] if active2.status else None
                 )
                 if active2.status:
-                    if active2_Status == "Flinched":
+                    if active2_Status == "flinched":
                         del active2.status[active2_Status]
                         messages.append(
                             f"{active2._name} is no longer {active2_Status}"
@@ -585,7 +585,7 @@ class Field:
                         list(active1.status.keys())[0] if active1.status else None
                     )
                     if active1.status:
-                        if active1_Status == "Flinched":
+                        if active1_Status == "flinched":
                             del active1.status[active1_Status]
                             messages.append(
                                 f"{active1._name} is no longer {active1_Status}"
@@ -621,7 +621,7 @@ class Field:
                         list(active2.status.keys())[0] if active2.status else None
                     )
                     if active2.status:
-                        if active2_Status == "Flinched":
+                        if active2_Status == "flinched":
                             del active2.status[active2_Status]
                             messages.append(
                                 f"{active2._name} is no longer {active2_Status}"
@@ -744,7 +744,7 @@ class Field:
             if random_value <= 10 and (
                 defender.status is None or defender.status == {}
             ):  # 10% chance to flinch
-                defender.apply_status("Flinched")
+                defender.apply_status("flinched")
                 message = f"{defender._name} flinched!"
 
         if (
@@ -756,9 +756,9 @@ class Field:
             if (
                 random_value <= 10
                 and (defender.status is None or defender.status == {})
-                and defender.get_attribute("type") != "Ice"
+                and defender.get_attribute("type") != "ice"
             ):  # 10% chance to freeze
-                defender.apply_status("Frozen")
+                defender.apply_status("frozen")
                 message = f"{defender._name} was frozen!"
 
         if move.name == "Body Slam" or move.name == "Lick":
@@ -766,7 +766,7 @@ class Field:
             if random_value <= 30 and (
                 defender.status is None or defender.status == {}
             ):  # 30% chance to paralyze
-                defender.apply_status("Paralyzed")
+                defender.apply_status("paralyzed")
                 message = f"{defender._name} was paralyzed!"
 
         if move.name == "Bonemerang" or move.name == "Double Kick":
@@ -786,7 +786,7 @@ class Field:
 
         if move.name == "Confuse Ray" or move.name == "Supersonic":
             if defender.status is None or defender.status == {}:
-                defender.apply_status("Confused")
+                defender.apply_status("confused")
                 message = f"{defender._name} became confused!"
 
         if move.name == "Confusion" or move.name == "Psybeam":
@@ -794,7 +794,7 @@ class Field:
             if random_value <= 10 and (
                 defender.status is None or defender.status == {}
             ):  # 10% chance to confuse
-                defender.apply_status("Confused")
+                defender.apply_status("confused")
                 message = f"{defender._name} became confused!"
 
         if move.name == "Defense Curl" or move.name == "Harden":
@@ -805,7 +805,7 @@ class Field:
             if random_value <= 20 and (
                 defender.status is None or defender.status == {}
             ):  # 20% chance to confuse
-                defender.apply_status("Confused")
+                defender.apply_status("confused")
                 message = f"{defender._name} became confused!"
 
         if move.name == "Double-Edge":
@@ -814,7 +814,7 @@ class Field:
             message = f"{attacker._name} took {recoil} recoil damage!"
 
         if move.name == "Dream Eater":
-            if defender.status == "Asleep":
+            if defender.status == "asleep":
                 heal_amount = math.floor(damage / 2)
                 self.mod_combat_hp(attacker, heal_amount)
                 message = f"{attacker._name} healed for {heal_amount} HP!"
@@ -835,9 +835,9 @@ class Field:
             if (
                 random_value <= 10
                 and (defender.status is None or defender.status == {})
-                and defender.get_attribute("type") != "Fire"
+                and defender.get_attribute("type") != "fire"
             ):  # 10% chance to burn
-                defender.apply_status("Burned")
+                defender.apply_status("burned")
                 message = f"{defender._name} was burned!"
 
         if (
@@ -847,8 +847,8 @@ class Field:
         ):
             if (
                 defender.status is None or defender.status == {}
-            ) and defender.get_attribute("type") != "Ground":
-                defender.apply_status("Paralyzed")
+            ) and defender.get_attribute("type") != "ground":
+                defender.apply_status("paralyzed")
                 message = f"{defender._name} was paralyzed!"
 
         if move.name == "Growl":
@@ -877,7 +877,7 @@ class Field:
                 list(attacker.status.keys())[0] if attacker.status else None
             )
             if attacker_status:
-                if attacker_status == "Confused":
+                if attacker_status == "confused":
                     attacker.status = {}
                     message = f"{attacker._name} is no longer confused!"
             defender_status = (
@@ -885,13 +885,13 @@ class Field:
             )
             if defender_status:
                 if defender_status in [
-                    "Confused",
-                    "Flinched",
-                    "Paralyzed",
-                    "Frozen",
-                    "Burned",
-                    "Asleep",
-                    "Poisoned",
+                    "confused",
+                    "flinched",
+                    "paralyzed",
+                    "frozen",
+                    "burned",
+                    "asleep",
+                    "poisoned",
                 ]:
                     defender.status = None
                     message = (
@@ -908,7 +908,7 @@ class Field:
             if random_value <= 30 and (
                 defender.status is None or defender.status == {}
             ):  # 30% chance to flinch
-                defender.apply_status("Flinched")
+                defender.apply_status("flinched")
                 message = f"{defender._name} flinched!"
 
         if (
@@ -919,14 +919,14 @@ class Field:
             or move.name == "Spore"
         ):
             if defender.status is None or defender.status == {}:
-                defender.apply_status("Asleep")
+                defender.apply_status("asleep")
                 message = f"{defender._name} fell asleep!"
 
         if move.name == "Leech Seed":
             if (
                 defender.status is None or defender.status == {}
-            ) and defender.get_attribute("type") != "Grass":
-                defender.apply_status("Seeded")
+            ) and defender.get_attribute("type") != "grass":
+                defender.apply_status("seeded")
                 message = f"{defender._name} was seeded!"
 
         if move.name == "Leer" or move.name == "Tail Whip":
@@ -963,7 +963,16 @@ class Field:
         if move.name == "Mimic":
             for moves in defender.get_moveset().current_moves:
                 print(moves.name)
-            choice = input(f"Choose a move to mimic from {defender._name}'s moveset: ")
+            while True:
+                try:
+                    choice = str(
+                        input(
+                            f"Write the name of the move from {defender._name}'s moveset: "
+                        )
+                    ).capitalize()
+                    break
+                except ValueError:
+                    print("Unvalid input, try again")
             for moves in defender.get_moveset().current_moves:
                 if moves.name.lower() == choice.lower():
                     damage, was_critical, msg = self.execute_attack(
@@ -1016,8 +1025,8 @@ class Field:
         ):
             if (
                 defender.status is None or defender.status == {}
-            ) and defender.get_attribute("type") not in ["Poison", "Steel"]:
-                defender.apply_status("Poisoned")
+            ) and defender.get_attribute("type") not in ["poison", "steel"]:
+                defender.apply_status("poisoned")
                 message = f"{defender._name} was poisoned!"
 
         if move.name == "Poison Sting":
@@ -1025,9 +1034,9 @@ class Field:
             if (
                 random_value <= 20
                 and (defender.status is None or defender.status == {})
-                and defender.get_attribute("type") not in ["Poison", "Steel"]
+                and defender.get_attribute("type") not in ["poison", "steel"]
             ):  # 20% chance to poison
-                defender.apply_status("Poisoned")
+                defender.apply_status("poisoned")
                 message = f"{defender._name} was poisoned!"
 
         if move.name == "Psychic":
@@ -1049,7 +1058,8 @@ class Field:
             message = f"{attacker._name} healed for {heal_amount} HP!"
 
         if move.name == "Rest":
-            attacker.apply_status("Asleep")
+            attacker.status = None
+            attacker.apply_status("asleep")
             self.set_combat_hp(attacker, attacker.get_stats().hp)
             message = f"{attacker._name} restored its HP and fell asleep!"
 
@@ -1070,9 +1080,9 @@ class Field:
             if (
                 random_value <= 30
                 and (defender.status is None or defender.status == {})
-                and defender.get_attribute("type") not in ["Poison", "Steel"]
+                and defender.get_attribute("type") not in ["poison", "steel"]
             ):  # 30% chance to poison
-                defender.apply_status("Poisoned")
+                defender.apply_status("poisoned")
                 message = f"{defender._name} was poisoned!"
 
         if move.name == "Smog":
@@ -1158,9 +1168,9 @@ class Field:
             if (
                 random_value <= 10
                 and (defender.status is None or defender.status == {})
-                and defender.get_attribute("type") != "Electric"
+                and defender.get_attribute("type") != "electric"
             ):  # 10% chance to paralyze
-                defender.apply_status("Paralyzed")
+                defender.apply_status("paralyzed")
                 message = f"{defender._name} was paralyzed!"
 
         if move.name == "Twineedle":
@@ -1170,9 +1180,9 @@ class Field:
             if (
                 random_value <= 20
                 and (defender.status is None or defender.status == {})
-                and defender.get_attribute("type") not in ["Poison", "Steel"]
+                and defender.get_attribute("type") not in ["poison", "steel"]
             ):  # 20% chance to poison
-                defender.apply_status("Poisoned")
+                defender.apply_status("poisoned")
                 message = f"{defender._name} was poisoned!"
 
         if move.name == "Withdraw":
@@ -1186,9 +1196,9 @@ class Field:
         poke_status = list(attacker.status.keys())[0] if attacker.status else None
         if poke_status:
             if (
-                poke_status == "Burned"
-                or poke_status == "Poisoned"
-                or poke_status == "Seeded"
+                poke_status == "burned"
+                or poke_status == "poisoned"
+                or poke_status == "seeded"
             ):
                 damage = math.floor((attacker.get_stats().hp) / 16)
                 message = f"{attacker._name} took {damage} damage from {poke_status}"
@@ -1242,7 +1252,7 @@ class Battle:
         Turn: {trainer.name}
         {active_pokemon._name:<20} VS {enemy_pokemon._name:>20}
         {self.field.health_bar(active_hp, active_pokemon._stats.hp)}  {self.field.health_bar(enemy_hp, enemy_pokemon._stats.hp)}
-        Current Status:{active_status}                 Current Status: {enemy_status}
+        Current Status:{active_status.capitalize()}                 Current Status: {enemy_status.capitalize()}
         {50 * "="}
         """)
 
