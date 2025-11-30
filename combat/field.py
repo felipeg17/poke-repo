@@ -499,7 +499,7 @@ class Field:
                 defender_moves = attacker_moves
                 move = Move(0, "Confused Hit", "normal", 40, 100, 10, "physical")
                 print(f"{attacker._name} is confused and it is attacking itself!")
-        
+
         engine = CombatEngine(
             attacker=attacker,
             defender=defender,
