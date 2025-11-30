@@ -5,7 +5,7 @@ from pathlib import Path
 import csv
 
 
-"""Class about bring the information of types.csv
+"""Class that brings the information of types.csv
 and replace the classes of types of pokemon """
 
 
