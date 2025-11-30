@@ -35,9 +35,9 @@ def test_pokemon_resistances_and_weaknesses():
         color="red",
         sex="male",
     )
-    assert bulbasaur.receive_attack("Fire") == "It's super effective!"
-    assert bulbasaur.receive_attack("Water") == "It's not very effective..."
-    assert charmander.receive_attack("Water") == "It's super effective!"
-    assert charmander.receive_attack("Grass") == "It's not very effective..."
-    assert bulbasaur.receive_attack("Electric") == "It's not very effective..."
-    assert charmander.receive_attack("Normal") == "It's effective."
+    assert bulbasaur.receive_attack("fire") == "It's super effective!"
+    assert bulbasaur.receive_attack("water") == "It's not very effective..."
+    assert charmander.receive_attack("water") == "It's super effective!"
+    assert charmander.receive_attack("grass") == "It's not very effective..."
+    assert bulbasaur.receive_attack("electric") == "It's not very effective..."
+    assert charmander.receive_attack("normal") == "It's effective."

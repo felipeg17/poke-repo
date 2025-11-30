@@ -1,5 +1,5 @@
 import pandas as pd
-
+import random as random
 from pathlib import Path
 
 import csv
@@ -76,9 +76,9 @@ class Pokemon:
         self,
         pokemon_name: str,
         pokedex_num: int,
-        type: str,
+        type: str | None,
         color: str,
-        sex: str,
+        sex: str | int,
         level: int = 1,
     ) -> None:
         """
@@ -113,6 +113,10 @@ class Pokemon:
         self._weaknesses = Pokemon._type_relations.get_weaknesses(self._main_type)
         self._resistances = Pokemon._type_relations.get_resistances(self._main_type)
         self._immunities = Pokemon._type_relations.get_immunities(self._main_type)
+
+        self.status: dict | None = (
+            None  # Status condition (e.g., 'paralyzed', 'burned')
+        )
 
         ### TODO: Moveset
         # Shoudl be managed by another class -> composition
@@ -192,7 +196,6 @@ class Pokemon:
         attribute_map = {
             "pokemon_name": self._name,
             "pokedex_num": self._pokedex_num,
-            "main_type": self._main_type,
             "type": self._main_type,
             "color": self._color,
             "sex": self._sex,
@@ -208,6 +211,9 @@ class Pokemon:
         else:
             raise AttributeError(f"Pokemon has no attribute '{attribute_name}'")
         # Module for evolutions
+
+    def set_type(self, type: str):
+        self._main_type = type
 
     def __str__(self):
         return (
@@ -326,6 +332,30 @@ class Pokemon:
     def show_moves(self):
         self._moveset.show_moves()
 
+    def apply_status(self, new_status: str):
+        if self.status is None:
+            self.status = {}  # inicializar si está vacío
+        if new_status == "paralyzed":
+            turns_left = 999
+        elif new_status == "burned":
+            turns_left = 999
+        elif new_status == "poisoned":
+            turns_left = 999
+        elif new_status == "asleep":
+            turns_left = random.randint(1, 3)
+        elif new_status == "frozen":
+            turns_left = 999
+        elif new_status == "confused":
+            turns_left = 999
+        elif new_status == "seeded":
+            turns_left = 999
+        elif new_status == "flinched":
+            turns_left = 1
+        else:
+            # Unknown status, do not apply
+            return
+        self.status[new_status] = turns_left
+
 
 ### TODO: Move to another module
 class Stats:
@@ -349,14 +379,13 @@ class Stats:
 
     def set_initial_stats(self):
         for _ in range(1, self.initial_level):
-            print(f"Antes de subir de nivel: {self}")
             self.hp = round(self.hp + (110 + self.base_hp) / 100)
             self.attack = round(self.attack + (5 + self.base_attack) / 100)
             self.defense = round(self.defense + (5 + self.base_defense) / 100)
             self.sp_attack = round(self.sp_attack + (5 + self.base_sp_attack) / 100)
             self.sp_defense = round(self.sp_defense + (5 + self.base_sp_defense) / 100)
             self.speed = round(self.speed + (5 + self.base_speed) / 100)
-            print(f"Estadísticas después de subir de nivel: {self}")
+        print(f"Estadísticas después de subir de nivel: {self}")
 
     def combat_stats(self, accuracy="100%", evasion="100%"):
         self.accuracy = accuracy
@@ -371,16 +400,17 @@ class Stats:
 
 class Move:
     # Represents a single Pokemon move
-    def __init__(self, move_id, name, type_, power, accuracy, pp):
+    def __init__(self, move_id, name, type_, power, accuracy, pp, category):
         self.id = move_id
         self.name = name
         self.type = type_
         self.power = power
         self.accuracy = accuracy
         self.pp = pp
+        self.category = category
 
     def __str__(self):
-        return f"{self.name} ({self.type}) | Power: {self.power}, Accuracy: {self.accuracy}, PP: {self.pp}"
+        return f"{self.name} ({self.type}) | Power: {self.power}, Accuracy: {self.accuracy}, PP: {self.pp}, Category: {self.category}"
 
 
 class Moveset:
@@ -425,6 +455,7 @@ class Moveset:
                 power=row.power,
                 accuracy=row.accuracy,
                 pp=row.pp,
+                category=row.category,
             )
             for row in merged.itertuples(index=False)
         ]
@@ -440,15 +471,17 @@ class Moveset:
         pm_df = pm_df[pm_df["pokemon_id"] == self.pokedex_num]
         pm_df = pm_df[pm_df["level_learned"] <= self.level]
         pm_df = pm_df.sort_values(by="level_learned", ascending=False)
+        pm_df = pm_df.drop_duplicates(subset=["move_id"], keep="first")
         top_moves_ids = pm_df["move_id"].head(4).tolist()
-
         # Select corresponding Move objects
         selected = []
+        ids = []
 
         for m in self.available_moves:
             # Check if the move's ID is in the top moves list
-            if m.id in top_moves_ids:
+            if m.id in top_moves_ids and m.id not in ids:
                 selected.append(m)
+                ids.append(m.id)
 
         return selected
 
@@ -471,11 +504,13 @@ class Moveset:
         return "Moveset: " + ", ".join(move.name for move in self.current_moves)
 
 
+
 if __name__ == "__main__":
-    bulbasaur = Pokemon("bulbasaur", 1, "grass", "blue", "male")
+    bulbasaur = Pokemon("bulbasaur", 1, "grass", "blue", "male", 3)
     print(bulbasaur)
     bulbasaur.attack()
     print(bulbasaur.get_stats())
     charmander = Pokemon("charmander", 4, "fire", "orange", "male")
+    print(charmander)
     charmander.attack()
     print(charmander.get_stats())
