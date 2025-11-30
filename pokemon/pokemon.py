@@ -504,7 +504,6 @@ class Moveset:
         return "Moveset: " + ", ".join(move.name for move in self.current_moves)
 
 
-
 if __name__ == "__main__":
     bulbasaur = Pokemon("bulbasaur", 1, "grass", "blue", "male", 3)
     print(bulbasaur)

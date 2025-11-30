@@ -3,9 +3,4 @@ from .pokemon import (
     Move,
 )
 
-__all__ = [
-    "Pokemon",
-    "Move"
-] 
-
-
+__all__ = ["Pokemon", "Move"]

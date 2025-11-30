@@ -6,7 +6,6 @@
 from pokemon.pokemon import (
     Pokemon,
     Move,
-  
 )
 from combat.engine import CombatEngine, math, random
 import pandas as pd
@@ -68,14 +67,12 @@ class Trainer:
         Returns:
             Pokemon: An instance of the appropriate Pokemon subclass.
         """
-        # Here TYPE_CLASS was not necessary 
-
+        # Here TYPE_CLASS was not necessary
 
         if isinstance(primary_type, str):
             primary_type = primary_type.strip()
 
         cls: type[Pokemon] = Pokemon
-
 
         # Subclass constructors expect (name, pokedex_num, color, sex, level)
         try:
