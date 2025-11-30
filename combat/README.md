@@ -1,18 +1,18 @@
 # Módulos de Combate
 En esta sección se explican de forma general las funcionalidades de los módulos
-- Engine
-- Field
+- [Field](https://github.com/LucasGarcia0924/poke-repo/blob/dev/combat/field.py)
+- [Engine](https://github.com/LucasGarcia0924/poke-repo/blob/dev/combat/engine.py)
 
 Encargados de los combates pokemon, utilizando la lógica de Pokemon Stadium
 ## Engine
 Dentro de este módulo únicamente se encuentra la clase "CombatEngine", la cuál recibe la información de el pokemon que ataca y el que recibe el ataque,
 esto incluye sus atributos, el movimiento usado, una lista con movimientos usados, y las estadísticas de combate.
 
-Posee cinco métodos, de los cuales "Calculate_damage" es el principal y del que se llaman los demás:
-- Status_Changes
-- Hit_Accuracy
-- Attack_Defense
-- Critical_Hit
+Posee cinco métodos, de los cuales "[Calculate_damage](https://github.com/LucasGarcia0924/poke-repo/blob/dev/combat/engine.py#L8)" es el principal y del que se llaman los demás:
+- [Status_Changes](https://github.com/LucasGarcia0924/poke-repo/blob/dev/combat/engine.py#L220-260)
+- [Hit_Accuracy](https://github.com/LucasGarcia0924/poke-repo/blob/dev/combat/engine.py#L196-L218)
+- [Attack_Defense](https://github.com/LucasGarcia0924/poke-repo/blob/dev/combat/engine.py#L138-L194)
+- [Critical_Hit](https://github.com/LucasGarcia0924/poke-repo/blob/dev/combat/engine.py#L108-L135)
 
 En conjunto, todos estos se encargan del cálculo del daño realizado en una "instancia de ataque",
 en donde primero se verifica si el atacante tiene algún problema de estado (Quemadura, Envenenamiento, etc.) y dependiendo del caso, puede anularse el ataque, cambiar el objetivo o el daño inflingido.
@@ -28,7 +28,7 @@ Estos incluyen:
 
 Además se calcula si el golpe es crítico o no, ya que eso aumenta levemente el daño inflingido, y finalmente se entregan tres valores, el daño como entero y si es critico y si falló como booleanos.
 ## Field
-Dentro de este módulo se encuentran tres clases principales: Trainer, Field, y Battle.
+Dentro de este módulo se encuentran tres clases principales: [Trainer](https://github.com/LucasGarcia0924/poke-repo/blob/dev/combat/field.py#L33-L206), [Field](https://github.com/LucasGarcia0924/poke-repo/blob/dev/combat/field.py#L209-L1196), y [Battle](https://github.com/LucasGarcia0924/poke-repo/blob/dev/combat/field.py#L1199-L1491).
 
 Trainer representa a un entrenador de Pokémon con un equipo seleccionable. Sus responsabilidades son:
 
@@ -94,56 +94,5 @@ Poke_repo/
 Así pues, el archivo main.py deberá importar la clase "Battle", que es donde se crea un campo "Field" y se llama al Engine, Pokemones, Movimientos y Estadísticas.
 
 Dentro de la función main, la cuál será ejecutada al correr el programa directamente, se deben instanciar ambos entrenadores, los cuales se agregan a un "field" y de ahí este se agrega a un "battle",
-del que se debe usar la función battle(), sin embargo, es mejor usar el código ya creado en el archivo "main.py" que ya se encuentra en este repositorio, ya que cuenta con su propia interfaz y puedes repetir combates indefinidamente.
-```python
-from combat.field import Battle, Field, Trainer
+del que se debe usar la función battle(), sin embargo, es mejor usar el código ya creado en el archivo "[main.py](https://github.com/LucasGarcia0924/poke-repo/blob/dev/main.py#L24-L69)" que ya se encuentra en este repositorio, ya que cuenta con su propia interfaz y puedes repetir combates indefinidamente.
 
-if __name__ == "__main__":
-        """Main game loop with restart menu"""
-    print("=" * 60)
-    print("POKÉMON BATTLE SIMULATOR")
-    print("=" * 60)
-
-    while True:
-        print("\n" + "=" * 60)
-        trainer1_name = input("Trainer 1 name: ")
-        trainer2_name = input("Trainer 2 name: ")
-        trainer1 = Trainer(trainer1_name)
-        trainer2 = Trainer(trainer2_name)
-
-        print("\n" + "=" * 60)
-        trainer1.choose_pokemon()
-
-        print("\n" + "=" * 60)
-        trainer2.choose_pokemon()
-
-        print("\n" + "=" * 60)
-        print("BATTLE START!")
-        print("=" * 60)
-        field = Field(trainer1, trainer2)
-        batalla = Battle(field)
-        batalla.battle()
-
-        print("\n" + "=" * 60)
-        print("BATTLE END")
-        print("=" * 60)
-
-        while True:
-            option = input(
-                "\nWhat do you want to do?\n(1) Play again\n(2) Exit\n> "
-            ).strip()
-
-            if option == "1":
-                print("\n" + "=" * 60)
-                print("NEW BATTLE")
-                print("=" * 60)
-                break
-            elif option == "2":
-                print("\nThanks for playing! See you later!")
-                break
-            else:
-                print("Invalid option. Choose 1 or 2.")
-        if option == "2":
-            break
-
-```
