@@ -73,26 +73,3 @@ El flujo general es:
 4. Field actualiza HP y estadísticas usando sus diccionarios internos
 5. Field.remove_defeated_pokemon() verifica derrotas y marca cambios necesarios
 6. Battle muestra mensajes y repite hasta que Field.end_battle() retorne True
-
-## Aplicación
-Para poder utilizar estos módulos, y todos aquellos que se importan para su funcionamiento,
-es necesario crear un archivo "main.py", el cual se debe encontrar en la misma carpeta raíz donde están las carpetas "combat" y "pokemon".
-
-De modo que se parezca a la estructura de archivos de este repositorio.
-```
-Poke_repo/
-├── .github
-├── combat
-├── pokemon
-├── tests
-├── .gitignore
-├── Readme.md
-├── git_commands.md
-├── requirements.txt
-└── main.py
-```
-Así pues, el archivo main.py deberá importar la clase "Battle", que es donde se crea un campo "Field" y se llama al Engine, Pokemones, Movimientos y Estadísticas.
-
-Dentro de la función main, la cuál será ejecutada al correr el programa directamente, se deben instanciar ambos entrenadores, los cuales se agregan a un "field" y de ahí este se agrega a un "battle",
-del que se debe usar la función battle(), sin embargo, es mejor usar el código ya creado en el archivo "[main.py](https://github.com/LucasGarcia0924/poke-repo/blob/dev/main.py#L24-L69)" que ya se encuentra en este repositorio, ya que cuenta con su propia interfaz y puedes repetir combates indefinidamente.
-
