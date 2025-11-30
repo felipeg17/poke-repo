@@ -11,8 +11,15 @@ class CombatEngine:
     Initialized with attacker and defender Pokémon, the move used, and lists
     of moves previously used by each side.
 
-    The primary public method is `calculate_damage()` which returns a tuple
-    `(damage: int, is_critical: bool)`.
+    The primary public method is calculate_damage() which returns a tuple
+    (damage: int, is_critical: bool, move_hit: bool).
+
+    Attributes:
+        attacker (Pokemon): The attacking Pokémon.
+        defender (Pokemon): The defending Pokémon.
+        move (Move): The move being used.
+        attacker_moves (list[Move]): Moves used by the attacker.
+        defender_moves (list[Move]): Moves used by the defender.
     """
 
     def __init__(
@@ -23,7 +30,15 @@ class CombatEngine:
         attacker_moves: list[Move],
         defender_moves: list[Move],
     ) -> None:
-        # Initialize CombatEngine with attacker, defender, move, moves used by the attacker and defender, and field
+        """Initializes the combat engine.
+
+        Args:
+            attacker (Pokemon): The attacking Pokémon.
+            defender (Pokemon): The defending Pokémon.
+            move (Move): The move to execute.
+            attacker_moves (list[Move]): List of moves used by the attacker.
+            defender_moves (list[Move]): List of moves used by the defender.
+        """
         self.attacker = attacker
         self.defender = defender
         self.move = move
@@ -38,10 +53,20 @@ class CombatEngine:
         sp_defense_stats: dict,
         speed_stats: dict,
     ) -> tuple[int, bool, bool]:
-        """Compute damage using helper methods.
+        """Computes damage using helper methods.
 
-        Returns a tuple `(damage, is_critical)` where `damage` is an integer
-        and `is_critical` is a boolean indicating whether the hit was critical.
+        Args:
+            attack_stats (dict): Dictionary of attack statistics.
+            defense_stats (dict): Dictionary of defense statistics.
+            sp_attack_stats (dict): Dictionary of special attack statistics.
+            sp_defense_stats (dict): Dictionary of special defense statistics.
+            speed_stats (dict): Dictionary of speed statistics.
+
+        Returns:
+            tuple[int, bool, bool]: A tuple containing:
+                - damage (int): The calculated damage value.
+                - is_critical (bool): Whether the hit was critical.
+                - move_hit (bool): Whether the move hit successfully.
         """
         base_power: int = self.move.power
         status_effect, power = self.status_changes(base_power)
@@ -106,11 +131,17 @@ class CombatEngine:
         return damage, crit, move_hit
 
     def critical_hit(self, speed_stats: dict) -> bool:
-        """Determine whether the current move is a critical hit.
+        """Determines whether the current move is a critical hit.
 
         A threshold is calculated from the attacker's speed and previous
-        moves (for example, if 'Focus Energy' has been used). Returns True
+        moves (for example, if Focus Energy has been used). Returns True
         if a random roll is below the threshold.
+
+        Args:
+            speed_stats (dict): Dictionary with speed statistics.
+
+        Returns:
+            bool: True if the attack is critical, False otherwise.
         """
         speed = speed_stats.get(self.attacker, 0)  # Attacker's speed stat
         # If Focus Energy was used, increase the chance of a critical hit
@@ -143,10 +174,20 @@ class CombatEngine:
         sp_attack_stats,
         sp_defense_stats,
     ):
-        """Compute effective Attack and Defense values for the current move.
+        """Computes effective Attack and Defense values for the current move.
 
         Adjustments include Reflect/Light Screen, Explosion/Selfdestruct effects,
-        and handling for stat values above 255. Returns a tuple `(A, D)`.
+        and handling for stat values above 255.
+
+        Args:
+            critical (bool): Whether the attack is a critical hit.
+            attack_stats (dict): Dictionary of attack statistics.
+            defense_stats (dict): Dictionary of defense statistics.
+            sp_attack_stats (dict): Dictionary of special attack statistics.
+            sp_defense_stats (dict): Dictionary of special defense statistics.
+
+        Returns:
+            tuple: A tuple (A, D) with effective Attack and Defense values.
         """
 
         if self.move.category == "special":
@@ -194,10 +235,13 @@ class CombatEngine:
         return A, D
 
     def hit_accuracy(self) -> bool:
-        """Determine whether the move hits its target. Returns True on hit.
+        """Determines whether the move hits its target.
 
         This computes the final hit chance from move accuracy, attacker
         accuracy, and defender evasion, then compares it against a random roll.
+
+        Returns:
+            bool: True if the move hits, False otherwise.
         """
         # Compute hit chance based on accuracy and evasion
         move_accuracy: float = self.move.accuracy
@@ -218,8 +262,15 @@ class CombatEngine:
         return R < Accuracy
 
     def status_changes(self, power: int) -> tuple[bool, int]:
-        """Gets the status of the attacker
-        returns true if pokemon can attack, and the power with the modifications if some are implemented
+        """Gets the status of the attacker.
+
+        Args:
+            power (int): The base power of the move.
+
+        Returns:
+            tuple[bool, int]: A tuple containing:
+                - can_attack (bool): True if Pokémon can attack.
+                - modified_power (int): The power with modifications if any are applied.
         """
         if not self.attacker.status:
             return True, power
