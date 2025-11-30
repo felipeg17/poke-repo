@@ -45,7 +45,7 @@ class TypeRelations:
         except Exception as e:
             print(f"Error loading CSV file: {e}")
 
-    """This funtions help for getting especifics parts of structure"""
+    """These functions help for getting specific parts of the structure"""
 
     def get_relations(self, pkm_type):
         return self._type_data.get(
@@ -173,7 +173,7 @@ class Pokemon:
         else:
             return "It's effective."
 
-    """This is a base of STABs logic"""
+    """This is the base of STAB logic"""
 
     def apply_stab(self, base_power: float, move_type: str) -> float:
         if move_type.lower() == self._main_type.lower():
