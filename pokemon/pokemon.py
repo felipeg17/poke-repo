@@ -76,7 +76,7 @@ class Pokemon:
         self,
         pokemon_name: str,
         pokedex_num: int,
-        type: str, 
+        type: str,
         color: str,
         sex: str | int,
         level: int = 1,
