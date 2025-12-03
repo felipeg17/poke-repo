@@ -34,7 +34,7 @@ direction TB
 class Pokemon {
     - _name: str
     - _pokedex_num: int
-    - _type: str
+    - _main_type: str
     - _color: str
     - _sex: str
     - _level: int
@@ -176,25 +176,19 @@ class Trainer {
     + choose_pokemon()
     + print_dex()
 }
+class TypeRelations{
+    - filename: "types.csv"
+    +load_from_csv()
+    +get_relations()
+    +get_weaknesses()
+    +get_resistances()
+    +get_inmunities()
 
-class Normal {}
-class Fire {}
-class Water {}
-class Grass {}
-class Electric {}
-class Ice {}
-class Fighting {}
-class Poison {}
-class Ground {}
-class Flying {}
-class Psychic {}
-class Bug {}
-class Rock {}
-class Ghost {}
-class Dragon {}
-class Dark {}
-class Steel {}
-class Fairy {}
+
+
+}
+
+
 
 Pokemon *-- Stats
 Pokemon *-- Moveset
@@ -206,25 +200,9 @@ Trainer *-- Pokemon
 Field --> CombatEngine: usa
 CombatEngine *-- Pokemon
 CombatEngine *-- Move
+TypeRelations --* Pokemon
 
-Pokemon <|-- Normal
-Pokemon <|-- Fire
-Pokemon <|-- Water
-Pokemon <|-- Grass
-Pokemon <|-- Electric
-Pokemon <|-- Ice
-Pokemon <|-- Fighting
-Pokemon <|-- Poison
-Pokemon <|-- Ground
-Pokemon <|-- Flying
-Pokemon <|-- Psychic
-Pokemon <|-- Bug
-Pokemon <|-- Rock
-Pokemon <|-- Ghost
-Pokemon <|-- Dragon
-Pokemon <|-- Dark
-Pokemon <|-- Steel
-Pokemon <|-- Fairy
+
 ```
 ## Running 
 

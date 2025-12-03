@@ -1,4 +1,4 @@
-from pokemon import Pokemon, Grass, Fire
+from pokemon import Pokemon
 
 
 def test_create_pokemon():
@@ -19,11 +19,21 @@ def test_create_pokemon():
 
 
 def test_pokemon_resistances_and_weaknesses():
-    bulbasaur = Grass(
-        name="bulbasaur", level=5, pokedex_num=1, color="green", sex="male"
+    bulbasaur = Pokemon(
+        pokemon_name="bulbasaur",
+        type="grass",
+        level=5,
+        pokedex_num=1,
+        color="green",
+        sex="male",
     )
-    charmander = Fire(
-        name="charmander", level=5, pokedex_num=4, color="red", sex="male"
+    charmander = Pokemon(
+        pokemon_name="charmander",
+        type="fire",
+        level=5,
+        pokedex_num=4,
+        color="red",
+        sex="male",
     )
     assert bulbasaur.receive_attack("fire") == "It's super effective!"
     assert bulbasaur.receive_attack("water") == "It's not very effective..."

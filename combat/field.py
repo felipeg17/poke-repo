@@ -6,24 +6,6 @@
 from pokemon.pokemon import (
     Pokemon,
     Move,
-    Normal,
-    Fire,
-    Water,
-    Grass,
-    Electric,
-    Ice,
-    Fighting,
-    Poison,
-    Ground,
-    Flying,
-    Psychic,
-    Bug,
-    Rock,
-    Ghost,
-    Dragon,
-    Dark,
-    Steel,
-    Fairy,
 )
 from combat.engine import CombatEngine, math, random
 import pandas as pd
@@ -67,7 +49,7 @@ class Trainer:
         self,
         name: str,
         pokedex_num: int,
-        primary_type: str | None = None,
+        primary_type: str,
         color: str = "gray",
         sex: str = "male",
         level: int = 1,
@@ -85,34 +67,12 @@ class Trainer:
         Returns:
             Pokemon: An instance of the appropriate Pokemon subclass.
         """
-        # Map type names (as they appear in the CSV) to subclass constructors
-        TYPE_CLASS: dict = {
-            "normal": Normal,
-            "fire": Fire,
-            "water": Water,
-            "grass": Grass,
-            "electric": Electric,
-            "ice": Ice,
-            "fighting": Fighting,
-            "poison": Poison,
-            "ground": Ground,
-            "flying": Flying,
-            "psychic": Psychic,
-            "bug": Bug,
-            "rock": Rock,
-            "ghost": Ghost,
-            "dragon": Dragon,
-            "dark": Dark,
-            "steel": Steel,
-            "fairy": Fairy,
-        }
+        # Here TYPE_CLASS was not necessary
 
         if isinstance(primary_type, str):
             primary_type = primary_type.strip()
 
         cls: type[Pokemon] = Pokemon
-        if primary_type and primary_type in TYPE_CLASS:
-            cls = TYPE_CLASS[primary_type]
 
         # Subclass constructors expect (name, pokedex_num, color, sex, level)
         try:
