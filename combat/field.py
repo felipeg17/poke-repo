@@ -49,7 +49,7 @@ class Trainer:
         self,
         name: str,
         pokedex_num: int,
-        primary_type: str | None = None,
+        primary_type: str,
         color: str = "gray",
         sex: str = "male",
         level: int = 1,
